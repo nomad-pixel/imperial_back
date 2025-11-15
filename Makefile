@@ -1,0 +1,20 @@
+ifneq (,$(wildcard .env))
+    include .env
+    export
+endif
+
+DATABASE_URL ?= postgres://imperial:imperial@localhost:5433/imperial?sslmode=disable
+MIGRATIONS_PATH ?= ./migrations
+
+.PHONY: run
+run:
+	go run cmd/api/main.go
+
+.PHONY: migrate-up
+migrate-up:
+	migrate -database $(DATABASE_URL) -path $(MIGRATIONS_PATH) up
+
+.PHONY: migrate-down
+migrate-down:
+	migrate -database $(DATABASE_URL) -path $(MIGRATIONS_PATH) down
+	

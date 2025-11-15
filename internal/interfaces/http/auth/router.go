@@ -1,0 +1,10 @@
+package auth
+
+import "github.com/gin-gonic/gin"
+
+func RegisterRoutes(router gin.IRouter, handler *AuthHandler) {
+	api := router.Group("/v1/auth")
+	{
+		api.POST("/sign-up", handler.SignUp)
+	}
+}

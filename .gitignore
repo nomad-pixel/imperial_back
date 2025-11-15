@@ -8,3 +8,4 @@ dist/
 *.so
 *.dylib
 *.test
+.claude

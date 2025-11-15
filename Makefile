@@ -17,4 +17,11 @@ migrate-up:
 .PHONY: migrate-down
 migrate-down:
 	migrate -database $(DATABASE_URL) -path $(MIGRATIONS_PATH) down
-	
+
+.PHONY: swagger
+swagger:
+	~/go/bin/swag init -g cmd/api/main.go -o docs
+
+.PHONY: build
+build:
+	go build -o bin/api ./cmd/api

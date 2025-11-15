@@ -1,0 +1,1 @@
+DROP COLUMN IF EXISTS verified_at;

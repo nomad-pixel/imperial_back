@@ -2,10 +2,12 @@ package entities
 
 import "time"
 
+// User представляет доменную модель пользователя
 type User struct {
-	ID           string    `json:"id"`
-	Email        string    `json:"email"`
-	PasswordHash string    `json:"password_hash"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	ID           int64
+	Email        string
+	PasswordHash string
+	VerifiedAt   bool
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }

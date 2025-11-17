@@ -10,6 +10,10 @@ MIGRATIONS_PATH ?= ./migrations
 run:
 	go run cmd/api/main.go
 
+.PHONY: dev
+dev:
+	air
+
 .PHONY: migrate-up
 migrate-up:
 	migrate -database $(DATABASE_URL) -path $(MIGRATIONS_PATH) up

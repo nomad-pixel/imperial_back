@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	usecasePorts "github.com/nomad-pixel/imperial/internal/domain/ports/usecases"
+	usecasePorts "github.com/nomad-pixel/imperial/internal/domain/usecases"
 	"github.com/nomad-pixel/imperial/pkg/errors"
 )
 
@@ -31,14 +31,12 @@ func NewAuthHandler(signUpUsecase usecasePorts.SignUpUsecase) *AuthHandler {
 func (h *AuthHandler) SignUp(c *gin.Context) {
 	var req SignUpRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		// Используем middleware для обработки ошибок
 		_ = c.Error(errors.Wrap(err, errors.ErrCodeValidation, "Неверный формат данных"))
 		return
 	}
 
 	user, err := h.signUpUsecase.Execute(c.Request.Context(), req.Email, req.Password)
 	if err != nil {
-		// Передаем ошибку в middleware
 		_ = c.Error(err)
 		return
 	}

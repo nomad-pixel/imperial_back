@@ -2,7 +2,6 @@ package entities
 
 import "time"
 
-// User представляет доменную модель пользователя
 type User struct {
 	ID           int64
 	Email        string

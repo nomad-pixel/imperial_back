@@ -2,7 +2,7 @@ package di
 
 import (
 	"github.com/jackc/pgx/v5/pgxpool"
-	usecasePorts "github.com/nomad-pixel/imperial/internal/domain/ports/usecases"
+	usecasePorts "github.com/nomad-pixel/imperial/internal/domain/usecases"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 )
 

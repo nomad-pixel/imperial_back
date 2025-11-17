@@ -20,14 +20,14 @@ func NewUserRepositoryImpl(db *pgxpool.Pool) ports.UserRepository {
 	return &UserRepositoryImpl{db: db}
 }
 
-func (r *UserRepositoryImpl) CreateUser(ctx context.Context, email, password string) (*entities.User, error) {
+func (r *UserRepositoryImpl) CreateUser(ctx context.Context, email, passwordHash string) (*entities.User, error) {
 	query := `
 		INSERT INTO users (email, password_hash, verified_at)
 		VALUES ($1, $2, $3)
 		RETURNING id, email, password_hash, verified_at, created_at, updated_at
 	`
 	var user entities.User
-	err := r.db.QueryRow(ctx, query, email, password, false).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.VerifiedAt, &user.CreatedAt, &user.UpdatedAt)
+	err := r.db.QueryRow(ctx, query, email, passwordHash, false).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.VerifiedAt, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, r.handleError(err)
 	}

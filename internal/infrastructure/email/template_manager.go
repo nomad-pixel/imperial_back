@@ -34,7 +34,7 @@ func NewTemplateManager() (*TemplateManager, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse template %s: %w", tmplFile, err)
 		}
-		
+
 		templateName := filepath.Base(tmplFile)
 		tm.templates[templateName] = tmpl
 	}
@@ -69,4 +69,3 @@ func (tm *TemplateManager) GetPlainText(code string) string {
 Команда Imperial
 `, code)
 }
-

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/nomad-pixel/imperial/internal/domain/entities"
+
 	"github.com/nomad-pixel/imperial/internal/domain/ports"
 	apperrors "github.com/nomad-pixel/imperial/pkg/errors"
 	"github.com/nomad-pixel/imperial/pkg/utils"
@@ -45,34 +46,14 @@ func (u *sendEmailVerificationUsecase) Execute(ctx context.Context, email string
 	if err != nil {
 		return apperrors.Wrap(err, apperrors.ErrCodeInternal, "Ошибка генерации кода верификации")
 	}
-
-	existingCode, err := u.verifyCodeRepo.GetVerifyCodeByUserIDAndType(ctx, user.ID, entities.VerifyCodeTypeEmailVerification)
-
-	if existingCode != nil {
-		existingCode.ExpiresAt = time.Now().Add(5 * time.Minute)
-		existingCode.Code = code
-		existingCode.IsUsed = false
-		_, err = u.verifyCodeRepo.UpdateVerifyCode(ctx, existingCode)
-		if err != nil {
-			return err
-		}
-	}
-
-	_, err = u.verifyCodeRepo.CreateVerifyCode(
-		ctx,
-		code,
-		user.ID,
-		entities.VerifyCodeTypeEmailVerification,
-		time.Now().Add(5*time.Minute),
-	)
+	verifyCode, err := u.verifyCodeRepo.CreateVerifyCode(ctx, code, user.ID, entities.VerifyCodeTypeEmailVerification, time.Now().Add(5*time.Minute))
 	if err != nil {
-		return err
+		return apperrors.Wrap(err, apperrors.ErrCodeDatabase, "Ошибка создания кода верификации")
 	}
-
-	err = u.emailService.SendVerificationCode(ctx, email, code)
+	err = u.emailService.SendVerificationCode(ctx, email, verifyCode.Code)
 	if err != nil {
 		return apperrors.Wrap(err, apperrors.ErrCodeExternal, "Ошибка отправки email")
 	}
-
 	return nil
+
 }

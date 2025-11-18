@@ -24,12 +24,10 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 	verifyCodeRepo := repositories.NewVerifyCodeRepositoryImpl(db)
 
 	emailConfig := config.LoadEmailConfig()
+	fmt.Println("emailConfig", emailConfig)
 	var emailService ports.EmailService
 
 	if emailConfig.Provider == "smtp" {
-		log.Println("📧 Используется SMTP провайдер для отправки email")
-		log.Printf("📧 SMTP Host: %s:%s", emailConfig.SMTP.Host, emailConfig.SMTP.Port)
-		log.Printf("📧 SMTP From: %s", emailConfig.SMTP.From)
 		if emailConfig.SMTP.Username == "" {
 			log.Println("⚠️  ВНИМАНИЕ: SMTP_USERNAME не установлен!")
 		}
@@ -49,8 +47,6 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		}
 		emailService = smtpService
 	} else {
-		log.Println("📧 Используется Console провайдер (email в консоль)")
-		log.Println("💡 Для реальной отправки email установите EMAIL_PROVIDER=smtp")
 		emailService = email.NewConsoleEmailService()
 	}
 

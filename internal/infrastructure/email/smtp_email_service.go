@@ -105,7 +105,7 @@ func (s *SMTPEmailService) sendMultipartEmail(to, subject, plainText, htmlBody s
 		log.Printf("❌ Ошибка отправки email: %v", err)
 		return apperrors.Wrap(err, apperrors.ErrCodeExternal, fmt.Sprintf("Ошибка отправки email через SMTP: %v", err))
 	}
-	
+
 	log.Printf("✅ Email успешно отправлен на %s", to)
 	return nil
 }

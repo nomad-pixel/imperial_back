@@ -5,10 +5,9 @@ import (
 	"math/big"
 )
 
-// GenerateVerificationCode генерирует случайный числовой код заданной длины
 func GenerateVerificationCode(length int) (string, error) {
 	if length <= 0 {
-		length = 6 // По умолчанию 6-значный код
+		length = 6
 	}
 
 	const digits = "0123456789"

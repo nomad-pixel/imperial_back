@@ -23,9 +23,15 @@ func NewVerifyCodeRepositoryImpl(db *pgxpool.Pool) ports.VerifyCodeRepository {
 
 func (r *VerifyCodeRepositoryImpl) CreateVerifyCode(ctx context.Context, code string, userID int64, verifyCodeType entities.VerifyCodeType, expiresAt time.Time) (*entities.VerifyCode, error) {
 	query := `
-		INSERT INTO verify_codes (code, user_id, type, expires_at)
-		VALUES ($1, $2, $3, $4)
-		RETURNING id, code, user_id, type, is_used, expires_at, created_at, updated_at
+	INSERT INTO verify_codes (code, user_id, type, expires_at)
+	VALUES ($1, $2, $3, $4)
+	ON CONFLICT ON CONSTRAINT verify_codes_user_id_type_key DO UPDATE
+	SET
+			code       = EXCLUDED.code,
+			expires_at = EXCLUDED.expires_at,
+			is_used    = FALSE,
+			updated_at = NOW()
+	RETURNING id, code, user_id, type, is_used, expires_at, created_at, updated_at;
 	`
 	var verifyCode entities.VerifyCode
 	err := r.db.QueryRow(ctx, query, code, userID, verifyCodeType, expiresAt).Scan(&verifyCode.ID, &verifyCode.Code, &verifyCode.UserID, &verifyCode.Type, &verifyCode.IsUsed, &verifyCode.ExpiresAt, &verifyCode.CreatedAt, &verifyCode.UpdatedAt)

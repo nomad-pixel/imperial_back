@@ -89,14 +89,11 @@ func (r *UserRepositoryImpl) DeleteUser(ctx context.Context, id int64) error {
 	return nil
 }
 
-// handleError преобразует ошибки БД в доменные ошибки
 func (r *UserRepositoryImpl) handleError(err error) error {
-	// Обработка "не найдено"
 	if errors.Is(err, pgx.ErrNoRows) {
 		return apperrors.ErrUserNotFound
 	}
 
-	// Обработка PostgreSQL специфичных ошибок
 	var pgErr *pgconn.PgError
 	if errors.As(err, &pgErr) {
 		switch pgErr.Code {
@@ -109,6 +106,5 @@ func (r *UserRepositoryImpl) handleError(err error) error {
 		}
 	}
 
-	// Остальные ошибки оборачиваем как database errors
 	return apperrors.Wrap(err, apperrors.ErrCodeDatabase, "Ошибка при работе с базой данных")
 }

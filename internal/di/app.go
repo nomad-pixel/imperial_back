@@ -6,27 +6,27 @@ import (
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 )
 
-// App содержит все зависимости приложения
 type App struct {
-	DB            *pgxpool.Pool
-	AuthHandler   *auth.AuthHandler
-	SignUpUsecase usecasePorts.SignUpUsecase
+	DB                           *pgxpool.Pool
+	AuthHandler                  *auth.AuthHandler
+	SignUpUsecase                usecasePorts.SignUpUsecase
+	SendEmailVerificationUsecase usecasePorts.SendEmailVerificationUsecase
 }
 
-// NewApp создает новый экземпляр приложения
 func NewApp(
 	db *pgxpool.Pool,
 	signUpUsecase usecasePorts.SignUpUsecase,
+	sendEmailVerificationUsecase usecasePorts.SendEmailVerificationUsecase,
 	authHandler *auth.AuthHandler,
 ) *App {
 	return &App{
-		DB:            db,
-		AuthHandler:   authHandler,
-		SignUpUsecase: signUpUsecase,
+		DB:                           db,
+		AuthHandler:                  authHandler,
+		SignUpUsecase:                signUpUsecase,
+		SendEmailVerificationUsecase: sendEmailVerificationUsecase,
 	}
 }
 
-// Close закрывает все ресурсы приложения
 func (a *App) Close() {
 	if a.DB != nil {
 		a.DB.Close()

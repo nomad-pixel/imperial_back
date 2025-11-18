@@ -74,10 +74,63 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/auth/verify-email": {
+            "post": {
+                "description": "Отправляет код верификации на указанный email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Отправка кода верификации на email",
+                "parameters": [
+                    {
+                        "description": "Email для отправки кода верификации",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.VerifyEmailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email успешно отправлен",
+                        "schema": {
+                            "$ref": "#/definitions/auth.VerifyEmailResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
         "auth.ErrorResponse": {
+            "description": "Информация об ошибке",
             "type": "object",
             "properties": {
                 "code": {
@@ -95,6 +148,7 @@ const docTemplate = `{
             }
         },
         "auth.SignUpRequest": {
+            "description": "Данные для регистрации нового пользователя",
             "type": "object",
             "required": [
                 "email",
@@ -113,6 +167,7 @@ const docTemplate = `{
             }
         },
         "auth.SignUpResponse": {
+            "description": "Информация о зарегистрированном пользователе",
             "type": "object",
             "properties": {
                 "created_at": {
@@ -134,6 +189,29 @@ const docTemplate = `{
                 "verified_at": {
                     "type": "boolean",
                     "example": false
+                }
+            }
+        },
+        "auth.VerifyEmailRequest": {
+            "description": "Email адрес для отправки кода верификации",
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                }
+            }
+        },
+        "auth.VerifyEmailResponse": {
+            "description": "Сообщение об успешной отправке email",
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Email успешно отправлен"
                 }
             }
         }

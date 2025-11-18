@@ -11,18 +11,18 @@ type ErrorCode string
 
 const (
 	// Клиентские ошибки (4xx)
-	ErrCodeBadRequest       ErrorCode = "BAD_REQUEST"
-	ErrCodeUnauthorized     ErrorCode = "UNAUTHORIZED"
-	ErrCodeForbidden        ErrorCode = "FORBIDDEN"
-	ErrCodeNotFound         ErrorCode = "NOT_FOUND"
-	ErrCodeConflict         ErrorCode = "CONFLICT"
-	ErrCodeValidation       ErrorCode = "VALIDATION_ERROR"
-	ErrCodeInvalidInput     ErrorCode = "INVALID_INPUT"
+	ErrCodeBadRequest   ErrorCode = "BAD_REQUEST"
+	ErrCodeUnauthorized ErrorCode = "UNAUTHORIZED"
+	ErrCodeForbidden    ErrorCode = "FORBIDDEN"
+	ErrCodeNotFound     ErrorCode = "NOT_FOUND"
+	ErrCodeConflict     ErrorCode = "CONFLICT"
+	ErrCodeValidation   ErrorCode = "VALIDATION_ERROR"
+	ErrCodeInvalidInput ErrorCode = "INVALID_INPUT"
 
 	// Серверные ошибки (5xx)
-	ErrCodeInternal         ErrorCode = "INTERNAL_ERROR"
-	ErrCodeDatabase         ErrorCode = "DATABASE_ERROR"
-	ErrCodeExternal         ErrorCode = "EXTERNAL_SERVICE_ERROR"
+	ErrCodeInternal ErrorCode = "INTERNAL_ERROR"
+	ErrCodeDatabase ErrorCode = "DATABASE_ERROR"
+	ErrCodeExternal ErrorCode = "EXTERNAL_SERVICE_ERROR"
 )
 
 // AppError представляет ошибку приложения
@@ -106,11 +106,14 @@ func AsAppError(err error) (*AppError, bool) {
 
 // Предопределенные ошибки для частых случаев
 var (
-	ErrUserNotFound      = New(ErrCodeNotFound, "Пользователь не найден")
-	ErrUserAlreadyExists = New(ErrCodeConflict, "Пользователь уже существует")
-	ErrInvalidCredentials = New(ErrCodeUnauthorized, "Неверные учетные данные")
-	ErrInvalidEmail      = New(ErrCodeValidation, "Неверный формат email")
-	ErrPasswordTooShort  = New(ErrCodeValidation, "Пароль слишком короткий")
-	ErrUnauthorized      = New(ErrCodeUnauthorized, "Требуется авторизация")
-	ErrForbidden         = New(ErrCodeForbidden, "Доступ запрещен")
+	ErrUserNotFound          = New(ErrCodeNotFound, "Пользователь не найден")
+	ErrUserAlreadyExists     = New(ErrCodeConflict, "Пользователь уже существует")
+	ErrInvalidCredentials    = New(ErrCodeUnauthorized, "Неверные учетные данные")
+	ErrInvalidEmail          = New(ErrCodeValidation, "Неверный формат email")
+	ErrPasswordTooShort      = New(ErrCodeValidation, "Пароль слишком короткий")
+	ErrUnauthorized          = New(ErrCodeUnauthorized, "Требуется авторизация")
+	ErrForbidden             = New(ErrCodeForbidden, "Доступ запрещен")
+	ErrVerifyCodeNotFound    = New(ErrCodeNotFound, "Код верификации не найден")
+	ErrVerifyCodeAlreadyUsed = New(ErrCodeConflict, "Код верификации уже использован")
+	ErrVerifyCodeExpired     = New(ErrCodeValidation, "Код верификации истёк")
 )

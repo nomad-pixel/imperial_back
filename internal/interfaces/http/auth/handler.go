@@ -9,12 +9,17 @@ import (
 )
 
 type AuthHandler struct {
-	signUpUsecase                usecasePorts.SignUpUsecase
-	sendEmailVerificationUsecase usecasePorts.SendEmailVerificationUsecase
+	signUpUsecase                   usecasePorts.SignUpUsecase
+	sendEmailVerificationUsecase    usecasePorts.SendEmailVerificationUsecase
+	confirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase
 }
 
-func NewAuthHandler(signUpUsecase usecasePorts.SignUpUsecase, sendEmailVerificationUsecase usecasePorts.SendEmailVerificationUsecase) *AuthHandler {
-	return &AuthHandler{signUpUsecase: signUpUsecase, sendEmailVerificationUsecase: sendEmailVerificationUsecase}
+func NewAuthHandler(signUpUsecase usecasePorts.SignUpUsecase, sendEmailVerificationUsecase usecasePorts.SendEmailVerificationUsecase, confirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase) *AuthHandler {
+	return &AuthHandler{
+		signUpUsecase:                   signUpUsecase,
+		sendEmailVerificationUsecase:    sendEmailVerificationUsecase,
+		confirmEmailVerificationUsecase: confirmEmailVerificationUsecase,
+	}
 }
 
 // SignUp godoc
@@ -75,6 +80,39 @@ func (h *AuthHandler) VerifyEmail(c *gin.Context) {
 
 	response := VerifyEmailResponse{
 		Message: "Email успешно отправлен",
+	}
+	c.JSON(http.StatusOK, response)
+}
+
+// ConfirmEmail  godoc
+// @Summary      Подтверждение кода верификации на email
+// @Description  Подтверждение кода
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        request body ConfirmEmailRequest true "Email для отправки кода верификации"
+// @Success      200 {object} ConfirmEmailResponse "Email успешно отправлен"
+// @Failure      400 {object} ErrorResponse "Неверный формат данных"
+// @Failure      404 {object} ErrorResponse "Пользователь не найден"
+// @Failure      500 {object} ErrorResponse "Внутренняя ошибка сервера"
+// @Router       /v1/auth/confirm-email [post]
+func (h *AuthHandler) ConfirmEmail(c *gin.Context) {
+	var req ConfirmEmailRequest
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		_ = c.Error(errors.Wrap(err, errors.ErrCodeValidation, "Неверный формат данных"))
+		return
+	}
+
+	err = h.confirmEmailVerificationUsecase.Execute(c.Request.Context(), req.Email, req.Code)
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	response := ConfirmEmailResponse{
+		Message: "Email успешно подтвержден",
 	}
 	c.JSON(http.StatusOK, response)
 }

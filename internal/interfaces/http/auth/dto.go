@@ -39,10 +39,23 @@ type VerifyEmailRequest struct {
 	Email string `json:"email" binding:"required,email" example:"user@example.com"`
 }
 
+// ConfirmEmailRequest представляет запрос на подтверждение email
+// @Description Email адрес и код для подтверждения email
+type ConfirmEmailRequest struct {
+	Email string `json:"email" binding:"required,email" example:"user@example.com"`
+	Code  string `json:"code" binding:"required" example:"123456"`
+}
+
 // VerifyEmailResponse представляет ответ после отправки кода верификации
 // @Description Сообщение об успешной отправке email
 type VerifyEmailResponse struct {
 	Message string `json:"message" example:"Email успешно отправлен"`
+}
+
+// ConfirmEmailResponse представляет ответ после подтверждения email
+// @Description Сообщение об успешной подтверждений email
+type ConfirmEmailResponse struct {
+	Message string `json:"message" example:"Email успешно подтвержден"`
 }
 
 // ErrorResponse представляет ответ с ошибкой

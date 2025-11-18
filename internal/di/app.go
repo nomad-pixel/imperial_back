@@ -7,23 +7,26 @@ import (
 )
 
 type App struct {
-	DB                           *pgxpool.Pool
-	AuthHandler                  *auth.AuthHandler
-	SignUpUsecase                usecasePorts.SignUpUsecase
-	SendEmailVerificationUsecase usecasePorts.SendEmailVerificationUsecase
+	DB                              *pgxpool.Pool
+	AuthHandler                     *auth.AuthHandler
+	SignUpUsecase                   usecasePorts.SignUpUsecase
+	SendEmailVerificationUsecase    usecasePorts.SendEmailVerificationUsecase
+	ConfirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase
 }
 
 func NewApp(
 	db *pgxpool.Pool,
 	signUpUsecase usecasePorts.SignUpUsecase,
 	sendEmailVerificationUsecase usecasePorts.SendEmailVerificationUsecase,
+	confirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase,
 	authHandler *auth.AuthHandler,
 ) *App {
 	return &App{
-		DB:                           db,
-		AuthHandler:                  authHandler,
-		SignUpUsecase:                signUpUsecase,
-		SendEmailVerificationUsecase: sendEmailVerificationUsecase,
+		DB:                              db,
+		AuthHandler:                     authHandler,
+		SignUpUsecase:                   signUpUsecase,
+		ConfirmEmailVerificationUsecase: confirmEmailVerificationUsecase,
+		SendEmailVerificationUsecase:    sendEmailVerificationUsecase,
 	}
 }
 

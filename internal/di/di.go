@@ -56,10 +56,11 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		verifyCodeRepo,
 		emailService,
 	)
+	confirmEmailVerificationUsecase := usecases.NewConfirmEmailVerificationUsecase(verifyCodeRepo, userRepo)
 
-	authHandler := auth.NewAuthHandler(signUpUsecase, sendEmailVerificationUsecase)
+	authHandler := auth.NewAuthHandler(signUpUsecase, sendEmailVerificationUsecase, confirmEmailVerificationUsecase)
 
-	app := NewApp(db, signUpUsecase, sendEmailVerificationUsecase, authHandler)
+	app := NewApp(db, signUpUsecase, sendEmailVerificationUsecase, confirmEmailVerificationUsecase, authHandler)
 
 	return app, nil
 }

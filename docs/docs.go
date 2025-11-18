@@ -23,6 +23,58 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/auth/confirm-email": {
+            "post": {
+                "description": "Подтверждение кода",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Подтверждение кода верификации на email",
+                "parameters": [
+                    {
+                        "description": "Email для отправки кода верификации",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.ConfirmEmailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email успешно отправлен",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ConfirmEmailResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/auth/sign-up": {
             "post": {
                 "description": "Создает нового пользователя с указанным email и паролем",
@@ -129,6 +181,33 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "auth.ConfirmEmailRequest": {
+            "description": "Email адрес для отправки кода верификации",
+            "type": "object",
+            "required": [
+                "code",
+                "email"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "123456"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                }
+            }
+        },
+        "auth.ConfirmEmailResponse": {
+            "description": "Сообщение об успешной подтверждений email",
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "auth.ErrorResponse": {
             "description": "Информация об ошибке",
             "type": "object",

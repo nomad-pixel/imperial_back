@@ -1,5 +1,24 @@
 basePath: /api
 definitions:
+  auth.ConfirmEmailRequest:
+    description: Email адрес для отправки кода верификации
+    properties:
+      code:
+        example: "123456"
+        type: string
+      email:
+        example: user@example.com
+        type: string
+    required:
+    - code
+    - email
+    type: object
+  auth.ConfirmEmailResponse:
+    description: Сообщение об успешной подтверждений email
+    properties:
+      message:
+        type: string
+    type: object
   auth.ErrorResponse:
     description: Информация об ошибке
     properties:
@@ -75,6 +94,40 @@ info:
   title: Imperial API
   version: "1.0"
 paths:
+  /v1/auth/confirm-email:
+    post:
+      consumes:
+      - application/json
+      description: Подтверждение кода
+      parameters:
+      - description: Email для отправки кода верификации
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ConfirmEmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email успешно отправлен
+          schema:
+            $ref: '#/definitions/auth.ConfirmEmailResponse'
+        "400":
+          description: Неверный формат данных
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+        "404":
+          description: Пользователь не найден
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+      summary: Подтверждение кода верификации на email
+      tags:
+      - auth
   /v1/auth/sign-up:
     post:
       consumes:

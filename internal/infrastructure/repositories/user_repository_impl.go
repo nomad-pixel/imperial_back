@@ -20,6 +20,28 @@ func NewUserRepositoryImpl(db *pgxpool.Pool) ports.UserRepository {
 	return &UserRepositoryImpl{db: db}
 }
 
+func (r *UserRepositoryImpl) ConfirmEmailVerification(ctx context.Context, email string) (*entities.User, error) {
+	query := `
+		UPDATE users
+		SET verified_at = TRUE, updated_at = NOW()
+		WHERE email = $1
+		RETURNING id, email, password_hash, verified_at, created_at, updated_at
+	`
+	var user entities.User
+	err := r.db.QueryRow(ctx, query, email).Scan(
+		&user.ID,
+		&user.Email,
+		&user.PasswordHash,
+		&user.VerifiedAt,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
+	if err != nil {
+		return nil, r.handleError(err)
+	}
+	return &user, nil
+}
+
 func (r *UserRepositoryImpl) CreateUser(ctx context.Context, email, passwordHash string) (*entities.User, error) {
 	query := `
 		INSERT INTO users (email, password_hash, verified_at)
@@ -41,7 +63,14 @@ func (r *UserRepositoryImpl) GetUserByEmail(ctx context.Context, email string) (
 		WHERE email = $1
 	`
 	var user entities.User
-	err := r.db.QueryRow(ctx, query, email).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.VerifiedAt, &user.CreatedAt, &user.UpdatedAt)
+	err := r.db.QueryRow(ctx, query, email).Scan(
+		&user.ID,
+		&user.Email,
+		&user.PasswordHash,
+		&user.VerifiedAt,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
 	if err != nil {
 		return nil, r.handleError(err)
 	}

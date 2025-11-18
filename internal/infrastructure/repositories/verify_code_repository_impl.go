@@ -21,6 +21,30 @@ func NewVerifyCodeRepositoryImpl(db *pgxpool.Pool) ports.VerifyCodeRepository {
 	return &VerifyCodeRepositoryImpl{db: db}
 }
 
+func (r *VerifyCodeRepositoryImpl) GetVerifyCodeByEmailAndCodeAndType(ctx context.Context, email, code string, verifyCodeType entities.VerifyCodeType) (*entities.VerifyCode, error) {
+	query := `
+		SELECT vc.id, vc.code, vc.user_id, vc.type, vc.is_used, vc.expires_at, vc.created_at, vc.updated_at
+		FROM verify_codes vc
+		INNER JOIN users u ON vc.user_id = u.id
+		WHERE u.email = $1 AND vc.code = $2 AND vc.type = $3
+	`
+	var verifyCode entities.VerifyCode
+	err := r.db.QueryRow(ctx, query, email, code, verifyCodeType).Scan(
+		&verifyCode.ID,
+		&verifyCode.Code,
+		&verifyCode.UserID,
+		&verifyCode.Type,
+		&verifyCode.IsUsed,
+		&verifyCode.ExpiresAt,
+		&verifyCode.CreatedAt,
+		&verifyCode.UpdatedAt,
+	)
+	if err != nil {
+		return nil, r.handleError(err)
+	}
+	return &verifyCode, nil
+}
+
 func (r *VerifyCodeRepositoryImpl) CreateVerifyCode(ctx context.Context, code string, userID int64, verifyCodeType entities.VerifyCodeType, expiresAt time.Time) (*entities.VerifyCode, error) {
 	query := `
 	INSERT INTO verify_codes (code, user_id, type, expires_at)
@@ -55,13 +79,39 @@ func (r *VerifyCodeRepositoryImpl) GetVerifyCodeByUserIDAndType(ctx context.Cont
 	return &verifyCode, nil
 }
 
+func (r *VerifyCodeRepositoryImpl) GetVerifyCodeByCodeAndType(ctx context.Context, code string, verifyCodeType entities.VerifyCodeType) (*entities.VerifyCode, error) {
+	query := `
+		SELECT id, code, user_id, type, is_used, expires_at, created_at, updated_at
+		FROM verify_codes
+		WHERE code = $1 AND type = $2
+		ORDER BY created_at DESC
+		LIMIT 1
+	`
+	var verifyCode entities.VerifyCode
+	err := r.db.QueryRow(ctx, query, code, verifyCodeType).Scan(&verifyCode.ID, &verifyCode.Code, &verifyCode.UserID, &verifyCode.Type, &verifyCode.IsUsed, &verifyCode.ExpiresAt, &verifyCode.CreatedAt, &verifyCode.UpdatedAt)
+	if err != nil {
+		return nil, r.handleError(err)
+	}
+	return &verifyCode, nil
+}
+
 func (r *VerifyCodeRepositoryImpl) UpdateVerifyCode(ctx context.Context, verifyCode *entities.VerifyCode) (*entities.VerifyCode, error) {
 	query := `
 		UPDATE verify_codes
-		SET is_used = $1, expires_at = $2, code = $3
+		SET is_used = $1, expires_at = $2, code = $3, updated_at = NOW()
 		WHERE id = $4
+		RETURNING id, code, user_id, type, is_used, expires_at, created_at, updated_at
 	`
-	err := r.db.QueryRow(ctx, query, verifyCode.IsUsed, verifyCode.ExpiresAt, verifyCode.Code, verifyCode.ID).Scan(&verifyCode.ID, &verifyCode.Code, &verifyCode.UserID, &verifyCode.Type, &verifyCode.IsUsed, &verifyCode.ExpiresAt, &verifyCode.CreatedAt, &verifyCode.UpdatedAt)
+	err := r.db.QueryRow(ctx, query, verifyCode.IsUsed, verifyCode.ExpiresAt, verifyCode.Code, verifyCode.ID).Scan(
+		&verifyCode.ID,
+		&verifyCode.Code,
+		&verifyCode.UserID,
+		&verifyCode.Type,
+		&verifyCode.IsUsed,
+		&verifyCode.ExpiresAt,
+		&verifyCode.CreatedAt,
+		&verifyCode.UpdatedAt,
+	)
 	if err != nil {
 		return nil, r.handleError(err)
 	}

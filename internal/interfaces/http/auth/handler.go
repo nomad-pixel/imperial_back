@@ -12,13 +12,20 @@ type AuthHandler struct {
 	signUpUsecase                   usecasePorts.SignUpUsecase
 	sendEmailVerificationUsecase    usecasePorts.SendEmailVerificationUsecase
 	confirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase
+	signInUsecase                   usecasePorts.SignInUsecase
 }
 
-func NewAuthHandler(signUpUsecase usecasePorts.SignUpUsecase, sendEmailVerificationUsecase usecasePorts.SendEmailVerificationUsecase, confirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase) *AuthHandler {
+func NewAuthHandler(
+	signUpUsecase usecasePorts.SignUpUsecase,
+	sendEmailVerificationUsecase usecasePorts.SendEmailVerificationUsecase,
+	confirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase,
+	signInUsecase usecasePorts.SignInUsecase,
+) *AuthHandler {
 	return &AuthHandler{
 		signUpUsecase:                   signUpUsecase,
 		sendEmailVerificationUsecase:    sendEmailVerificationUsecase,
 		confirmEmailVerificationUsecase: confirmEmailVerificationUsecase,
+		signInUsecase:                   signInUsecase,
 	}
 }
 
@@ -105,5 +112,35 @@ func (h *AuthHandler) ConfirmEmail(c *gin.Context) {
 	response := ConfirmEmailResponse{
 		Message: "Email успешно подтвержден",
 	}
+	c.JSON(http.StatusOK, response)
+}
+
+// SignIn godoc
+// @Summary      Вход пользователя
+// @Description  Аутентификация пользователя с помощью email и пароля
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        request body SignInRequest true "Данные для входа"
+// @Success      200 {object} SignInResponse "Пользователь успешно аутентифицирован"
+// @Router       /v1/auth/sign-in [post]
+func (h *AuthHandler) SignIn(c *gin.Context) {
+	var req SignInRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		_ = c.Error(errors.Wrap(err, errors.ErrCodeValidation, "Неверный формат данных"))
+		return
+	}
+
+	user, tokens, err := h.signInUsecase.Execute(c.Request.Context(), req.Email, req.Password)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	response := SignInResponse{
+		User:   ToSignUpResponse(user),
+		Tokens: *tokens,
+	}
+
 	c.JSON(http.StatusOK, response)
 }

@@ -57,6 +57,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/auth/sign-in": {
+            "post": {
+                "description": "Аутентификация пользователя с помощью email и пароля",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Вход пользователя",
+                "parameters": [
+                    {
+                        "description": "Данные для входа",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.SignInRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Пользователь успешно аутентифицирован",
+                        "schema": {
+                            "$ref": "#/definitions/auth.SignInResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/auth/sign-up": {
             "post": {
                 "description": "Создает нового пользователя с указанным email и паролем",
@@ -153,6 +187,34 @@ const docTemplate = `{
                 }
             }
         },
+        "auth.SignInRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password123"
+                }
+            }
+        },
+        "auth.SignInResponse": {
+            "type": "object",
+            "properties": {
+                "tokens": {
+                    "$ref": "#/definitions/entities.Tokens"
+                },
+                "user": {
+                    "$ref": "#/definitions/auth.SignUpResponse"
+                }
+            }
+        },
         "auth.SignUpRequest": {
             "type": "object",
             "required": [
@@ -214,6 +276,17 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Email успешно отправлен"
+                }
+            }
+        },
+        "entities.Tokens": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
                 }
             }
         }

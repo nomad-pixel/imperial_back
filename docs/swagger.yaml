@@ -18,6 +18,25 @@ definitions:
         example: Email успешно подтвержден
         type: string
     type: object
+  auth.SignInRequest:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      password:
+        example: password123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  auth.SignInResponse:
+    properties:
+      tokens:
+        $ref: '#/definitions/entities.Tokens'
+      user:
+        $ref: '#/definitions/auth.SignUpResponse'
+    type: object
   auth.SignUpRequest:
     properties:
       email:
@@ -63,6 +82,13 @@ definitions:
         example: Email успешно отправлен
         type: string
     type: object
+  entities.Tokens:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -96,6 +122,28 @@ paths:
           schema:
             $ref: '#/definitions/auth.ConfirmEmailResponse'
       summary: Подтверждение кода верификации на email
+      tags:
+      - auth
+  /v1/auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Аутентификация пользователя с помощью email и пароля
+      parameters:
+      - description: Данные для входа
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.SignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Пользователь успешно аутентифицирован
+          schema:
+            $ref: '#/definitions/auth.SignInResponse'
+      summary: Вход пользователя
       tags:
       - auth
   /v1/auth/sign-up:

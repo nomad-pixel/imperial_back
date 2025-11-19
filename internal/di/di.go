@@ -9,6 +9,7 @@ import (
 	"github.com/nomad-pixel/imperial/internal/config"
 	"github.com/nomad-pixel/imperial/internal/domain/ports"
 	"github.com/nomad-pixel/imperial/internal/domain/usecases"
+	token "github.com/nomad-pixel/imperial/internal/infrastructure/auth"
 	"github.com/nomad-pixel/imperial/internal/infrastructure/email"
 	"github.com/nomad-pixel/imperial/internal/infrastructure/repositories"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
@@ -49,6 +50,7 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 	} else {
 		emailService = email.NewConsoleEmailService()
 	}
+	tokenSvc := token.NewJWTTokenService()
 
 	signUpUsecase := usecases.NewSignUpUsecase(userRepo)
 	sendEmailVerificationUsecase := usecases.NewSendEmailVerificationUsecase(
@@ -57,10 +59,23 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		emailService,
 	)
 	confirmEmailVerificationUsecase := usecases.NewConfirmEmailVerificationUsecase(verifyCodeRepo, userRepo)
+	signInUsecase := usecases.NewSignInUsecase(userRepo, tokenSvc)
 
-	authHandler := auth.NewAuthHandler(signUpUsecase, sendEmailVerificationUsecase, confirmEmailVerificationUsecase)
+	authHandler := auth.NewAuthHandler(
+		signUpUsecase,
+		sendEmailVerificationUsecase,
+		confirmEmailVerificationUsecase,
+		signInUsecase,
+	)
 
-	app := NewApp(db, signUpUsecase, sendEmailVerificationUsecase, confirmEmailVerificationUsecase, authHandler)
+	app := NewApp(
+		db,
+		signUpUsecase,
+		sendEmailVerificationUsecase,
+		confirmEmailVerificationUsecase,
+		signInUsecase,
+		authHandler,
+	)
 
 	return app, nil
 }

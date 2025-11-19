@@ -10,6 +10,7 @@ type App struct {
 	DB                              *pgxpool.Pool
 	AuthHandler                     *auth.AuthHandler
 	SignUpUsecase                   usecasePorts.SignUpUsecase
+	SignInUsecase                   usecasePorts.SignInUsecase
 	SendEmailVerificationUsecase    usecasePorts.SendEmailVerificationUsecase
 	ConfirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase
 }
@@ -19,6 +20,7 @@ func NewApp(
 	signUpUsecase usecasePorts.SignUpUsecase,
 	sendEmailVerificationUsecase usecasePorts.SendEmailVerificationUsecase,
 	confirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase,
+	signInUsecase usecasePorts.SignInUsecase,
 	authHandler *auth.AuthHandler,
 ) *App {
 	return &App{
@@ -27,6 +29,7 @@ func NewApp(
 		SignUpUsecase:                   signUpUsecase,
 		ConfirmEmailVerificationUsecase: confirmEmailVerificationUsecase,
 		SendEmailVerificationUsecase:    sendEmailVerificationUsecase,
+		SignInUsecase:                   signInUsecase,
 	}
 }
 

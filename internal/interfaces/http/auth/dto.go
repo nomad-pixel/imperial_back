@@ -51,3 +51,13 @@ type ErrorResponse struct {
 	Message string                 `json:"message" example:"Неверный формат данных"`
 	Details map[string]interface{} `json:"details,omitempty"`
 }
+
+type SignInRequest struct {
+	Email    string `json:"email" binding:"required,email" example:"user@example.com"`
+	Password string `json:"password" binding:"required" example:"password123"`
+}
+
+type SignInResponse struct {
+	User   SignUpResponse  `json:"user"`
+	Tokens entities.Tokens `json:"tokens"`
+}

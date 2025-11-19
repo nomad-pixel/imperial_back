@@ -1,6 +1,11 @@
-CREATE TYPE code_verify_type AS ENUM ('email_verification', 'password_reset');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'code_verify_type') THEN
+        CREATE TYPE code_verify_type AS ENUM ('email_verification', 'password_reset');
+    END IF;
+END$$;
 
-CREATE TABLE verify_codes (
+CREATE TABLE IF NOT EXISTS verify_codes (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     code VARCHAR(255) NOT NULL,

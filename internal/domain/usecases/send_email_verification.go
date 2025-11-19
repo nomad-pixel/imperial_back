@@ -39,7 +39,7 @@ func (u *sendEmailVerificationUsecase) Execute(ctx context.Context, email string
 		return err
 	}
 	if user.VerifiedAt {
-		return apperrors.New(apperrors.ErrCodeValidation, "Email уже верифицирован")
+		return apperrors.New(apperrors.ErrCodeBadRequest, "Email уже верифицирован")
 	}
 
 	code, err := utils.GenerateVerificationCode(6)

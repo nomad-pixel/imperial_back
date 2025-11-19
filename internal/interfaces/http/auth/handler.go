@@ -30,9 +30,6 @@ func NewAuthHandler(signUpUsecase usecasePorts.SignUpUsecase, sendEmailVerificat
 // @Produce      json
 // @Param        request body SignUpRequest true "Данные для регистрации"
 // @Success      201 {object} SignUpResponse "Пользователь успешно зарегистрирован"
-// @Failure      400 {object} ErrorResponse "Неверные данные запроса"
-// @Failure      409 {object} ErrorResponse "Пользователь уже существует"
-// @Failure      500 {object} ErrorResponse "Внутренняя ошибка сервера"
 // @Router       /v1/auth/sign-up [post]
 func (h *AuthHandler) SignUp(c *gin.Context) {
 	var req SignUpRequest
@@ -59,9 +56,6 @@ func (h *AuthHandler) SignUp(c *gin.Context) {
 // @Produce      json
 // @Param        request body VerifyEmailRequest true "Email для отправки кода верификации"
 // @Success      200 {object} VerifyEmailResponse "Email успешно отправлен"
-// @Failure      400 {object} ErrorResponse "Неверный формат данных"
-// @Failure      404 {object} ErrorResponse "Пользователь не найден"
-// @Failure      500 {object} ErrorResponse "Внутренняя ошибка сервера"
 // @Router       /v1/auth/verify-email [post]
 func (h *AuthHandler) VerifyEmail(c *gin.Context) {
 	var req VerifyEmailRequest
@@ -92,9 +86,6 @@ func (h *AuthHandler) VerifyEmail(c *gin.Context) {
 // @Produce      json
 // @Param        request body ConfirmEmailRequest true "Email для отправки кода верификации"
 // @Success      200 {object} ConfirmEmailResponse "Email успешно отправлен"
-// @Failure      400 {object} ErrorResponse "Неверный формат данных"
-// @Failure      404 {object} ErrorResponse "Пользователь не найден"
-// @Failure      500 {object} ErrorResponse "Внутренняя ошибка сервера"
 // @Router       /v1/auth/confirm-email [post]
 func (h *AuthHandler) ConfirmEmail(c *gin.Context) {
 	var req ConfirmEmailRequest

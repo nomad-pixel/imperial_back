@@ -53,24 +53,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/auth.ConfirmEmailResponse"
                         }
-                    },
-                    "400": {
-                        "description": "Неверный формат данных",
-                        "schema": {
-                            "$ref": "#/definitions/auth.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Пользователь не найден",
-                        "schema": {
-                            "$ref": "#/definitions/auth.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Внутренняя ошибка сервера",
-                        "schema": {
-                            "$ref": "#/definitions/auth.ErrorResponse"
-                        }
                     }
                 }
             }
@@ -104,24 +86,6 @@ const docTemplate = `{
                         "description": "Пользователь успешно зарегистрирован",
                         "schema": {
                             "$ref": "#/definitions/auth.SignUpResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверные данные запроса",
-                        "schema": {
-                            "$ref": "#/definitions/auth.ErrorResponse"
-                        }
-                    },
-                    "409": {
-                        "description": "Пользователь уже существует",
-                        "schema": {
-                            "$ref": "#/definitions/auth.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Внутренняя ошибка сервера",
-                        "schema": {
-                            "$ref": "#/definitions/auth.ErrorResponse"
                         }
                     }
                 }
@@ -157,24 +121,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/auth.VerifyEmailResponse"
                         }
-                    },
-                    "400": {
-                        "description": "Неверный формат данных",
-                        "schema": {
-                            "$ref": "#/definitions/auth.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Пользователь не найден",
-                        "schema": {
-                            "$ref": "#/definitions/auth.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Внутренняя ошибка сервера",
-                        "schema": {
-                            "$ref": "#/definitions/auth.ErrorResponse"
-                        }
                     }
                 }
             }
@@ -182,7 +128,6 @@ const docTemplate = `{
     },
     "definitions": {
         "auth.ConfirmEmailRequest": {
-            "description": "Email адрес для отправки кода верификации",
             "type": "object",
             "required": [
                 "code",
@@ -200,34 +145,15 @@ const docTemplate = `{
             }
         },
         "auth.ConfirmEmailResponse": {
-            "description": "Сообщение об успешной подтверждений email",
             "type": "object",
             "properties": {
                 "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "auth.ErrorResponse": {
-            "description": "Информация об ошибке",
-            "type": "object",
-            "properties": {
-                "code": {
                     "type": "string",
-                    "example": "VALIDATION_ERROR"
-                },
-                "details": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Неверный формат данных"
+                    "example": "Email успешно подтвержден"
                 }
             }
         },
         "auth.SignUpRequest": {
-            "description": "Данные для регистрации нового пользователя",
             "type": "object",
             "required": [
                 "email",
@@ -246,7 +172,6 @@ const docTemplate = `{
             }
         },
         "auth.SignUpResponse": {
-            "description": "Информация о зарегистрированном пользователе",
             "type": "object",
             "properties": {
                 "created_at": {
@@ -272,7 +197,6 @@ const docTemplate = `{
             }
         },
         "auth.VerifyEmailRequest": {
-            "description": "Email адрес для отправки кода верификации",
             "type": "object",
             "required": [
                 "email"
@@ -285,7 +209,6 @@ const docTemplate = `{
             }
         },
         "auth.VerifyEmailResponse": {
-            "description": "Сообщение об успешной отправке email",
             "type": "object",
             "properties": {
                 "message": {

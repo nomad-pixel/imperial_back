@@ -6,26 +6,21 @@ import (
 	"net/http"
 )
 
-// ErrorCode представляет тип ошибки
 type ErrorCode string
 
 const (
-	// Клиентские ошибки (4xx)
-	ErrCodeBadRequest   ErrorCode = "BAD_REQUEST"
-	ErrCodeUnauthorized ErrorCode = "UNAUTHORIZED"
-	ErrCodeForbidden    ErrorCode = "FORBIDDEN"
-	ErrCodeNotFound     ErrorCode = "NOT_FOUND"
-	ErrCodeConflict     ErrorCode = "CONFLICT"
-	ErrCodeValidation   ErrorCode = "VALIDATION_ERROR"
-	ErrCodeInvalidInput ErrorCode = "INVALID_INPUT"
-
-	// Серверные ошибки (5xx)
-	ErrCodeInternal ErrorCode = "INTERNAL_ERROR"
-	ErrCodeDatabase ErrorCode = "DATABASE_ERROR"
-	ErrCodeExternal ErrorCode = "EXTERNAL_SERVICE_ERROR"
+	ErrCodeBadRequest   ErrorCode = "BAD_REQUEST"            // HTTP 400
+	ErrCodeUnauthorized ErrorCode = "UNAUTHORIZED"           // HTTP 401
+	ErrCodeForbidden    ErrorCode = "FORBIDDEN"              // HTTP 403
+	ErrCodeNotFound     ErrorCode = "NOT_FOUND"              // HTTP 404
+	ErrCodeConflict     ErrorCode = "CONFLICT"               // HTTP 409
+	ErrCodeValidation   ErrorCode = "VALIDATION_ERROR"       // HTTP 400
+	ErrCodeInvalidInput ErrorCode = "INVALID_INPUT"          // HTTP 400
+	ErrCodeInternal     ErrorCode = "INTERNAL_ERROR"         // HTTP 500
+	ErrCodeDatabase     ErrorCode = "DATABASE_ERROR"         // HTTP 500
+	ErrCodeExternal     ErrorCode = "EXTERNAL_SERVICE_ERROR" // HTTP 500
 )
 
-// AppError представляет ошибку приложения
 type AppError struct {
 	Code       ErrorCode              `json:"code"`
 	Message    string                 `json:"message"`
@@ -34,7 +29,6 @@ type AppError struct {
 	Err        error                  `json:"-"`
 }
 
-// Error реализует интерфейс error
 func (e *AppError) Error() string {
 	if e.Err != nil {
 		return fmt.Sprintf("%s: %s: %v", e.Code, e.Message, e.Err)
@@ -42,12 +36,10 @@ func (e *AppError) Error() string {
 	return fmt.Sprintf("%s: %s", e.Code, e.Message)
 }
 
-// Unwrap позволяет использовать errors.Is и errors.As
 func (e *AppError) Unwrap() error {
 	return e.Err
 }
 
-// New создает новую ошибку приложения
 func New(code ErrorCode, message string) *AppError {
 	return &AppError{
 		Code:       code,
@@ -56,7 +48,6 @@ func New(code ErrorCode, message string) *AppError {
 	}
 }
 
-// Wrap оборачивает существующую ошибку
 func Wrap(err error, code ErrorCode, message string) *AppError {
 	return &AppError{
 		Code:       code,
@@ -66,7 +57,6 @@ func Wrap(err error, code ErrorCode, message string) *AppError {
 	}
 }
 
-// WithDetails добавляет детали к ошибке
 func (e *AppError) WithDetails(key string, value interface{}) *AppError {
 	if e.Details == nil {
 		e.Details = make(map[string]interface{})
@@ -75,7 +65,6 @@ func (e *AppError) WithDetails(key string, value interface{}) *AppError {
 	return e
 }
 
-// getStatusCode возвращает HTTP статус код для типа ошибки
 func getStatusCode(code ErrorCode) int {
 	switch code {
 	case ErrCodeBadRequest, ErrCodeValidation, ErrCodeInvalidInput:
@@ -95,7 +84,6 @@ func getStatusCode(code ErrorCode) int {
 	}
 }
 
-// AsAppError пытается привести error к *AppError
 func AsAppError(err error) (*AppError, bool) {
 	var appErr *AppError
 	if errors.As(err, &appErr) {
@@ -104,7 +92,6 @@ func AsAppError(err error) (*AppError, bool) {
 	return nil, false
 }
 
-// Предопределенные ошибки для частых случаев
 var (
 	ErrUserNotFound          = New(ErrCodeNotFound, "Пользователь не найден")
 	ErrUserAlreadyExists     = New(ErrCodeConflict, "Пользователь уже существует")

@@ -57,6 +57,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/auth/refresh-token": {
+            "post": {
+                "description": "Обновляет access токен с помощью refresh токена",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Обновление access токена",
+                "parameters": [
+                    {
+                        "description": "Данные для обновления токена",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.RefreshRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Токен успешно обновлен",
+                        "schema": {
+                            "$ref": "#/definitions/auth.RefreshResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/auth/sign-in": {
             "post": {
                 "description": "Аутентификация пользователя с помощью email и пароля",
@@ -184,6 +218,31 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Email успешно подтвержден"
+                }
+            }
+        },
+        "auth.RefreshRequest": {
+            "type": "object",
+            "required": [
+                "refresh_token"
+            ],
+            "properties": {
+                "refresh_token": {
+                    "type": "string",
+                    "example": "\u003crefresh_token\u003e"
+                }
+            }
+        },
+        "auth.RefreshResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "\u003caccess_token\u003e"
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "example": "\u003crefresh_token\u003e"
                 }
             }
         },

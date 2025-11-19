@@ -18,6 +18,23 @@ definitions:
         example: Email успешно подтвержден
         type: string
     type: object
+  auth.RefreshRequest:
+    properties:
+      refresh_token:
+        example: <refresh_token>
+        type: string
+    required:
+    - refresh_token
+    type: object
+  auth.RefreshResponse:
+    properties:
+      access_token:
+        example: <access_token>
+        type: string
+      refresh_token:
+        example: <refresh_token>
+        type: string
+    type: object
   auth.SignInRequest:
     properties:
       email:
@@ -122,6 +139,28 @@ paths:
           schema:
             $ref: '#/definitions/auth.ConfirmEmailResponse'
       summary: Подтверждение кода верификации на email
+      tags:
+      - auth
+  /v1/auth/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: Обновляет access токен с помощью refresh токена
+      parameters:
+      - description: Данные для обновления токена
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RefreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Токен успешно обновлен
+          schema:
+            $ref: '#/definitions/auth.RefreshResponse'
+      summary: Обновление access токена
       tags:
       - auth
   /v1/auth/sign-in:

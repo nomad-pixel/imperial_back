@@ -60,12 +60,14 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 	)
 	confirmEmailVerificationUsecase := usecases.NewConfirmEmailVerificationUsecase(verifyCodeRepo, userRepo)
 	signInUsecase := usecases.NewSignInUsecase(userRepo, tokenSvc)
+	refreshTokenUsecase := usecases.NewRefreshTokenUsecase(tokenSvc)
 
 	authHandler := auth.NewAuthHandler(
 		signUpUsecase,
 		sendEmailVerificationUsecase,
 		confirmEmailVerificationUsecase,
 		signInUsecase,
+		refreshTokenUsecase,
 	)
 
 	app := NewApp(
@@ -75,6 +77,7 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		confirmEmailVerificationUsecase,
 		signInUsecase,
 		authHandler,
+		tokenSvc,
 	)
 
 	return app, nil

@@ -14,7 +14,7 @@ type SignUpRequest struct {
 type SignUpResponse struct {
 	ID         int64     `json:"id" example:"123"`
 	Email      string    `json:"email" example:"user@example.com"`
-	VerifiedAt bool      `json:"verified_at" example:"false"`
+	IsVerified bool      `json:"verified_at" example:"false"`
 	CreatedAt  time.Time `json:"created_at" example:"2023-01-01T00:00:00Z"`
 	UpdatedAt  time.Time `json:"updated_at" example:"2023-01-01T00:00:00Z"`
 }
@@ -23,7 +23,7 @@ func ToSignUpResponse(user *entities.User) SignUpResponse {
 	return SignUpResponse{
 		ID:         user.ID,
 		Email:      user.Email,
-		VerifiedAt: user.VerifiedAt,
+		IsVerified: user.IsVerified,
 		CreatedAt:  user.CreatedAt,
 		UpdatedAt:  user.UpdatedAt,
 	}
@@ -60,4 +60,13 @@ type SignInRequest struct {
 type SignInResponse struct {
 	User   SignUpResponse  `json:"user"`
 	Tokens entities.Tokens `json:"tokens"`
+}
+
+type RefreshRequest struct {
+	RefreshToken string `json:"refresh_token" binding:"required" example:"<refresh_token>"`
+}
+
+type RefreshResponse struct {
+	AccessToken  string `json:"access_token" example:"<access_token>"`
+	RefreshToken string `json:"refresh_token,omitempty" example:"<refresh_token>"`
 }

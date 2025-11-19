@@ -2,6 +2,7 @@ package di
 
 import (
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/nomad-pixel/imperial/internal/domain/ports"
 	usecasePorts "github.com/nomad-pixel/imperial/internal/domain/usecases"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 )
@@ -13,6 +14,7 @@ type App struct {
 	SignInUsecase                   usecasePorts.SignInUsecase
 	SendEmailVerificationUsecase    usecasePorts.SendEmailVerificationUsecase
 	ConfirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase
+	TokenService                    ports.TokenService
 }
 
 func NewApp(
@@ -22,6 +24,7 @@ func NewApp(
 	confirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase,
 	signInUsecase usecasePorts.SignInUsecase,
 	authHandler *auth.AuthHandler,
+	tokenSvc ports.TokenService,
 ) *App {
 	return &App{
 		DB:                              db,
@@ -30,6 +33,7 @@ func NewApp(
 		ConfirmEmailVerificationUsecase: confirmEmailVerificationUsecase,
 		SendEmailVerificationUsecase:    sendEmailVerificationUsecase,
 		SignInUsecase:                   signInUsecase,
+		TokenService:                    tokenSvc,
 	}
 }
 

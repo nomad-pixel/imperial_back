@@ -9,5 +9,6 @@ func RegisterRoutes(router gin.IRouter, handler *AuthHandler) {
 		api.POST("/verify-email", handler.VerifyEmail)
 		api.POST("/confirm-email", handler.ConfirmEmail)
 		api.POST("/sign-in", handler.SignIn)
+		api.POST("/refresh-token", handler.RefreshToken)
 	}
 }

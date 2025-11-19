@@ -6,7 +6,7 @@ type User struct {
 	ID           int64
 	Email        string
 	PasswordHash string
-	VerifiedAt   bool
+	IsVerified   bool
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }

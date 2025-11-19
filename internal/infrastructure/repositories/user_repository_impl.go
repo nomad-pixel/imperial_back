@@ -32,7 +32,7 @@ func (r *UserRepositoryImpl) ConfirmEmailVerification(ctx context.Context, email
 		&user.ID,
 		&user.Email,
 		&user.PasswordHash,
-		&user.VerifiedAt,
+		&user.IsVerified,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
@@ -49,7 +49,7 @@ func (r *UserRepositoryImpl) CreateUser(ctx context.Context, email, passwordHash
 		RETURNING id, email, password_hash, verified_at, created_at, updated_at
 	`
 	var user entities.User
-	err := r.db.QueryRow(ctx, query, email, passwordHash, false).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.VerifiedAt, &user.CreatedAt, &user.UpdatedAt)
+	err := r.db.QueryRow(ctx, query, email, passwordHash, false).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.IsVerified, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, r.handleError(err)
 	}
@@ -67,7 +67,7 @@ func (r *UserRepositoryImpl) GetUserByEmail(ctx context.Context, email string) (
 		&user.ID,
 		&user.Email,
 		&user.PasswordHash,
-		&user.VerifiedAt,
+		&user.IsVerified,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
@@ -84,7 +84,7 @@ func (r *UserRepositoryImpl) GetUserById(ctx context.Context, id int64) (*entiti
 		WHERE id = $1
 	`
 	var user entities.User
-	err := r.db.QueryRow(ctx, query, id).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.VerifiedAt, &user.CreatedAt, &user.UpdatedAt)
+	err := r.db.QueryRow(ctx, query, id).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.IsVerified, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (r *UserRepositoryImpl) UpdateUser(ctx context.Context, user *entities.User
 		RETURNING id, email, password_hash, verified_at, created_at, updated_at
 	`
 	var updatedUser entities.User
-	err := r.db.QueryRow(ctx, query, user.Email, user.PasswordHash, user.ID).Scan(&updatedUser.ID, &updatedUser.Email, &updatedUser.PasswordHash, &updatedUser.VerifiedAt, &updatedUser.CreatedAt, &updatedUser.UpdatedAt)
+	err := r.db.QueryRow(ctx, query, user.Email, user.PasswordHash, user.ID).Scan(&updatedUser.ID, &updatedUser.Email, &updatedUser.PasswordHash, &updatedUser.IsVerified, &updatedUser.CreatedAt, &updatedUser.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}

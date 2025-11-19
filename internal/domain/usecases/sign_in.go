@@ -31,6 +31,9 @@ func (u *signInUsecase) Execute(ctx context.Context, email, password string) (*e
 	if err != nil {
 		return nil, nil, apperrors.ErrUserNotFound
 	}
+	if user.IsVerified == false {
+		return nil, nil, apperrors.ErrUserNotVerified
+	}
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
 	if err != nil {
 		return nil, nil, apperrors.ErrInvalidCredentials

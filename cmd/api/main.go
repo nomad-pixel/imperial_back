@@ -13,6 +13,7 @@ import (
 	"github.com/nomad-pixel/imperial/internal/di"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/middleware"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/protected"
 )
 
 // @title           Imperial API
@@ -66,6 +67,9 @@ func main() {
 
 	// Регистрация маршрутов
 	auth.RegisterRoutes(apiGroup, app.AuthHandler)
+	// register example protected routes
+	protectedHandler := protected.NewProtectedHandler()
+	protected.RegisterRoutes(apiGroup, protectedHandler, app.TokenService)
 	if err := server.Run(":8080"); err != nil {
 		log.Fatalf("failed to run server: %v", err)
 	}

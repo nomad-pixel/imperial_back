@@ -19,6 +19,7 @@ const (
 	ErrCodeInternal     ErrorCode = "INTERNAL_ERROR"         // HTTP 500
 	ErrCodeDatabase     ErrorCode = "DATABASE_ERROR"         // HTTP 500
 	ErrCodeExternal     ErrorCode = "EXTERNAL_SERVICE_ERROR" // HTTP 500
+
 )
 
 type AppError struct {
@@ -103,4 +104,5 @@ var (
 	ErrVerifyCodeNotFound    = New(ErrCodeNotFound, "Код верификации не найден")
 	ErrVerifyCodeAlreadyUsed = New(ErrCodeConflict, "Код верификации уже использован")
 	ErrVerifyCodeExpired     = New(ErrCodeValidation, "Код верификации истёк")
+	ErrUserNotVerified       = New(ErrCodeUnauthorized, "Пользователь не верифицирован")
 )

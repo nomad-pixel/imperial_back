@@ -13,6 +13,7 @@ type AuthHandler struct {
 	sendEmailVerificationUsecase    usecasePorts.SendEmailVerificationUsecase
 	confirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase
 	signInUsecase                   usecasePorts.SignInUsecase
+	refreshTokenUsecase             usecasePorts.RefreshTokenUsecase
 }
 
 func NewAuthHandler(
@@ -20,12 +21,14 @@ func NewAuthHandler(
 	sendEmailVerificationUsecase usecasePorts.SendEmailVerificationUsecase,
 	confirmEmailVerificationUsecase usecasePorts.ConfirmEmailVerificationUsecase,
 	signInUsecase usecasePorts.SignInUsecase,
+	refreshTokenUsecase usecasePorts.RefreshTokenUsecase,
 ) *AuthHandler {
 	return &AuthHandler{
 		signUpUsecase:                   signUpUsecase,
 		sendEmailVerificationUsecase:    sendEmailVerificationUsecase,
 		confirmEmailVerificationUsecase: confirmEmailVerificationUsecase,
 		signInUsecase:                   signInUsecase,
+		refreshTokenUsecase:             refreshTokenUsecase,
 	}
 }
 
@@ -143,4 +146,30 @@ func (h *AuthHandler) SignIn(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+
+// RefreshToken godoc
+// @Summary      Обновление access токена
+// @Description  Обновляет access токен с помощью refresh токена
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        request body RefreshRequest true "Данные для обновления токена"
+// @Success      200 {object} RefreshResponse "Токен успешно обновлен"
+// @Router       /v1/auth/refresh-token [post]
+func (h *AuthHandler) RefreshToken(c *gin.Context) {
+	var req RefreshRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		_ = c.Error(errors.Wrap(err, errors.ErrCodeValidation, "Неверный формат данных"))
+		return
+	}
+
+	newAccess, err := h.refreshTokenUsecase.Execute(c.Request.Context(), req.RefreshToken)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	resp := RefreshResponse{AccessToken: newAccess}
+	c.JSON(http.StatusOK, resp)
 }

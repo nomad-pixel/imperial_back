@@ -6,11 +6,11 @@ type Car struct {
 	ID             int64
 	Name           string
 	ImageUrl       string
+	OnlyWithDriver bool
+	PricePerDay    int64
 	Tags           []*CarTag
 	Mark           *CarMark
 	Category       *CarCategory
-	OnlyWithDriver bool
-	PricePerDay    int64
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }

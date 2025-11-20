@@ -23,9 +23,9 @@ func NewUserRepositoryImpl(db *pgxpool.Pool) ports.UserRepository {
 func (r *UserRepositoryImpl) ConfirmEmailVerification(ctx context.Context, email string) (*entities.User, error) {
 	query := `
 		UPDATE users
-		SET verified_at = TRUE, updated_at = NOW()
+		SET is_verified = TRUE, updated_at = NOW()
 		WHERE email = $1
-		RETURNING id, email, password_hash, verified_at, created_at, updated_at
+		RETURNING id, email, password_hash, is_verified, created_at, updated_at
 	`
 	var user entities.User
 	err := r.db.QueryRow(ctx, query, email).Scan(
@@ -44,9 +44,9 @@ func (r *UserRepositoryImpl) ConfirmEmailVerification(ctx context.Context, email
 
 func (r *UserRepositoryImpl) CreateUser(ctx context.Context, email, passwordHash string) (*entities.User, error) {
 	query := `
-		INSERT INTO users (email, password_hash, verified_at)
+		INSERT INTO users (email, password_hash, is_verified)
 		VALUES ($1, $2, $3)
-		RETURNING id, email, password_hash, verified_at, created_at, updated_at
+		RETURNING id, email, password_hash, is_verified, created_at, updated_at
 	`
 	var user entities.User
 	err := r.db.QueryRow(ctx, query, email, passwordHash, false).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.IsVerified, &user.CreatedAt, &user.UpdatedAt)
@@ -58,7 +58,7 @@ func (r *UserRepositoryImpl) CreateUser(ctx context.Context, email, passwordHash
 
 func (r *UserRepositoryImpl) GetUserByEmail(ctx context.Context, email string) (*entities.User, error) {
 	query := `
-		SELECT id, email, password_hash, verified_at, created_at, updated_at
+		SELECT id, email, password_hash, is_verified, created_at, updated_at
 		FROM users
 		WHERE email = $1
 	`
@@ -79,7 +79,7 @@ func (r *UserRepositoryImpl) GetUserByEmail(ctx context.Context, email string) (
 
 func (r *UserRepositoryImpl) GetUserById(ctx context.Context, id int64) (*entities.User, error) {
 	query := `
-		SELECT id, email, password_hash, verified_at, created_at, updated_at
+		SELECT id, email, password_hash, is_verified, created_at, updated_at
 		FROM users
 		WHERE id = $1
 	`
@@ -96,7 +96,7 @@ func (r *UserRepositoryImpl) UpdateUser(ctx context.Context, user *entities.User
 		UPDATE users
 		SET email = $1, password_hash = $2, updated_at = NOW()
 		WHERE id = $3
-		RETURNING id, email, password_hash, verified_at, created_at, updated_at
+		RETURNING id, email, password_hash, is_verified, created_at, updated_at
 	`
 	var updatedUser entities.User
 	err := r.db.QueryRow(ctx, query, user.Email, user.PasswordHash, user.ID).Scan(&updatedUser.ID, &updatedUser.Email, &updatedUser.PasswordHash, &updatedUser.IsVerified, &updatedUser.CreatedAt, &updatedUser.UpdatedAt)

@@ -14,7 +14,7 @@ type SignUpRequest struct {
 type SignUpResponse struct {
 	ID         int64     `json:"id" example:"123"`
 	Email      string    `json:"email" example:"user@example.com"`
-	IsVerified bool      `json:"verified_at" example:"false"`
+	IsVerified bool      `json:"is_verified" example:"false"`
 	CreatedAt  time.Time `json:"created_at" example:"2023-01-01T00:00:00Z"`
 	UpdatedAt  time.Time `json:"updated_at" example:"2023-01-01T00:00:00Z"`
 }

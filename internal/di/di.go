@@ -13,6 +13,7 @@ import (
 	"github.com/nomad-pixel/imperial/internal/infrastructure/email"
 	"github.com/nomad-pixel/imperial/internal/infrastructure/repositories"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
 )
 
 func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
@@ -23,6 +24,10 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 
 	userRepo := repositories.NewUserRepositoryImpl(db)
 	verifyCodeRepo := repositories.NewVerifyCodeRepositoryImpl(db)
+	// carCategoryRepo := repositories.NewCarCategoryRepositoryImpl(db)
+	// carTagRepo := repositories.NewCarTagRepositoryImpl(db)
+	// carMarkRepo := repositories.NewCarMarkRepositoryImpl(db)
+	carRepo := repositories.NewCarRepositoryImpl(db)
 
 	emailConfig := config.LoadEmailConfig()
 	fmt.Println("emailConfig", emailConfig)
@@ -70,6 +75,11 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		refreshTokenUsecase,
 	)
 
+	createCarUsecase := usecases.NewCreateCarUsecase(
+		carRepo,
+	)
+	carHandler := car.NewCarHandler(createCarUsecase)
+
 	app := NewApp(
 		db,
 		signUpUsecase,
@@ -78,6 +88,8 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		signInUsecase,
 		authHandler,
 		tokenSvc,
+		createCarUsecase,
+		carHandler,
 	)
 
 	return app, nil

@@ -8,9 +8,10 @@ import (
 	apperrors "github.com/nomad-pixel/imperial/pkg/errors"
 )
 
-// AuthMiddleware validates Authorization header Bearer <token> using TokenService
 func AuthMiddleware(tokenSvc ports.TokenService) gin.HandlerFunc {
+
 	return func(c *gin.Context) {
+
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			_ = c.Error(apperrors.ErrUnauthorized)
@@ -18,7 +19,6 @@ func AuthMiddleware(tokenSvc ports.TokenService) gin.HandlerFunc {
 			return
 		}
 
-		// expect `Bearer <token>`
 		var token string
 		if len(authHeader) > 7 && authHeader[:7] == "Bearer " {
 			token = authHeader[7:]

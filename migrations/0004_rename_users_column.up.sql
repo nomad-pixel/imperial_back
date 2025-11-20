@@ -1,2 +1,2 @@
 ALTER TABlE users
-RENAME COLUMN verified_at TO is_verified;
+RENAME COLUMN is_verified TO is_verified;

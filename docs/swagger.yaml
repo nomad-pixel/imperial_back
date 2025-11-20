@@ -78,12 +78,12 @@ definitions:
       id:
         example: 123
         type: integer
+      is_verified:
+        example: false
+        type: boolean
       updated_at:
         example: "2023-01-01T00:00:00Z"
         type: string
-      verified_at:
-        example: false
-        type: boolean
     type: object
   auth.VerifyEmailRequest:
     properties:
@@ -98,6 +98,64 @@ definitions:
       message:
         example: Email успешно отправлен
         type: string
+    type: object
+  car.CarResponse:
+    properties:
+      categoryId:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      imageUrl:
+        type: string
+      markId:
+        type: integer
+      name:
+        type: string
+      onlyWithDriver:
+        type: boolean
+      pricePerDay:
+        type: integer
+      tagsIds:
+        items:
+          type: integer
+        type: array
+      updatedAt:
+        type: string
+    type: object
+  car.CreateCarRequest:
+    properties:
+      category_id:
+        example: 2
+        type: integer
+      image_url:
+        example: https://example.com/car.jpg
+        type: string
+      mark_id:
+        example: 1
+        type: integer
+      name:
+        example: Toyota
+        type: string
+      only_with_driver:
+        example: false
+        type: boolean
+      price_per_day:
+        example: 100
+        type: integer
+      tags_ids:
+        items:
+          type: integer
+        type: array
+    required:
+    - category_id
+    - image_url
+    - mark_id
+    - name
+    - only_with_driver
+    - price_per_day
+    - tags_ids
     type: object
   entities.Tokens:
     properties:
@@ -229,9 +287,34 @@ paths:
       summary: Отправка кода верификации на email
       tags:
       - auth
+  /v1/cars:
+    post:
+      consumes:
+      - application/json
+      description: Создает новый автомобиль с указанными параметрами
+      parameters:
+      - description: Данные для создания автомобиля
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/car.CreateCarRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Автомобиль успешно создан
+          schema:
+            $ref: '#/definitions/car.CarResponse'
+      security:
+      - BearerAuth: []
+      summary: Создание нового автомобиля
+      tags:
+      - cars
 securityDefinitions:
   BearerAuth:
-    description: Type "Bearer" followed by a space and JWT token.
+    description: 'JWT token must be passed with `Bearer ` prefix. Example: "Bearer
+      eyJhbGciOiJIUzI1NiI..."'
     in: header
     name: Authorization
     type: apiKey

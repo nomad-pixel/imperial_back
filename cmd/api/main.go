@@ -12,6 +12,7 @@ import (
 	_ "github.com/nomad-pixel/imperial/docs"
 	"github.com/nomad-pixel/imperial/internal/di"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/middleware"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/protected"
 )
@@ -30,10 +31,10 @@ import (
 // @host      localhost:8080
 // @BasePath  /api
 
-// @securityDefinitions.apikey BearerAuth
+// @securityDefinitions.apiKey BearerAuth
 // @in header
 // @name Authorization
-// @description Type "Bearer" followed by a space and JWT token.
+// @description JWT token must be passed with `Bearer ` prefix. Example: "Bearer eyJhbGciOiJIUzI1NiI..."
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
@@ -44,30 +45,24 @@ func main() {
 		log.Fatalf("DATABASE_URL is not set")
 	}
 
-	// Инициализация всех зависимостей через DI контейнер
 	app, err := di.InitializeApp(ctx, pgUrl)
 	if err != nil {
 		log.Fatalf("failed to initialize app: %v", err)
 	}
 	defer app.Close()
 
-	// Настройка HTTP сервера
 	server := gin.New()
 
-	// Middleware
 	server.Use(gin.Logger())
 	server.Use(middleware.Recovery())
 	server.Use(middleware.ErrorHandler())
 
-	// Swagger документация
 	server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// Создание группы /api для всех маршрутов
 	apiGroup := server.Group("/api")
 
-	// Регистрация маршрутов
 	auth.RegisterRoutes(apiGroup, app.AuthHandler)
-	// register example protected routes
+	car.RegisterRoutes(apiGroup, app.CarHandler, app.TokenService)
 	protectedHandler := protected.NewProtectedHandler()
 	protected.RegisterRoutes(apiGroup, protectedHandler, app.TokenService)
 	if err := server.Run(":8080"); err != nil {

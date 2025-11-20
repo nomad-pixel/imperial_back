@@ -192,6 +192,45 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/cars": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Создает новый автомобиль с указанными параметрами",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cars"
+                ],
+                "summary": "Создание нового автомобиля",
+                "parameters": [
+                    {
+                        "description": "Данные для создания автомобиля",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/car.CreateCarRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Автомобиль успешно создан",
+                        "schema": {
+                            "$ref": "#/definitions/car.CarResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -307,13 +346,13 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 123
                 },
+                "is_verified": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "updated_at": {
                     "type": "string",
                     "example": "2023-01-01T00:00:00Z"
-                },
-                "verified_at": {
-                    "type": "boolean",
-                    "example": false
                 }
             }
         },
@@ -338,6 +377,88 @@ const docTemplate = `{
                 }
             }
         },
+        "car.CarResponse": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "imageUrl": {
+                    "type": "string"
+                },
+                "markId": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "onlyWithDriver": {
+                    "type": "boolean"
+                },
+                "pricePerDay": {
+                    "type": "integer"
+                },
+                "tagsIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "car.CreateCarRequest": {
+            "type": "object",
+            "required": [
+                "category_id",
+                "image_url",
+                "mark_id",
+                "name",
+                "only_with_driver",
+                "price_per_day",
+                "tags_ids"
+            ],
+            "properties": {
+                "category_id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "image_url": {
+                    "type": "string",
+                    "example": "https://example.com/car.jpg"
+                },
+                "mark_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Toyota"
+                },
+                "only_with_driver": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "price_per_day": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "tags_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "entities.Tokens": {
             "type": "object",
             "properties": {
@@ -352,7 +473,7 @@ const docTemplate = `{
     },
     "securityDefinitions": {
         "BearerAuth": {
-            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "description": "JWT token must be passed with ` + "`" + `Bearer ` + "`" + ` prefix. Example: \"Bearer eyJhbGciOiJIUzI1NiI...\"",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

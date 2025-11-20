@@ -1,1 +1,1 @@
-ALTER TABLE users DROP COLUMN IF EXISTS verified_at;
+ALTER TABLE users DROP COLUMN IF EXISTS is_verified;

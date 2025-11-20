@@ -277,7 +277,7 @@ func (r CarRepositoryImpl) DeleteCar(ctx context.Context, id int64) error {
 	return nil
 }
 
-func (r CarRepositoryImpl) ListCars(ctx context.Context, offset, limit int64, name string, markID int64) (int64, []*entities.Car, error) {
+func (r CarRepositoryImpl) ListCars(ctx context.Context, offset, limit int64, name string, markID int64, categoryID int64) (int64, []*entities.Car, error) {
 	if limit <= 0 {
 		limit = 20
 	}
@@ -298,6 +298,12 @@ func (r CarRepositoryImpl) ListCars(ctx context.Context, offset, limit int64, na
 	if markID != 0 {
 		conditions = append(conditions, fmt.Sprintf("cm.id = $%d", argPos))
 		args = append(args, markID)
+		argPos++
+	}
+
+	if categoryID != 0 {
+		conditions = append(conditions, fmt.Sprintf("cc.id = $%d", argPos))
+		args = append(args, categoryID)
 		argPos++
 	}
 

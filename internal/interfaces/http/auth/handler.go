@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	usecasePorts "github.com/nomad-pixel/imperial/internal/domain/usecases"
+	usecasePorts "github.com/nomad-pixel/imperial/internal/domain/usecases/auth_usecases"
 	"github.com/nomad-pixel/imperial/pkg/errors"
 )
 

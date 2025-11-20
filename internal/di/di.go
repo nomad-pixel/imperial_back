@@ -8,7 +8,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nomad-pixel/imperial/internal/config"
 	"github.com/nomad-pixel/imperial/internal/domain/ports"
-	"github.com/nomad-pixel/imperial/internal/domain/usecases"
+	"github.com/nomad-pixel/imperial/internal/domain/usecases/auth_usecases"
+	"github.com/nomad-pixel/imperial/internal/domain/usecases/car_usecases"
 	token "github.com/nomad-pixel/imperial/internal/infrastructure/auth"
 	"github.com/nomad-pixel/imperial/internal/infrastructure/email"
 	"github.com/nomad-pixel/imperial/internal/infrastructure/repositories"
@@ -24,9 +25,9 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 
 	userRepo := repositories.NewUserRepositoryImpl(db)
 	verifyCodeRepo := repositories.NewVerifyCodeRepositoryImpl(db)
-	// carCategoryRepo := repositories.NewCarCategoryRepositoryImpl(db)
-	// carTagRepo := repositories.NewCarTagRepositoryImpl(db)
-	// carMarkRepo := repositories.NewCarMarkRepositoryImpl(db)
+	carCategoryRepo := repositories.NewCarCategoryRepositoryImpl(db)
+	carTagRepo := repositories.NewCarTagRepositoryImpl(db)
+	carMarkRepo := repositories.NewCarMarkRepositoryImpl(db)
 	carRepo := repositories.NewCarRepositoryImpl(db)
 
 	emailConfig := config.LoadEmailConfig()
@@ -57,15 +58,15 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 	}
 	tokenSvc := token.NewJWTTokenService()
 
-	signUpUsecase := usecases.NewSignUpUsecase(userRepo)
-	sendEmailVerificationUsecase := usecases.NewSendEmailVerificationUsecase(
+	signUpUsecase := auth_usecases.NewSignUpUsecase(userRepo)
+	sendEmailVerificationUsecase := auth_usecases.NewSendEmailVerificationUsecase(
 		userRepo,
 		verifyCodeRepo,
 		emailService,
 	)
-	confirmEmailVerificationUsecase := usecases.NewConfirmEmailVerificationUsecase(verifyCodeRepo, userRepo)
-	signInUsecase := usecases.NewSignInUsecase(userRepo, tokenSvc)
-	refreshTokenUsecase := usecases.NewRefreshTokenUsecase(tokenSvc)
+	confirmEmailVerificationUsecase := auth_usecases.NewConfirmEmailVerificationUsecase(verifyCodeRepo, userRepo)
+	signInUsecase := auth_usecases.NewSignInUsecase(userRepo, tokenSvc)
+	refreshTokenUsecase := auth_usecases.NewRefreshTokenUsecase(tokenSvc)
 
 	authHandler := auth.NewAuthHandler(
 		signUpUsecase,
@@ -75,10 +76,44 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		refreshTokenUsecase,
 	)
 
-	createCarUsecase := usecases.NewCreateCarUsecase(
+	createCarUsecase := car_usecases.NewCreateCarUsecase(
 		carRepo,
 	)
-	carHandler := car.NewCarHandler(createCarUsecase)
+	deleteCarUsecase := car_usecases.NewDeleteCarUsecase(
+		carRepo,
+	)
+	updateCarUsecase := car_usecases.NewUpdateCarUsecase(
+		carRepo,
+	)
+	getCarByIdUsecase := car_usecases.NewGetCarByIdUsecase(
+		carRepo,
+	)
+	getListCarsUsecase := car_usecases.NewGetListCarsUsecase(
+		carRepo,
+	)
+
+	// CarTag usecases
+	createCarTagUsecase := car_usecases.NewCreateCarTagUsecase(carTagRepo)
+	getCarTagUsecase := car_usecases.NewGetCarTagUsecase(carTagRepo)
+	getCarTagsListUsecase := car_usecases.NewGetCarTagsListUsecase(carTagRepo)
+	updateCarTagUsecase := car_usecases.NewUpdateCarTagUsecase(carTagRepo)
+	deleteCarTagUsecase := car_usecases.NewDeleteCarTagUsecase(carTagRepo)
+
+	// CarMark usecases
+	createCarMarkUsecase := car_usecases.NewCreateCarMarkUsecase(carMarkRepo)
+	getCarMarkUsecase := car_usecases.NewGetCarMarkUsecase(carMarkRepo)
+	getCarMarksListUsecase := car_usecases.NewGetCarMarksListUsecase(carMarkRepo)
+	updateCarMarkUsecase := car_usecases.NewUpdateCarMarkUsecase(carMarkRepo)
+	deleteCarMarkUsecase := car_usecases.NewDeleteCarMarkUsecase(carMarkRepo)
+
+	// CarCategory usecases
+	createCarCategoryUsecase := car_usecases.NewCreateCarCategoryUsecase(carCategoryRepo)
+	getCarCategoryUsecase := car_usecases.NewGetCarCategoryUsecase(carCategoryRepo)
+	getCarCategoriesListUsecase := car_usecases.NewGetCarCategoriesListUsecase(carCategoryRepo)
+	updateCarCategoryUsecase := car_usecases.NewUpdateCarCategoryUsecase(carCategoryRepo)
+	deleteCarCategoryUsecase := car_usecases.NewDeleteCarCategoryUsecase(carCategoryRepo)
+
+	carHandler := car.NewCarHandler(createCarUsecase, deleteCarUsecase, updateCarUsecase, getCarByIdUsecase, getListCarsUsecase)
 
 	app := NewApp(
 		db,
@@ -90,6 +125,24 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		tokenSvc,
 		createCarUsecase,
 		carHandler,
+		// CarTag usecases
+		createCarTagUsecase,
+		getCarTagUsecase,
+		getCarTagsListUsecase,
+		updateCarTagUsecase,
+		deleteCarTagUsecase,
+		// CarMark usecases
+		createCarMarkUsecase,
+		getCarMarkUsecase,
+		getCarMarksListUsecase,
+		updateCarMarkUsecase,
+		deleteCarMarkUsecase,
+		// CarCategory usecases
+		createCarCategoryUsecase,
+		getCarCategoryUsecase,
+		getCarCategoriesListUsecase,
+		updateCarCategoryUsecase,
+		deleteCarCategoryUsecase,
 	)
 
 	return app, nil

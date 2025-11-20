@@ -12,5 +12,9 @@ func RegisterRoutes(router gin.IRouter, handler *CarHandler, tokenSvc ports.Toke
 
 	{
 		api.POST("", handler.CreateCar)
+		api.GET("", handler.ListCars)
+		api.GET("/:id", handler.GetCarByID)
+		api.PUT("/:id", handler.UpdateCar)
+		api.DELETE("/:id", handler.DeleteCar)
 	}
 }

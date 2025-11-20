@@ -69,6 +69,13 @@ func (r CarCategoryRepositoryImpl) DeleteCarCategory(ctx context.Context, id int
 }
 
 func (r CarCategoryRepositoryImpl) ListCarCategories(ctx context.Context, offset int64, limit int64) (int64, []*entities.CarCategory, error) {
+	if limit <= 0 {
+		limit = 20
+	}
+	if offset < 0 {
+		offset = 0
+	}
+
 	query := `
 		SELECT id, name, created_at, updated_at
 		FROM car_categories

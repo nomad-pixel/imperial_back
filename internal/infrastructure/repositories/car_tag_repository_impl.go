@@ -70,6 +70,13 @@ func (r CarTagRepositoryImpl) DeleteCarTag(ctx context.Context, id int64) error 
 }
 
 func (r CarTagRepositoryImpl) ListCarTags(ctx context.Context, offset int64, limit int64) (int64, []*entities.CarTag, error) {
+	if limit <= 0 {
+		limit = 20
+	}
+	if offset < 0 {
+		offset = 0
+	}
+
 	var total int64
 	countQuery := `SELECT COUNT(*) FROM car_tags`
 	err := r.db.QueryRow(ctx, countQuery).Scan(&total)

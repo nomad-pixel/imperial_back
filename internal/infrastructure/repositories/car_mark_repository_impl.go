@@ -17,8 +17,11 @@ func NewCarMarkRepositoryImpl(db *pgxpool.Pool) ports.CarMarkRepository {
 }
 
 func (r CarMarkRepositoryImpl) ListCarMarks(ctx context.Context, offset int64, limit int64) (int64, []*entities.CarMark, error) {
-	if limit == 0 {
+	if limit <= 0 {
 		limit = 20
+	}
+	if offset < 0 {
+		offset = 0
 	}
 
 	var total int64

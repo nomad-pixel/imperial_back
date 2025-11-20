@@ -13,6 +13,7 @@ import (
 	"github.com/nomad-pixel/imperial/internal/di"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_tag"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/middleware"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/protected"
 )
@@ -63,6 +64,7 @@ func main() {
 
 	auth.RegisterRoutes(apiGroup, app.AuthHandler)
 	car.RegisterRoutes(apiGroup, app.CarHandler, app.TokenService)
+	car_tag.RegisterRoutes(apiGroup, app.CarTagHandler, app.TokenService)
 	protectedHandler := protected.NewProtectedHandler()
 	protected.RegisterRoutes(apiGroup, protectedHandler, app.TokenService)
 	if err := server.Run(":8080"); err != nil {

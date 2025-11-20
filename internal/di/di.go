@@ -15,6 +15,7 @@ import (
 	"github.com/nomad-pixel/imperial/internal/infrastructure/repositories"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_tag"
 )
 
 func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
@@ -115,6 +116,14 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 
 	carHandler := car.NewCarHandler(createCarUsecase, deleteCarUsecase, updateCarUsecase, getCarByIdUsecase, getListCarsUsecase)
 
+	carTagHandler := car_tag.NewCarTagHandler(
+		createCarTagUsecase,
+		getCarTagUsecase,
+		getCarTagsListUsecase,
+		updateCarTagUsecase,
+		deleteCarTagUsecase,
+	)
+
 	app := NewApp(
 		db,
 		signUpUsecase,
@@ -125,6 +134,7 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		tokenSvc,
 		createCarUsecase,
 		carHandler,
+		carTagHandler,
 		// CarTag usecases
 		createCarTagUsecase,
 		getCarTagUsecase,

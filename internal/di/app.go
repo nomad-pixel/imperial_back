@@ -7,12 +7,14 @@ import (
 	"github.com/nomad-pixel/imperial/internal/domain/usecases/car_usecases"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_tag"
 )
 
 type App struct {
 	DB                              *pgxpool.Pool
 	AuthHandler                     *auth.AuthHandler
 	CarHandler                      *car.CarHandler
+	CarTagHandler                   *car_tag.CarTagHandler
 	SignUpUsecase                   auth_usecases.SignUpUsecase
 	SignInUsecase                   auth_usecases.SignInUsecase
 	SendEmailVerificationUsecase    auth_usecases.SendEmailVerificationUsecase
@@ -54,6 +56,7 @@ func NewApp(
 
 	createCarUsecase car_usecases.CreateCarUsecase,
 	carHandler *car.CarHandler,
+	carTagHandler *car_tag.CarTagHandler,
 
 	createCarTagUsecase car_usecases.CreateCarTagUsecase,
 	getCarTagUsecase car_usecases.GetCarTagUsecase,
@@ -77,13 +80,14 @@ func NewApp(
 	return &App{
 		DB:                              db,
 		AuthHandler:                     authHandler,
+		CarHandler:                      carHandler,
+		CarTagHandler:                   carTagHandler,
 		SignUpUsecase:                   signUpUsecase,
 		ConfirmEmailVerificationUsecase: confirmEmailVerificationUsecase,
 		SendEmailVerificationUsecase:    sendEmailVerificationUsecase,
 		SignInUsecase:                   signInUsecase,
 		TokenService:                    tokenSvc,
 
-		CarHandler:       carHandler,
 		CreateCarUsecase: createCarUsecase,
 
 		CreateCarTagUsecase:   createCarTagUsecase,

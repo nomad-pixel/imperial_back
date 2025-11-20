@@ -150,11 +150,18 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		signInUsecase,
 		authHandler,
 		tokenSvc,
+
 		createCarUsecase,
+		getCarByIdUsecase,
+		getListCarsUsecase,
+		updateCarUsecase,
+		deleteCarUsecase,
+
 		carHandler,
 		carTagHandler,
 		carMarkHandler,
 		carCategoryHandler,
+
 		// CarTag usecases
 		createCarTagUsecase,
 		getCarTagUsecase,

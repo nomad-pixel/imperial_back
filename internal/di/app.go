@@ -25,7 +25,12 @@ type App struct {
 	ConfirmEmailVerificationUsecase auth_usecases.ConfirmEmailVerificationUsecase
 	TokenService                    ports.TokenService
 
-	CreateCarUsecase car_usecases.CreateCarUsecase
+	// Car usecases
+	CreateCarUsecase   car_usecases.CreateCarUsecase
+	GetCarByIdUsecase  car_usecases.GetCarByIdUsecase
+	GetListCarsUsecase car_usecases.GetListCarsUsecase
+	UpdateCarUsecase   car_usecases.UpdateCarUsecase
+	DeleteCarUsecase   car_usecases.DeleteCarUsecase
 
 	// CarTag usecases
 	CreateCarTagUsecase   car_usecases.CreateCarTagUsecase
@@ -59,6 +64,10 @@ func NewApp(
 	tokenSvc ports.TokenService,
 
 	createCarUsecase car_usecases.CreateCarUsecase,
+	getCarByIdUsecase car_usecases.GetCarByIdUsecase,
+	getListCarsUsecase car_usecases.GetListCarsUsecase,
+	updateCarUsecase car_usecases.UpdateCarUsecase,
+	deleteCarUsecase car_usecases.DeleteCarUsecase,
 	carHandler *car.CarHandler,
 	carTagHandler *car_tag.CarTagHandler,
 	carMarkHandler *car_mark.CarMarkHandler,
@@ -96,7 +105,11 @@ func NewApp(
 		SignInUsecase:                   signInUsecase,
 		TokenService:                    tokenSvc,
 
-		CreateCarUsecase: createCarUsecase,
+		CreateCarUsecase:   createCarUsecase,
+		GetCarByIdUsecase:  getCarByIdUsecase,
+		GetListCarsUsecase: getListCarsUsecase,
+		UpdateCarUsecase:   updateCarUsecase,
+		DeleteCarUsecase:   deleteCarUsecase,
 
 		CreateCarTagUsecase:   createCarTagUsecase,
 		GetCarTagUsecase:      getCarTagUsecase,

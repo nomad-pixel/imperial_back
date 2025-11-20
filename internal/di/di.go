@@ -15,6 +15,7 @@ import (
 	"github.com/nomad-pixel/imperial/internal/infrastructure/repositories"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_category"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_mark"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_tag"
 )
@@ -133,6 +134,14 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		deleteCarMarkUsecase,
 	)
 
+	carCategoryHandler := car_category.NewCarCategoryHandler(
+		createCarCategoryUsecase,
+		getCarCategoryUsecase,
+		getCarCategoriesListUsecase,
+		updateCarCategoryUsecase,
+		deleteCarCategoryUsecase,
+	)
+
 	app := NewApp(
 		db,
 		signUpUsecase,
@@ -145,6 +154,7 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		carHandler,
 		carTagHandler,
 		carMarkHandler,
+		carCategoryHandler,
 		// CarTag usecases
 		createCarTagUsecase,
 		getCarTagUsecase,

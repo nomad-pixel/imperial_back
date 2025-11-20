@@ -7,6 +7,7 @@ import (
 	"github.com/nomad-pixel/imperial/internal/domain/usecases/car_usecases"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_category"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_mark"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_tag"
 )
@@ -17,6 +18,7 @@ type App struct {
 	CarHandler                      *car.CarHandler
 	CarTagHandler                   *car_tag.CarTagHandler
 	CarMarkHandler                  *car_mark.CarMarkHandler
+	CarCategoryHandler              *car_category.CarCategoryHandler
 	SignUpUsecase                   auth_usecases.SignUpUsecase
 	SignInUsecase                   auth_usecases.SignInUsecase
 	SendEmailVerificationUsecase    auth_usecases.SendEmailVerificationUsecase
@@ -60,6 +62,7 @@ func NewApp(
 	carHandler *car.CarHandler,
 	carTagHandler *car_tag.CarTagHandler,
 	carMarkHandler *car_mark.CarMarkHandler,
+	carCategoryHandler *car_category.CarCategoryHandler,
 
 	createCarTagUsecase car_usecases.CreateCarTagUsecase,
 	getCarTagUsecase car_usecases.GetCarTagUsecase,
@@ -86,6 +89,7 @@ func NewApp(
 		CarHandler:                      carHandler,
 		CarTagHandler:                   carTagHandler,
 		CarMarkHandler:                  carMarkHandler,
+		CarCategoryHandler:              carCategoryHandler,
 		SignUpUsecase:                   signUpUsecase,
 		ConfirmEmailVerificationUsecase: confirmEmailVerificationUsecase,
 		SendEmailVerificationUsecase:    sendEmailVerificationUsecase,

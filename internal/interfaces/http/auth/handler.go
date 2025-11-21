@@ -35,7 +35,7 @@ func NewAuthHandler(
 // SignUp godoc
 // @Summary      Регистрация нового пользователя
 // @Description  Создает нового пользователя с указанным email и паролем
-// @Tags         auth
+// @Tags         Auth
 // @Accept       json
 // @Produce      json
 // @Param        request body SignUpRequest true "Данные для регистрации"
@@ -61,7 +61,7 @@ func (h *AuthHandler) SignUp(c *gin.Context) {
 // VerifyEmail godoc
 // @Summary      Отправка кода верификации на email
 // @Description  Отправляет код верификации на указанный email
-// @Tags         auth
+// @Tags         Auth
 // @Accept       json
 // @Produce      json
 // @Param        request body VerifyEmailRequest true "Email для отправки кода верификации"
@@ -91,7 +91,7 @@ func (h *AuthHandler) VerifyEmail(c *gin.Context) {
 // ConfirmEmail  godoc
 // @Summary      Подтверждение кода верификации на email
 // @Description  Подтверждение кода
-// @Tags         auth
+// @Tags         Auth
 // @Accept       json
 // @Produce      json
 // @Param        request body ConfirmEmailRequest true "Email для отправки кода верификации"
@@ -121,7 +121,7 @@ func (h *AuthHandler) ConfirmEmail(c *gin.Context) {
 // SignIn godoc
 // @Summary      Вход пользователя
 // @Description  Аутентификация пользователя с помощью email и пароля
-// @Tags         auth
+// @Tags         Auth
 // @Accept       json
 // @Produce      json
 // @Param        request body SignInRequest true "Данные для входа"
@@ -151,7 +151,7 @@ func (h *AuthHandler) SignIn(c *gin.Context) {
 // RefreshToken godoc
 // @Summary      Обновление access токена
 // @Description  Обновляет access токен с помощью refresh токена
-// @Tags         auth
+// @Tags         Auth
 // @Accept       json
 // @Produce      json
 // @Param        request body RefreshRequest true "Данные для обновления токена"

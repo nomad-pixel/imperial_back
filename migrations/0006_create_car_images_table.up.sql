@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS car_images (
+    id BIGSERIAL PRIMARY KEY,
+    image_path VARCHAR(512) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

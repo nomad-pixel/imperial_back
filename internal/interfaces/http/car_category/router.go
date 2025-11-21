@@ -7,7 +7,7 @@ import (
 )
 
 func RegisterRoutes(router gin.IRouter, handler *CarCategoryHandler, tokenSvc ports.TokenService) {
-	api := router.Group("/v1/car-categories")
+	api := router.Group("/v1/cars/car-categories")
 
 	// Public GET endpoints
 	api.GET("", handler.GetCarCategories)

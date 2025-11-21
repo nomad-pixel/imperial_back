@@ -36,13 +36,13 @@ func NewCarTagHandler(
 // CreateCarTag godoc
 // @Summary      Создание нового тега для машины
 // @Description  Создает новый тег с указанным названием
-// @Tags         car-tags
+// @Tags         Car Tags
 // @Accept       json
 // @Produce      json
 // @Param        request body CreateCarTagRequest true "Данные для создания тега"
 // @Success      201 {object}  CarTagResponse  "Тег успешно создан"
 // @Security     BearerAuth
-// @Router       /v1/car-tags [post]
+// @Router       /v1/cars/car-tags [post]
 func (h *CarTagHandler) CreateCarTag(c *gin.Context) {
 	var req CreateCarTagRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -62,12 +62,12 @@ func (h *CarTagHandler) CreateCarTag(c *gin.Context) {
 // GetCarTag godoc
 // @Summary      Получение тега по ID
 // @Description  Возвращает информацию о теге по указанному ID
-// @Tags         car-tags
+// @Tags         Car Tags
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID тега"
 // @Success      200 {object}  CarTagResponse  "Информация о теге"
-// @Router       /v1/car-tags/{id} [get]
+// @Router       /v1/cars/car-tags/{id} [get]
 func (h *CarTagHandler) GetCarTag(c *gin.Context) {
 	tagID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -87,13 +87,13 @@ func (h *CarTagHandler) GetCarTag(c *gin.Context) {
 // GetCarTags godoc
 // @Summary      Получение списка тегов
 // @Description  Возвращает список всех тегов с поддержкой пагинации
-// @Tags         car-tags
+// @Tags         Car Tags
 // @Accept       json
 // @Produce      json
 // @Param        offset query int false "Смещение для пагинации" default(0)
 // @Param        limit query int false "Лимит для пагинации" default(20)
 // @Success      200 {object}  ListCarTagsResponse  "Список тегов"
-// @Router       /v1/car-tags [get]
+// @Router       /v1/cars/car-tags [get]
 func (h *CarTagHandler) GetCarTags(c *gin.Context) {
 	offset := int64(0)
 	limit := int64(20)
@@ -120,14 +120,14 @@ func (h *CarTagHandler) GetCarTags(c *gin.Context) {
 // UpdateCarTag godoc
 // @Summary      Обновление тега
 // @Description  Обновляет информацию о теге по указанному ID
-// @Tags         car-tags
+// @Tags         Car Tags
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID тега"
 // @Param        request body UpdateCarTagRequest true "Новые данные для тега"
 // @Success      200 {object}  CarTagResponse  "Тег успешно обновлен"
 // @Security     BearerAuth
-// @Router       /v1/car-tags/{id} [put]
+// @Router       /v1/cars/car-tags/{id} [put]
 func (h *CarTagHandler) UpdateCarTag(c *gin.Context) {
 	tagID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -153,7 +153,7 @@ func (h *CarTagHandler) UpdateCarTag(c *gin.Context) {
 // DeleteCarTag godoc
 // @Summary      Удаление тега
 // @Description  Удаляет тег по указанному ID
-// @Tags         car-tags
+// @Tags         Car Tags
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID тега"

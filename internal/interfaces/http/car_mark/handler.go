@@ -36,13 +36,13 @@ func NewCarMarkHandler(
 // CreateCarMark godoc
 // @Summary      Создание новой марки машины
 // @Description  Создает новую марку с указанным названием
-// @Tags         car-marks
+// @Tags         Car Marks
 // @Accept       json
 // @Produce      json
 // @Param        request body CreateCarMarkRequest true "Данные для создания марки"
 // @Success      201 {object}  CarMarkResponse  "Марка успешно создана"
 // @Security     BearerAuth
-// @Router       /v1/car-marks [post]
+// @Router       /v1/cars/car-marks [post]
 func (h *CarMarkHandler) CreateCarMark(c *gin.Context) {
 	var req CreateCarMarkRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -62,12 +62,12 @@ func (h *CarMarkHandler) CreateCarMark(c *gin.Context) {
 // GetCarMark godoc
 // @Summary      Получение марки по ID
 // @Description  Возвращает информацию о марке по указанному ID
-// @Tags         car-marks
+// @Tags         Car Marks
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID марки"
 // @Success      200 {object}  CarMarkResponse  "Информация о марке"
-// @Router       /v1/car-marks/{id} [get]
+// @Router       /v1/cars/car-marks/{id} [get]
 func (h *CarMarkHandler) GetCarMark(c *gin.Context) {
 	markID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -87,13 +87,13 @@ func (h *CarMarkHandler) GetCarMark(c *gin.Context) {
 // GetCarMarks godoc
 // @Summary      Получение списка марок
 // @Description  Возвращает список всех марок с поддержкой пагинации
-// @Tags         car-marks
+// @Tags         Car Marks
 // @Accept       json
 // @Produce      json
 // @Param        offset query int false "Смещение для пагинации" default(0)
 // @Param        limit query int false "Лимит для пагинации" default(20)
 // @Success      200 {object}  ListCarMarksResponse  "Список марок"
-// @Router       /v1/car-marks [get]
+// @Router       /v1/cars/car-marks [get]
 func (h *CarMarkHandler) GetCarMarks(c *gin.Context) {
 	offset := int64(0)
 	limit := int64(20)
@@ -120,14 +120,14 @@ func (h *CarMarkHandler) GetCarMarks(c *gin.Context) {
 // UpdateCarMark godoc
 // @Summary      Обновление марки
 // @Description  Обновляет информацию о марке по указанному ID
-// @Tags         car-marks
+// @Tags         Car Marks
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID марки"
 // @Param        request body UpdateCarMarkRequest true "Новые данные для марки"
 // @Success      200 {object}  CarMarkResponse  "Марка успешно обновлена"
 // @Security     BearerAuth
-// @Router       /v1/car-marks/{id} [put]
+// @Router       /v1/cars/car-marks/{id} [put]
 func (h *CarMarkHandler) UpdateCarMark(c *gin.Context) {
 	markID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -153,13 +153,13 @@ func (h *CarMarkHandler) UpdateCarMark(c *gin.Context) {
 // DeleteCarMark godoc
 // @Summary      Удаление марки
 // @Description  Удаляет марку по указанному ID
-// @Tags         car-marks
+// @Tags         Car Marks
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID марки"
 // @Success      200 {object}  MessageResponse  "Марка успешно удалена"
 // @Security     BearerAuth
-// @Router       /v1/car-marks/{id} [delete]
+// @Router       /v1/cars/car-marks/{id} [delete]
 func (h *CarMarkHandler) DeleteCarMark(c *gin.Context) {
 	markID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {

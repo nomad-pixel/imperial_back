@@ -12,10 +12,12 @@ import (
 	"github.com/nomad-pixel/imperial/internal/domain/usecases/car_usecases"
 	token "github.com/nomad-pixel/imperial/internal/infrastructure/auth"
 	"github.com/nomad-pixel/imperial/internal/infrastructure/email"
+	imageSvc "github.com/nomad-pixel/imperial/internal/infrastructure/image"
 	"github.com/nomad-pixel/imperial/internal/infrastructure/repositories"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_category"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_image"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_mark"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_tag"
 )
@@ -32,6 +34,7 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 	carTagRepo := repositories.NewCarTagRepositoryImpl(db)
 	carMarkRepo := repositories.NewCarMarkRepositoryImpl(db)
 	carRepo := repositories.NewCarRepositoryImpl(db)
+	carImageRepo := repositories.NewCarImageRepositoryImpl(db)
 
 	emailConfig := config.LoadEmailConfig()
 	fmt.Println("emailConfig", emailConfig)
@@ -60,6 +63,11 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		emailService = email.NewConsoleEmailService()
 	}
 	tokenSvc := token.NewJWTTokenService()
+
+	imageService, err := imageSvc.NewFileImageService("./uploads", "http://localhost:8080/images")
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize image service: %w", err)
+	}
 
 	signUpUsecase := auth_usecases.NewSignUpUsecase(userRepo)
 	sendEmailVerificationUsecase := auth_usecases.NewSendEmailVerificationUsecase(
@@ -116,6 +124,20 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 	updateCarCategoryUsecase := car_usecases.NewUpdateCarCategoryUsecase(carCategoryRepo)
 	deleteCarCategoryUsecase := car_usecases.NewDeleteCarCategoryUsecase(carCategoryRepo)
 
+	// Car Image usecases
+	createCarImageUsecase := car_usecases.NewCreateCarImageUsecase(
+		carImageRepo,
+		imageService,
+	)
+	deleteCarImageUsecase := car_usecases.NewDeleteCarImageUsecase(
+		carImageRepo,
+		imageService,
+	)
+
+	getCarImagesListUsecase := car_usecases.NewGetCarImagesListUsecase(
+		carImageRepo,
+	)
+
 	carHandler := car.NewCarHandler(createCarUsecase, deleteCarUsecase, updateCarUsecase, getCarByIdUsecase, getListCarsUsecase)
 
 	carTagHandler := car_tag.NewCarTagHandler(
@@ -142,6 +164,12 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		deleteCarCategoryUsecase,
 	)
 
+	carImageHandler := car_image.NewCarImageHandler(
+		createCarImageUsecase,
+		deleteCarImageUsecase,
+		getCarImagesListUsecase,
+	)
+
 	app := NewApp(
 		db,
 		signUpUsecase,
@@ -158,6 +186,7 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		deleteCarUsecase,
 
 		carHandler,
+		carImageHandler,
 		carTagHandler,
 		carMarkHandler,
 		carCategoryHandler,

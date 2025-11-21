@@ -27,7 +27,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Подтверждение кода верификации на email",
                 "parameters": [
@@ -61,7 +61,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Обновление access токена",
                 "parameters": [
@@ -95,7 +95,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Вход пользователя",
                 "parameters": [
@@ -129,7 +129,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Регистрация нового пользователя",
                 "parameters": [
@@ -163,7 +163,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Отправка кода верификации на email",
                 "parameters": [
@@ -187,7 +187,99 @@
                 }
             }
         },
+        "/v1/car-tags/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаляет тег по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Tags"
+                ],
+                "summary": "Удаление тега",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID тега",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Тег успешно удален",
+                        "schema": {
+                            "$ref": "#/definitions/car_tag.MessageResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/cars": {
+            "get": {
+                "description": "Возвращает список автомобилей с возможностью фильтрации и пагинации",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Получение списка автомобилей",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Смещение для пагинации",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Лимит для пагинации",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Фильтр по названию автомобиля",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Фильтр по ID марки автомобиля",
+                        "name": "mark_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Фильтр по ID категории автомобиля",
+                        "name": "category_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список автомобилей",
+                        "schema": {
+                            "$ref": "#/definitions/car.ListCarsResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -202,7 +294,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "cars"
+                    "Cars"
                 ],
                 "summary": "Создание нового автомобиля",
                 "parameters": [
@@ -221,6 +313,759 @@
                         "description": "Автомобиль успешно создан",
                         "schema": {
                             "$ref": "#/definitions/car.CarResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/cars/car-categories": {
+            "get": {
+                "description": "Возвращает список всех категорий с поддержкой пагинации",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Categories"
+                ],
+                "summary": "Получение списка категорий",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Смещение для пагинации",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Лимит для пагинации",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список категорий",
+                        "schema": {
+                            "$ref": "#/definitions/car_category.ListCarCategoriesResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Создает новую категорию с указанным названием",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Categories"
+                ],
+                "summary": "Создание новой категории машины",
+                "parameters": [
+                    {
+                        "description": "Данные для создания категории",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/car_category.CreateCarCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Категория успешно создана",
+                        "schema": {
+                            "$ref": "#/definitions/car_category.CarCategoryResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/cars/car-categories/{id}": {
+            "get": {
+                "description": "Возвращает информацию о категории по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Categories"
+                ],
+                "summary": "Получение категории по ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID категории",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о категории",
+                        "schema": {
+                            "$ref": "#/definitions/car_category.CarCategoryResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Обновляет информацию о категории по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Categories"
+                ],
+                "summary": "Обновление категории",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID категории",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Новые данные для категории",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/car_category.UpdateCarCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Категория успешно обновлена",
+                        "schema": {
+                            "$ref": "#/definitions/car_category.CarCategoryResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаляет категорию по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Categories"
+                ],
+                "summary": "Удаление категории",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID категории",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Категория успешно удалена",
+                        "schema": {
+                            "$ref": "#/definitions/car_category.MessageResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/cars/car-marks": {
+            "get": {
+                "description": "Возвращает список всех марок с поддержкой пагинации",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Marks"
+                ],
+                "summary": "Получение списка марок",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Смещение для пагинации",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Лимит для пагинации",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список марок",
+                        "schema": {
+                            "$ref": "#/definitions/car_mark.ListCarMarksResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Создает новую марку с указанным названием",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Marks"
+                ],
+                "summary": "Создание новой марки машины",
+                "parameters": [
+                    {
+                        "description": "Данные для создания марки",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/car_mark.CreateCarMarkRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Марка успешно создана",
+                        "schema": {
+                            "$ref": "#/definitions/car_mark.CarMarkResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/cars/car-marks/{id}": {
+            "get": {
+                "description": "Возвращает информацию о марке по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Marks"
+                ],
+                "summary": "Получение марки по ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID марки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о марке",
+                        "schema": {
+                            "$ref": "#/definitions/car_mark.CarMarkResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Обновляет информацию о марке по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Marks"
+                ],
+                "summary": "Обновление марки",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID марки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Новые данные для марки",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/car_mark.UpdateCarMarkRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Марка успешно обновлена",
+                        "schema": {
+                            "$ref": "#/definitions/car_mark.CarMarkResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаляет марку по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Marks"
+                ],
+                "summary": "Удаление марки",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID марки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Марка успешно удалена",
+                        "schema": {
+                            "$ref": "#/definitions/car_mark.MessageResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/cars/car-tags": {
+            "get": {
+                "description": "Возвращает список всех тегов с поддержкой пагинации",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Tags"
+                ],
+                "summary": "Получение списка тегов",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Смещение для пагинации",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Лимит для пагинации",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список тегов",
+                        "schema": {
+                            "$ref": "#/definitions/car_tag.ListCarTagsResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Создает новый тег с указанным названием",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Tags"
+                ],
+                "summary": "Создание нового тега для машины",
+                "parameters": [
+                    {
+                        "description": "Данные для создания тега",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/car_tag.CreateCarTagRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Тег успешно создан",
+                        "schema": {
+                            "$ref": "#/definitions/car_tag.CarTagResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/cars/car-tags/{id}": {
+            "get": {
+                "description": "Возвращает информацию о теге по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Tags"
+                ],
+                "summary": "Получение тега по ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID тега",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о теге",
+                        "schema": {
+                            "$ref": "#/definitions/car_tag.CarTagResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Обновляет информацию о теге по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Tags"
+                ],
+                "summary": "Обновление тега",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID тега",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Новые данные для тега",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/car_tag.UpdateCarTagRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Тег успешно обновлен",
+                        "schema": {
+                            "$ref": "#/definitions/car_tag.CarTagResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/cars/images": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Возвращает список изображений для указанного автомобиля",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car images"
+                ],
+                "summary": "Получение списка изображений автомобиля",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Смещение для пагинации",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Лимит для пагинации",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список изображений успешно получен",
+                        "schema": {
+                            "$ref": "#/definitions/car_image.ListCarImagesResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Загружает изображение для указанного автомобиля",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car images"
+                ],
+                "summary": "Загрузка изображения автомобиля",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Изображение автомобиля",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Марка успешно создана",
+                        "schema": {
+                            "$ref": "#/definitions/car_image.CarImageResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/cars/images/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаляет изображение автомобиля по указанному пути",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car images"
+                ],
+                "summary": "Удаление изображения автомобиля",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID изображения",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Изображение успешно удалено",
+                        "schema": {
+                            "$ref": "#/definitions/car_image.MessageResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/cars/{id}": {
+            "get": {
+                "description": "Возвращает информацию об автомобиле по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Получение автомобиля по ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID автомобиля для получения",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация об автомобиле",
+                        "schema": {
+                            "$ref": "#/definitions/car.CarResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Обновляет информацию об автомобиле по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Обновление автомобиля",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID автомобиля для обновления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Данные для обновления автомобиля",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/car.UpdateCarRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Автомобиль успешно обновлен",
+                        "schema": {
+                            "$ref": "#/definitions/car.CarResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаляет автомобиль по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Удаление автомобиля",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID автомобиля для удаления",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Автомобиль успешно удален",
+                        "schema": {
+                            "$ref": "#/definitions/car.MessageResponse"
                         }
                     }
                 }
@@ -374,37 +1219,37 @@
         "car.CarResponse": {
             "type": "object",
             "properties": {
-                "categoryId": {
-                    "type": "integer"
+                "category": {
+                    "$ref": "#/definitions/entities.CarCategory"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "imageUrl": {
+                "image_url": {
                     "type": "string"
                 },
-                "markId": {
-                    "type": "integer"
+                "mark": {
+                    "$ref": "#/definitions/entities.CarMark"
                 },
                 "name": {
                     "type": "string"
                 },
-                "onlyWithDriver": {
+                "only_with_driver": {
                     "type": "boolean"
                 },
-                "pricePerDay": {
+                "price_per_day": {
                     "type": "integer"
                 },
-                "tagsIds": {
+                "tags": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "$ref": "#/definitions/entities.CarTag"
                     }
                 },
-                "updatedAt": {
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -453,13 +1298,405 @@
                 }
             }
         },
+        "car.ListCarsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.Car"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "car.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "car.UpdateCarRequest": {
+            "type": "object",
+            "required": [
+                "category_id",
+                "image_url",
+                "mark_id",
+                "name",
+                "only_with_driver",
+                "price_per_day",
+                "tags_ids"
+            ],
+            "properties": {
+                "category_id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "image_url": {
+                    "type": "string",
+                    "example": "https://example.com/car.jpg"
+                },
+                "mark_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Toyota"
+                },
+                "only_with_driver": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "price_per_day": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "tags_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "car_category.CarCategoryResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "car_category.CreateCarCategoryRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "car_category.ListCarCategoriesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CarCategory"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "car_category.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "car_category.UpdateCarCategoryRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "car_image.CarImageResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_path": {
+                    "type": "string"
+                }
+            }
+        },
+        "car_image.ListCarImagesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CarImage"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "car_image.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "car_mark.CarMarkResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "car_mark.CreateCarMarkRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Toyota"
+                }
+            }
+        },
+        "car_mark.ListCarMarksResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CarMark"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "car_mark.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "car_mark.UpdateCarMarkRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Toyota"
+                }
+            }
+        },
+        "car_tag.CarTagResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "car_tag.CreateCarTagRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Sedan"
+                }
+            }
+        },
+        "car_tag.ListCarTagsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CarTag"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "car_tag.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "car_tag.UpdateCarTagRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Sedan"
+                }
+            }
+        },
+        "entities.Car": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "$ref": "#/definitions/entities.CarCategory"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "mark": {
+                    "$ref": "#/definitions/entities.CarMark"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "only_with_driver": {
+                    "type": "boolean"
+                },
+                "price_per_day": {
+                    "type": "integer"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CarTag"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.CarCategory": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.CarImage": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_path": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.CarMark": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.CarTag": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "entities.Tokens": {
             "type": "object",
             "properties": {
-                "accessToken": {
+                "access_token": {
                     "type": "string"
                 },
-                "refreshToken": {
+                "refresh_token": {
                     "type": "string"
                 }
             }

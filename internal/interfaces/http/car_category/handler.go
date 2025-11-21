@@ -36,13 +36,13 @@ func NewCarCategoryHandler(
 // CreateCarCategory godoc
 // @Summary      Создание новой категории машины
 // @Description  Создает новую категорию с указанным названием
-// @Tags         car-categories
+// @Tags         Car Categories
 // @Accept       json
 // @Produce      json
 // @Param        request body CreateCarCategoryRequest true "Данные для создания категории"
 // @Success      201 {object}  CarCategoryResponse  "Категория успешно создана"
 // @Security     BearerAuth
-// @Router       /v1/car-categories [post]
+// @Router       /v1/cars/car-categories [post]
 func (h *CarCategoryHandler) CreateCarCategory(c *gin.Context) {
 	var req CreateCarCategoryRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -62,12 +62,12 @@ func (h *CarCategoryHandler) CreateCarCategory(c *gin.Context) {
 // GetCarCategory godoc
 // @Summary      Получение категории по ID
 // @Description  Возвращает информацию о категории по указанному ID
-// @Tags         car-categories
+// @Tags         Car Categories
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID категории"
 // @Success      200 {object}  CarCategoryResponse  "Информация о категории"
-// @Router       /v1/car-categories/{id} [get]
+// @Router       /v1/cars/car-categories/{id} [get]
 func (h *CarCategoryHandler) GetCarCategory(c *gin.Context) {
 	categoryID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -87,13 +87,13 @@ func (h *CarCategoryHandler) GetCarCategory(c *gin.Context) {
 // GetCarCategories godoc
 // @Summary      Получение списка категорий
 // @Description  Возвращает список всех категорий с поддержкой пагинации
-// @Tags         car-categories
+// @Tags         Car Categories
 // @Accept       json
 // @Produce      json
 // @Param        offset query int false "Смещение для пагинации" default(0)
 // @Param        limit query int false "Лимит для пагинации" default(20)
 // @Success      200 {object}  ListCarCategoriesResponse  "Список категорий"
-// @Router       /v1/car-categories [get]
+// @Router       /v1/cars/car-categories [get]
 func (h *CarCategoryHandler) GetCarCategories(c *gin.Context) {
 	offset := int64(0)
 	limit := int64(20)
@@ -120,14 +120,14 @@ func (h *CarCategoryHandler) GetCarCategories(c *gin.Context) {
 // UpdateCarCategory godoc
 // @Summary      Обновление категории
 // @Description  Обновляет информацию о категории по указанному ID
-// @Tags         car-categories
+// @Tags         Car Categories
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID категории"
 // @Param        request body UpdateCarCategoryRequest true "Новые данные для категории"
 // @Success      200 {object}  CarCategoryResponse  "Категория успешно обновлена"
 // @Security     BearerAuth
-// @Router       /v1/car-categories/{id} [put]
+// @Router       /v1/cars/car-categories/{id} [put]
 func (h *CarCategoryHandler) UpdateCarCategory(c *gin.Context) {
 	categoryID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -153,13 +153,13 @@ func (h *CarCategoryHandler) UpdateCarCategory(c *gin.Context) {
 // DeleteCarCategory godoc
 // @Summary      Удаление категории
 // @Description  Удаляет категорию по указанному ID
-// @Tags         car-categories
+// @Tags         Car Categories
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID категории"
 // @Success      200 {object}  MessageResponse  "Категория успешно удалена"
 // @Security     BearerAuth
-// @Router       /v1/car-categories/{id} [delete]
+// @Router       /v1/cars/car-categories/{id} [delete]
 func (h *CarCategoryHandler) DeleteCarCategory(c *gin.Context) {
 	categoryID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {

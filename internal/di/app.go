@@ -8,6 +8,7 @@ import (
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_category"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_image"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_mark"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_tag"
 )
@@ -16,6 +17,7 @@ type App struct {
 	DB                              *pgxpool.Pool
 	AuthHandler                     *auth.AuthHandler
 	CarHandler                      *car.CarHandler
+	CarImageHandler                 *car_image.CarImageHandler
 	CarTagHandler                   *car_tag.CarTagHandler
 	CarMarkHandler                  *car_mark.CarMarkHandler
 	CarCategoryHandler              *car_category.CarCategoryHandler
@@ -69,6 +71,7 @@ func NewApp(
 	updateCarUsecase car_usecases.UpdateCarUsecase,
 	deleteCarUsecase car_usecases.DeleteCarUsecase,
 	carHandler *car.CarHandler,
+	carImageHandler *car_image.CarImageHandler,
 	carTagHandler *car_tag.CarTagHandler,
 	carMarkHandler *car_mark.CarMarkHandler,
 	carCategoryHandler *car_category.CarCategoryHandler,
@@ -96,6 +99,7 @@ func NewApp(
 		DB:                              db,
 		AuthHandler:                     authHandler,
 		CarHandler:                      carHandler,
+		CarImageHandler:                 carImageHandler,
 		CarTagHandler:                   carTagHandler,
 		CarMarkHandler:                  carMarkHandler,
 		CarCategoryHandler:              carCategoryHandler,

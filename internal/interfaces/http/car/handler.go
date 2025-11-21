@@ -37,7 +37,7 @@ func NewCarHandler(
 // CreateCar godoc
 // @Summary      Создание нового автомобиля
 // @Description  Создает новый автомобиль с указанными параметрами
-// @Tags         cars
+// @Tags         Cars
 // @Accept       json
 // @Produce      json
 // @Param        request body CreateCarRequest true "Данные для создания автомобиля"
@@ -82,7 +82,7 @@ func (h *CarHandler) CreateCar(c *gin.Context) {
 // DeleteCar godoc
 // @Summary      Удаление автомобиля
 // @Description  Удаляет автомобиль по указанному ID
-// @Tags         cars
+// @Tags         Cars
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID автомобиля для удаления"
@@ -112,7 +112,7 @@ func (h *CarHandler) DeleteCar(c *gin.Context) {
 // UpdateCar godoc
 // @Summary      Обновление автомобиля
 // @Description  Обновляет информацию об автомобиле по указанному ID
-// @Tags         cars
+// @Tags         Cars
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID автомобиля для обновления"
@@ -164,7 +164,7 @@ func (h *CarHandler) UpdateCar(c *gin.Context) {
 // GetCarById godoc
 // @Summary      Получение автомобиля по ID
 // @Description  Возвращает информацию об автомобиле по указанному ID
-// @Tags         cars
+// @Tags         Cars
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "ID автомобиля для получения"
@@ -189,7 +189,7 @@ func (h *CarHandler) GetCarByID(c *gin.Context) {
 // GetCars godoc
 // @Summary      Получение списка автомобилей
 // @Description  Возвращает список автомобилей с возможностью фильтрации и пагинации
-// @Tags         cars
+// @Tags         Cars
 // @Accept       json
 // @Produce      json
 // @Param        offset query int false "Смещение для пагинации" default(0)

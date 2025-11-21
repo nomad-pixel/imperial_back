@@ -63,6 +63,8 @@ func main() {
 
 	server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	server.Static("/images", "./uploads")
+
 	apiGroup := server.Group("/api")
 
 	auth.RegisterRoutes(apiGroup, app.AuthHandler)

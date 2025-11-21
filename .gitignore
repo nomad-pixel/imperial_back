@@ -10,3 +10,4 @@ tmp/
 *.dylib
 *.test
 .claude
+uploads

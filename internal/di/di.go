@@ -64,7 +64,7 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 	}
 	tokenSvc := token.NewJWTTokenService()
 
-	imageService, err := imageSvc.NewFileImageService("./uploads", "http://localhost:8080/images")
+	imageService, err := imageSvc.NewFileImageService("./uploads", "http://localhost:8080/uploads")
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize image service: %w", err)
 	}
@@ -136,6 +136,7 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 
 	getCarImagesListUsecase := car_usecases.NewGetCarImagesListUsecase(
 		carImageRepo,
+		imageService,
 	)
 
 	carHandler := car.NewCarHandler(createCarUsecase, deleteCarUsecase, updateCarUsecase, getCarByIdUsecase, getListCarsUsecase)

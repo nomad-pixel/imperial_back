@@ -19,11 +19,11 @@ func NewCarImageRepositoryImpl(db *pgxpool.Pool) ports.CarImageRepository {
 
 func (r *carImageRepositoryImpl) Save(ctx context.Context, imageUrl string) (*entities.CarImage, error) {
 	query := `
-		INSERT INTO car_images image_path
-		VALUES $1
+		INSERT INTO car_images (image_path)
+		VALUES ($1)
 		RETURNING id, image_path, created_at
 	`
-	var image *entities.CarImage
+	var image entities.CarImage
 	err := r.db.QueryRow(ctx, query, imageUrl).
 		Scan(&image.ID, &image.ImagePath, &image.CreatedAt)
 
@@ -31,7 +31,7 @@ func (r *carImageRepositoryImpl) Save(ctx context.Context, imageUrl string) (*en
 		return nil, apperrors.Wrap(err, apperrors.ErrCodeInternal, "failed to save car image")
 	}
 
-	return image, nil
+	return &image, nil
 }
 
 func (r *carImageRepositoryImpl) Delete(ctx context.Context, imageID int64) error {

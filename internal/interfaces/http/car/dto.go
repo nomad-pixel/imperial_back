@@ -3,22 +3,22 @@ package car
 import "github.com/nomad-pixel/imperial/internal/domain/entities"
 
 type CreateCarRequest struct {
-	Name           string  `json:"name" binding:"required,name" example:"Toyota"`
-	ImageUrl       string  `json:"image_url" binding:"required,image_url" example:"https://example.com/car.jpg"`
-	PricePerDay    int64   `json:"price_per_day" binding:"required" example:"100"`
-	OnlyWithDriver bool    `json:"only_with_driver" binding:"required" example:"false"`
-	MarkId         int64   `json:"mark_id" binding:"required" example:"1"`
-	CategoryId     int64   `json:"category_id" binding:"required" example:"2"`
+	Name           string  `json:"name" binding:"required,min=1,max=255" example:"Toyota"`
+	ImageUrl       string  `json:"image_url" binding:"required,url" example:"https://example.com/car.jpg"`
+	PricePerDay    int64   `json:"price_per_day" binding:"required,min=0" example:"100"`
+	OnlyWithDriver bool    `json:"only_with_driver" example:"false"`
+	MarkId         int64   `json:"mark_id" binding:"required,min=1" example:"1"`
+	CategoryId     int64   `json:"category_id" binding:"required,min=1" example:"2"`
 	TagsIds        []int64 `json:"tags_ids" binding:"required"`
 }
 
 type UpdateCarRequest struct {
-	Name           string  `json:"name" binding:"required" example:"Toyota"`
-	ImageUrl       string  `json:"image_url" binding:"required" example:"https://example.com/car.jpg"`
-	PricePerDay    int64   `json:"price_per_day" binding:"required" example:"100"`
-	OnlyWithDriver bool    `json:"only_with_driver" binding:"required" example:"false"`
-	MarkId         int64   `json:"mark_id" binding:"required" example:"1"`
-	CategoryId     int64   `json:"category_id" binding:"required" example:"2"`
+	Name           string  `json:"name" binding:"required,min=1,max=255" example:"Toyota"`
+	ImageUrl       string  `json:"image_url" binding:"required,url" example:"https://example.com/car.jpg"`
+	PricePerDay    int64   `json:"price_per_day" binding:"required,min=0" example:"100"`
+	OnlyWithDriver bool    `json:"only_with_driver" example:"false"`
+	MarkId         int64   `json:"mark_id" binding:"required,min=1" example:"1"`
+	CategoryId     int64   `json:"category_id" binding:"required,min=1" example:"2"`
 	TagsIds        []int64 `json:"tags_ids" binding:"required"`
 }
 

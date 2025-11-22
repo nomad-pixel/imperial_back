@@ -20,9 +20,9 @@ func NewUpdateCarUsecase(carRepo ports.CarRepository) UpdateCarUsecase {
 	return &updateCarUsecase{carRepo: carRepo}
 }
 func (u *updateCarUsecase) Execute(ctx context.Context, car *entities.Car) (*entities.Car, error) {
-	updatedCar, err := u.carRepo.UpdateCar(ctx, car)
+	err := u.carRepo.UpdateCar(ctx, car)
 	if err != nil {
 		return nil, apperrors.New(apperrors.ErrCodeBadRequest, "failed to update car")
 	}
-	return updatedCar, nil
+	return car, nil
 }

@@ -30,7 +30,6 @@ func (u *getCarImagesListUsecase) Execute(ctx context.Context, offset, limit int
 		return 0, nil, apperrors.New(apperrors.ErrCodeInternal, "failed to get car images list from repository")
 	}
 
-	// Преобразуем пути для ответа пользователю: cars/file.png -> images/cars/file.png
 	for _, image := range carImages {
 		image.ImagePath = u.imageService.GetFullImagePath(image.ImagePath)
 	}

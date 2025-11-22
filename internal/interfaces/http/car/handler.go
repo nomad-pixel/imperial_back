@@ -169,6 +169,7 @@ func (h *CarHandler) UpdateCar(c *gin.Context) {
 // @Produce      json
 // @Param        id path int true "ID автомобиля для получения"
 // @Success      200 {object}  CarResponse  "Информация об автомобиле"
+// @Security     BearerAuth
 // @Router       /v1/cars/{id} [get]
 func (h *CarHandler) GetCarByID(c *gin.Context) {
 	carId, err := strconv.Atoi(c.Param("id"))
@@ -198,6 +199,7 @@ func (h *CarHandler) GetCarByID(c *gin.Context) {
 // @Param        mark_id query int false "Фильтр по ID марки автомобиля"
 // @Param        category_id query int false "Фильтр по ID категории автомобиля"
 // @Success      200 {object}  ListCarsResponse  "Список автомобилей"
+// @Security     BearerAuth
 // @Router       /v1/cars [get]
 func (h *CarHandler) ListCars(c *gin.Context) {
 	offset := int64(0)

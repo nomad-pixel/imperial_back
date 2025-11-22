@@ -128,21 +128,26 @@ definitions:
     properties:
       category_id:
         example: 2
+        minimum: 1
         type: integer
       image_url:
         example: https://example.com/car.jpg
         type: string
       mark_id:
         example: 1
+        minimum: 1
         type: integer
       name:
         example: Toyota
+        maxLength: 255
+        minLength: 1
         type: string
       only_with_driver:
         example: false
         type: boolean
       price_per_day:
         example: 100
+        minimum: 0
         type: integer
       tags_ids:
         items:
@@ -153,7 +158,6 @@ definitions:
     - image_url
     - mark_id
     - name
-    - only_with_driver
     - price_per_day
     - tags_ids
     type: object
@@ -175,21 +179,26 @@ definitions:
     properties:
       category_id:
         example: 2
+        minimum: 1
         type: integer
       image_url:
         example: https://example.com/car.jpg
         type: string
       mark_id:
         example: 1
+        minimum: 1
         type: integer
       name:
         example: Toyota
+        maxLength: 255
+        minLength: 1
         type: string
       only_with_driver:
         example: false
         type: boolean
       price_per_day:
         example: 100
+        minimum: 0
         type: integer
       tags_ids:
         items:
@@ -200,7 +209,6 @@ definitions:
     - image_url
     - mark_id
     - name
-    - only_with_driver
     - price_per_day
     - tags_ids
     type: object
@@ -545,29 +553,6 @@ paths:
       summary: Отправка кода верификации на email
       tags:
       - Auth
-  /v1/car-tags/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Удаляет тег по указанному ID
-      parameters:
-      - description: ID тега
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Тег успешно удален
-          schema:
-            $ref: '#/definitions/car_tag.MessageResponse'
-      security:
-      - BearerAuth: []
-      summary: Удаление тега
-      tags:
-      - Car Tags
   /v1/cars:
     get:
       consumes:
@@ -603,6 +588,8 @@ paths:
           description: Список автомобилей
           schema:
             $ref: '#/definitions/car.ListCarsResponse'
+      security:
+      - BearerAuth: []
       summary: Получение списка автомобилей
       tags:
       - Cars
@@ -669,6 +656,8 @@ paths:
           description: Информация об автомобиле
           schema:
             $ref: '#/definitions/car.CarResponse'
+      security:
+      - BearerAuth: []
       summary: Получение автомобиля по ID
       tags:
       - Cars
@@ -723,6 +712,8 @@ paths:
           description: Список категорий
           schema:
             $ref: '#/definitions/car_category.ListCarCategoriesResponse'
+      security:
+      - BearerAuth: []
       summary: Получение списка категорий
       tags:
       - Car Categories
@@ -789,6 +780,8 @@ paths:
           description: Информация о категории
           schema:
             $ref: '#/definitions/car_category.CarCategoryResponse'
+      security:
+      - BearerAuth: []
       summary: Получение категории по ID
       tags:
       - Car Categories
@@ -843,6 +836,8 @@ paths:
           description: Список марок
           schema:
             $ref: '#/definitions/car_mark.ListCarMarksResponse'
+      security:
+      - BearerAuth: []
       summary: Получение списка марок
       tags:
       - Car Marks
@@ -909,6 +904,8 @@ paths:
           description: Информация о марке
           schema:
             $ref: '#/definitions/car_mark.CarMarkResponse'
+      security:
+      - BearerAuth: []
       summary: Получение марки по ID
       tags:
       - Car Marks
@@ -990,6 +987,28 @@ paths:
       tags:
       - Car Tags
   /v1/cars/car-tags/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет тег по указанному ID
+      parameters:
+      - description: ID тега
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Тег успешно удален
+          schema:
+            $ref: '#/definitions/car_tag.MessageResponse'
+      security:
+      - BearerAuth: []
+      summary: Удаление тега
+      tags:
+      - Car Tags
     get:
       consumes:
       - application/json

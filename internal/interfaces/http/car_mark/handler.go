@@ -67,6 +67,7 @@ func (h *CarMarkHandler) CreateCarMark(c *gin.Context) {
 // @Produce      json
 // @Param        id path int true "ID марки"
 // @Success      200 {object}  CarMarkResponse  "Информация о марке"
+// @Security     BearerAuth
 // @Router       /v1/cars/car-marks/{id} [get]
 func (h *CarMarkHandler) GetCarMark(c *gin.Context) {
 	markID, err := strconv.ParseInt(c.Param("id"), 10, 64)
@@ -93,6 +94,7 @@ func (h *CarMarkHandler) GetCarMark(c *gin.Context) {
 // @Param        offset query int false "Смещение для пагинации" default(0)
 // @Param        limit query int false "Лимит для пагинации" default(20)
 // @Success      200 {object}  ListCarMarksResponse  "Список марок"
+// @Security     BearerAuth
 // @Router       /v1/cars/car-marks [get]
 func (h *CarMarkHandler) GetCarMarks(c *gin.Context) {
 	offset := int64(0)

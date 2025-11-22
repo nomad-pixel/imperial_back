@@ -9,11 +9,9 @@ import (
 func RegisterRoutes(router gin.IRouter, handler *CarTagHandler, tokenSvc ports.TokenService) {
 	api := router.Group("/v1/cars/car-tags")
 
-	// Public GET endpoints
 	api.GET("", handler.GetCarTags)
 	api.GET("/:id", handler.GetCarTag)
 
-	// Protected endpoints
 	api.Use(middleware.AuthMiddleware(tokenSvc))
 	{
 		api.POST("", handler.CreateCarTag)

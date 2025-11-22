@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	pgx "github.com/jackc/pgx/v5"
 
@@ -20,10 +21,10 @@ func NewCarRepositoryImpl(db *pgxpool.Pool) ports.CarRepository {
 	return &CarRepositoryImpl{db: db}
 }
 
-func (r *CarRepositoryImpl) CreateCar(ctx context.Context, car *entities.Car) (*entities.Car, error) {
+func (r *CarRepositoryImpl) CreateCar(ctx context.Context, car *entities.Car) error {
 	tx, err := r.db.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer func() {
 		if err != nil {
@@ -41,7 +42,7 @@ func (r *CarRepositoryImpl) CreateCar(ctx context.Context, car *entities.Car) (*
 			price_per_day
 		)
 		VALUES ($1, $2, $3, $4, $5, $6)
-		RETURNING id
+		RETURNING id, created_at, updated_at
 	`
 
 	var markID any
@@ -61,9 +62,9 @@ func (r *CarRepositoryImpl) CreateCar(ctx context.Context, car *entities.Car) (*
 		markID,
 		categoryID,
 		car.PricePerDay,
-	).Scan(&car.ID)
+	).Scan(&car.ID, &car.CreatedAt, &car.UpdatedAt)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if len(car.Tags) > 0 {
@@ -77,21 +78,45 @@ func (r *CarRepositoryImpl) CreateCar(ctx context.Context, car *entities.Car) (*
 				continue
 			}
 			if _, err = tx.Exec(ctx, insertCarTagQuery, car.ID, tag.ID); err != nil {
-				return nil, err
+				return err
 			}
 		}
 	}
 
 	if err = tx.Commit(ctx); err != nil {
-		return nil, err
+		return err
 	}
 
-	return r.GetCarByID(ctx, car.ID)
+	if car.Mark != nil && car.Mark.ID > 0 {
+		const markQuery = `SELECT name, created_at, updated_at FROM car_marks WHERE id = $1`
+		err = r.db.QueryRow(ctx, markQuery, car.Mark.ID).Scan(&car.Mark.Name, &car.Mark.CreatedAt, &car.Mark.UpdatedAt)
+		if err != nil {
+			return err
+		}
+	}
+
+	if car.Category != nil && car.Category.ID > 0 {
+		const categoryQuery = `SELECT name, created_at, updated_at FROM car_categories WHERE id = $1`
+		err = r.db.QueryRow(ctx, categoryQuery, car.Category.ID).Scan(&car.Category.Name, &car.Category.CreatedAt, &car.Category.UpdatedAt)
+		if err != nil {
+			return err
+		}
+	}
+
+	if len(car.Tags) > 0 {
+		tags, err := r.getTagsByCarID(ctx, car.ID)
+		if err != nil {
+			return err
+		}
+		car.Tags = tags
+	}
+
+	return nil
 }
 
 func (r *CarRepositoryImpl) GetCarByID(ctx context.Context, id int64) (*entities.Car, error) {
 	const querySelect = `
-		SELECT 
+		SELECT
 			c.id,
 			c.name,
 			COALESCE(c.image_url, ''),
@@ -101,8 +126,12 @@ func (r *CarRepositoryImpl) GetCarByID(ctx context.Context, id int64) (*entities
 			c.updated_at,
 			cm.id,
 			cm.name,
+			cm.created_at,
+			cm.updated_at,
 			cc.id,
-			cc.name
+			cc.name,
+			cc.created_at,
+			cc.updated_at
 		FROM cars c
 		LEFT JOIN car_marks cm ON c.car_mark_id = cm.id
 		LEFT JOIN car_categories cc ON c.car_category_id = cc.id
@@ -110,24 +139,31 @@ func (r *CarRepositoryImpl) GetCarByID(ctx context.Context, id int64) (*entities
 	`
 
 	var car entities.Car
-	var pricePerDay int64
 	var markID *int64
 	var markName *string
+	var markCreatedAt *time.Time
+	var markUpdatedAt *time.Time
 	var categoryID *int64
 	var categoryName *string
+	var categoryCreatedAt *time.Time
+	var categoryUpdatedAt *time.Time
 
 	err := r.db.QueryRow(ctx, querySelect, id).Scan(
 		&car.ID,
 		&car.Name,
 		&car.ImageUrl,
 		&car.OnlyWithDriver,
-		&pricePerDay,
+		&car.PricePerDay,
 		&car.CreatedAt,
 		&car.UpdatedAt,
 		&markID,
 		&markName,
+		&markCreatedAt,
+		&markUpdatedAt,
 		&categoryID,
 		&categoryName,
+		&categoryCreatedAt,
+		&categoryUpdatedAt,
 	)
 	if err != nil {
 		return nil, err
@@ -135,14 +171,18 @@ func (r *CarRepositoryImpl) GetCarByID(ctx context.Context, id int64) (*entities
 
 	if markID != nil {
 		car.Mark = &entities.CarMark{
-			ID:   *markID,
-			Name: derefString(markName),
+			ID:        *markID,
+			Name:      derefString(markName),
+			CreatedAt: derefTime(markCreatedAt),
+			UpdatedAt: derefTime(markUpdatedAt),
 		}
 	}
 	if categoryID != nil {
 		car.Category = &entities.CarCategory{
-			ID:   *categoryID,
-			Name: derefString(categoryName),
+			ID:        *categoryID,
+			Name:      derefString(categoryName),
+			CreatedAt: derefTime(categoryCreatedAt),
+			UpdatedAt: derefTime(categoryUpdatedAt),
 		}
 	}
 
@@ -184,10 +224,10 @@ func (r *CarRepositoryImpl) GetCarByID(ctx context.Context, id int64) (*entities
 	return &car, nil
 }
 
-func (r CarRepositoryImpl) UpdateCar(ctx context.Context, car *entities.Car) (*entities.Car, error) {
+func (r CarRepositoryImpl) UpdateCar(ctx context.Context, car *entities.Car) error {
 	tx, err := r.db.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer tx.Rollback(ctx)
 
@@ -226,15 +266,15 @@ func (r CarRepositoryImpl) UpdateCar(ctx context.Context, car *entities.Car) (*e
 		car.ID,
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if cmdTag.RowsAffected() == 0 {
-		return nil, pgx.ErrNoRows
+		return pgx.ErrNoRows
 	}
 
 	const deleteTagsQuery = `DELETE FROM car_car_tags WHERE car_id = $1`
 	if _, err := tx.Exec(ctx, deleteTagsQuery, car.ID); err != nil {
-		return nil, err
+		return err
 	}
 
 	if len(car.Tags) > 0 {
@@ -247,20 +287,40 @@ func (r CarRepositoryImpl) UpdateCar(ctx context.Context, car *entities.Car) (*e
 				continue
 			}
 			if _, err := tx.Exec(ctx, insertTagQuery, car.ID, tag.ID); err != nil {
-				return nil, err
+				return err
 			}
 		}
 	}
 
 	if err := tx.Commit(ctx); err != nil {
-		return nil, err
-	}
-	updated, err := r.GetCarByID(ctx, car.ID)
-	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return updated, nil
+	if car.Mark != nil && car.Mark.ID > 0 {
+		const markQuery = `SELECT name, created_at, updated_at FROM car_marks WHERE id = $1`
+		err = r.db.QueryRow(ctx, markQuery, car.Mark.ID).Scan(&car.Mark.Name, &car.Mark.CreatedAt, &car.Mark.UpdatedAt)
+		if err != nil {
+			return err
+		}
+	}
+
+	if car.Category != nil && car.Category.ID > 0 {
+		const categoryQuery = `SELECT name, created_at, updated_at FROM car_categories WHERE id = $1`
+		err = r.db.QueryRow(ctx, categoryQuery, car.Category.ID).Scan(&car.Category.Name, &car.Category.CreatedAt, &car.Category.UpdatedAt)
+		if err != nil {
+			return err
+		}
+	}
+
+	if len(car.Tags) > 0 {
+		tags, err := r.getTagsByCarID(ctx, car.ID)
+		if err != nil {
+			return err
+		}
+		car.Tags = tags
+	}
+
+	return nil
 }
 
 func (r CarRepositoryImpl) DeleteCar(ctx context.Context, id int64) error {
@@ -325,7 +385,7 @@ func (r CarRepositoryImpl) ListCars(ctx context.Context, offset, limit int64, na
 	}
 
 	selectQuery := fmt.Sprintf(`
-		SELECT 
+		SELECT
 			c.id,
 			c.name,
 			COALESCE(c.image_url, ''),
@@ -335,8 +395,12 @@ func (r CarRepositoryImpl) ListCars(ctx context.Context, offset, limit int64, na
 			c.updated_at,
 			cm.id,
 			cm.name,
+			cm.created_at,
+			cm.updated_at,
 			cc.id,
-			cc.name
+			cc.name,
+			cc.created_at,
+			cc.updated_at
 		FROM cars c
 		LEFT JOIN car_marks cm ON c.car_mark_id = cm.id
 		LEFT JOIN car_categories cc ON c.car_category_id = cc.id
@@ -357,39 +421,50 @@ func (r CarRepositoryImpl) ListCars(ctx context.Context, offset, limit int64, na
 
 	for rows.Next() {
 		var car entities.Car
-		var pricePerDay int64
 
 		var markIDPtr *int64
 		var markNamePtr *string
+		var markCreatedAtPtr *time.Time
+		var markUpdatedAtPtr *time.Time
 		var categoryIDPtr *int64
 		var categoryNamePtr *string
+		var categoryCreatedAtPtr *time.Time
+		var categoryUpdatedAtPtr *time.Time
 
 		if err := rows.Scan(
 			&car.ID,
 			&car.Name,
 			&car.ImageUrl,
 			&car.OnlyWithDriver,
-			&pricePerDay,
+			&car.PricePerDay,
 			&car.CreatedAt,
 			&car.UpdatedAt,
 			&markIDPtr,
 			&markNamePtr,
+			&markCreatedAtPtr,
+			&markUpdatedAtPtr,
 			&categoryIDPtr,
 			&categoryNamePtr,
+			&categoryCreatedAtPtr,
+			&categoryUpdatedAtPtr,
 		); err != nil {
 			return 0, nil, err
 		}
 		if markIDPtr != nil {
 			car.Mark = &entities.CarMark{
-				ID:   *markIDPtr,
-				Name: derefString(markNamePtr),
+				ID:        *markIDPtr,
+				Name:      derefString(markNamePtr),
+				CreatedAt: derefTime(markCreatedAtPtr),
+				UpdatedAt: derefTime(markUpdatedAtPtr),
 			}
 		}
 
 		if categoryIDPtr != nil {
 			car.Category = &entities.CarCategory{
-				ID:   *categoryIDPtr,
-				Name: derefString(categoryNamePtr),
+				ID:        *categoryIDPtr,
+				Name:      derefString(categoryNamePtr),
+				CreatedAt: derefTime(categoryCreatedAtPtr),
+				UpdatedAt: derefTime(categoryUpdatedAtPtr),
 			}
 		}
 
@@ -455,4 +530,11 @@ func derefString(s *string) string {
 		return ""
 	}
 	return *s
+}
+
+func derefTime(t *time.Time) time.Time {
+	if t == nil {
+		return time.Time{}
+	}
+	return *t
 }

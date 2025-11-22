@@ -159,7 +159,7 @@ func (h *CarTagHandler) UpdateCarTag(c *gin.Context) {
 // @Param        id path int true "ID тега"
 // @Success      200 {object}  MessageResponse  "Тег успешно удален"
 // @Security     BearerAuth
-// @Router       /v1/car-tags/{id} [delete]
+// @Router       /v1/cars/car-tags/{id} [delete]
 func (h *CarTagHandler) DeleteCarTag(c *gin.Context) {
 	tagID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {

@@ -21,7 +21,7 @@ func NewCreateCarUsecase(carRepo ports.CarRepository) CreateCarUsecase {
 }
 
 func (u *createCarUsecase) Execute(ctx context.Context, car *entities.Car) (*entities.Car, error) {
-	_, err := u.carRepo.CreateCar(ctx, car)
+	err := u.carRepo.CreateCar(ctx, car)
 	if err != nil {
 		return nil, apperrors.New(apperrors.ErrCodeBadRequest, "failed to create car")
 	}

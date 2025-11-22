@@ -70,7 +70,6 @@ func (s *jwtTokenService) GenerateTokens(user *entities.User) (*entities.Tokens,
 	return tokens, nil
 }
 
-// ValidateAccessToken parses and validates an access token and returns the user id (sub)
 func (s *jwtTokenService) ValidateAccessToken(tokenStr string) (int64, error) {
 	accessSecret := os.Getenv("ACCESS_TOKEN_SECRET")
 	if accessSecret == "" {
@@ -78,7 +77,6 @@ func (s *jwtTokenService) ValidateAccessToken(tokenStr string) (int64, error) {
 	}
 
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-		// only allow HMAC
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, apperrors.New(apperrors.ErrCodeUnauthorized, "Invalid signing method")
 		}
@@ -93,7 +91,6 @@ func (s *jwtTokenService) ValidateAccessToken(tokenStr string) (int64, error) {
 		return 0, apperrors.ErrUnauthorized
 	}
 
-	// ensure token type is access
 	if typ, _ := claims["typ"].(string); typ != "access" {
 		return 0, apperrors.ErrUnauthorized
 	}
@@ -109,7 +106,6 @@ func (s *jwtTokenService) ValidateAccessToken(tokenStr string) (int64, error) {
 	return id, nil
 }
 
-// RefreshAccessToken validates a refresh token and issues a new access token (signed)
 func (s *jwtTokenService) RefreshAccessToken(refreshTokenStr string) (string, error) {
 	refreshSecret := os.Getenv("REFRESH_TOKEN_SECRET")
 	accessSecret := os.Getenv("ACCESS_TOKEN_SECRET")
@@ -139,7 +135,6 @@ func (s *jwtTokenService) RefreshAccessToken(refreshTokenStr string) (string, er
 		return "", apperrors.ErrUnauthorized
 	}
 
-	// create new access token
 	accessExpMinutes := 15
 	if v := os.Getenv("ACCESS_TOKEN_EXPIRES_MINUTES"); v != "" {
 		if iv, e := strconv.Atoi(v); e == nil && iv > 0 {

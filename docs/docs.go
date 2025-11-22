@@ -193,45 +193,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/car-tags/{id}": {
-            "delete": {
+        "/v1/cars": {
+            "get": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Удаляет тег по указанному ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Car Tags"
-                ],
-                "summary": "Удаление тега",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID тега",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Тег успешно удален",
-                        "schema": {
-                            "$ref": "#/definitions/car_tag.MessageResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/cars": {
-            "get": {
                 "description": "Возвращает список автомобилей с возможностью фильтрации и пагинации",
                 "consumes": [
                     "application/json"
@@ -326,6 +294,11 @@ const docTemplate = `{
         },
         "/v1/cars/car-categories": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Возвращает список всех категорий с поддержкой пагинации",
                 "consumes": [
                     "application/json"
@@ -402,6 +375,11 @@ const docTemplate = `{
         },
         "/v1/cars/car-categories/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Возвращает информацию о категории по указанному ID",
                 "consumes": [
                     "application/json"
@@ -513,6 +491,11 @@ const docTemplate = `{
         },
         "/v1/cars/car-marks": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Возвращает список всех марок с поддержкой пагинации",
                 "consumes": [
                     "application/json"
@@ -589,6 +572,11 @@ const docTemplate = `{
         },
         "/v1/cars/car-marks/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Возвращает информацию о марке по указанному ID",
                 "consumes": [
                     "application/json"
@@ -848,6 +836,41 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаляет тег по указанному ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car Tags"
+                ],
+                "summary": "Удаление тега",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID тега",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Тег успешно удален",
+                        "schema": {
+                            "$ref": "#/definitions/car_tag.MessageResponse"
+                        }
+                    }
+                }
             }
         },
         "/v1/cars/images": {
@@ -968,6 +991,11 @@ const docTemplate = `{
         },
         "/v1/cars/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Возвращает информацию об автомобиле по указанному ID",
                 "consumes": [
                     "application/json"
@@ -1267,13 +1295,13 @@ const docTemplate = `{
                 "image_url",
                 "mark_id",
                 "name",
-                "only_with_driver",
                 "price_per_day",
                 "tags_ids"
             ],
             "properties": {
                 "category_id": {
                     "type": "integer",
+                    "minimum": 1,
                     "example": 2
                 },
                 "image_url": {
@@ -1282,10 +1310,13 @@ const docTemplate = `{
                 },
                 "mark_id": {
                     "type": "integer",
+                    "minimum": 1,
                     "example": 1
                 },
                 "name": {
                     "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1,
                     "example": "Toyota"
                 },
                 "only_with_driver": {
@@ -1294,6 +1325,7 @@ const docTemplate = `{
                 },
                 "price_per_day": {
                     "type": "integer",
+                    "minimum": 0,
                     "example": 100
                 },
                 "tags_ids": {
@@ -1333,13 +1365,13 @@ const docTemplate = `{
                 "image_url",
                 "mark_id",
                 "name",
-                "only_with_driver",
                 "price_per_day",
                 "tags_ids"
             ],
             "properties": {
                 "category_id": {
                     "type": "integer",
+                    "minimum": 1,
                     "example": 2
                 },
                 "image_url": {
@@ -1348,10 +1380,13 @@ const docTemplate = `{
                 },
                 "mark_id": {
                     "type": "integer",
+                    "minimum": 1,
                     "example": 1
                 },
                 "name": {
                     "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1,
                     "example": "Toyota"
                 },
                 "only_with_driver": {
@@ -1360,6 +1395,7 @@ const docTemplate = `{
                 },
                 "price_per_day": {
                     "type": "integer",
+                    "minimum": 0,
                     "example": 100
                 },
                 "tags_ids": {

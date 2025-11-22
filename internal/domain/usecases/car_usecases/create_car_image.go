@@ -45,7 +45,6 @@ func (u *createCarImageUsecase) Execute(ctx context.Context, fileData []byte, fi
 		return nil, apperrors.New(apperrors.ErrCodeInternal, "failed to create car image record: %v")
 	}
 
-	// Преобразуем путь для ответа пользователю: cars/file.png -> images/cars/file.png
 	carImage.ImagePath = u.imageService.GetFullImagePath(carImage.ImagePath)
 
 	return carImage, nil

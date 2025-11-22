@@ -38,13 +38,11 @@ func (s *FileImageService) SaveCarImage(fileData []byte, fileName string) (strin
 	if err := os.WriteFile(filePath, fileData, 0644); err != nil {
 		return "", errors.Wrap(err, errors.ErrCodeInternal, "failed to save image file")
 	}
-	// Возвращаем только относительный путь для БД: cars/filename.png
 	relativePath := filepath.Join("cars", newFileName)
 	return relativePath, nil
 }
 
 func (s *FileImageService) DeleteCarImage(imagePath string) error {
-	// imagePath это "cars/filename.png"
 	fullPath := filepath.Join(s.storagePath, imagePath)
 	if err := os.Remove(fullPath); err != nil {
 		if os.IsNotExist(err) {
@@ -57,6 +55,6 @@ func (s *FileImageService) DeleteCarImage(imagePath string) error {
 
 func (s *FileImageService) GetFullImagePath(imagePath string) string {
 	// imagePath это "cars/filename.png"
-	// Возвращаем "images/cars/filename.png"
+	// return "images/cars/filename.png"
 	return filepath.Join("images", imagePath)
 }

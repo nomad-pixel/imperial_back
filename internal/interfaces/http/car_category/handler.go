@@ -67,6 +67,7 @@ func (h *CarCategoryHandler) CreateCarCategory(c *gin.Context) {
 // @Produce      json
 // @Param        id path int true "ID категории"
 // @Success      200 {object}  CarCategoryResponse  "Информация о категории"
+// @Security     BearerAuth
 // @Router       /v1/cars/car-categories/{id} [get]
 func (h *CarCategoryHandler) GetCarCategory(c *gin.Context) {
 	categoryID, err := strconv.ParseInt(c.Param("id"), 10, 64)
@@ -93,6 +94,7 @@ func (h *CarCategoryHandler) GetCarCategory(c *gin.Context) {
 // @Param        offset query int false "Смещение для пагинации" default(0)
 // @Param        limit query int false "Лимит для пагинации" default(20)
 // @Success      200 {object}  ListCarCategoriesResponse  "Список категорий"
+// @Security     BearerAuth
 // @Router       /v1/cars/car-categories [get]
 func (h *CarCategoryHandler) GetCarCategories(c *gin.Context) {
 	offset := int64(0)

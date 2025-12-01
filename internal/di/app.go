@@ -3,8 +3,8 @@ package di
 import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nomad-pixel/imperial/internal/domain/ports"
-	"github.com/nomad-pixel/imperial/internal/domain/usecases/auth_usecases"
-	"github.com/nomad-pixel/imperial/internal/domain/usecases/car_usecases"
+	authUsecase "github.com/nomad-pixel/imperial/internal/domain/usecases/auth"
+	carUsecase "github.com/nomad-pixel/imperial/internal/domain/usecases/car"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_category"
@@ -21,78 +21,78 @@ type App struct {
 	CarTagHandler                   *car_tag.CarTagHandler
 	CarMarkHandler                  *car_mark.CarMarkHandler
 	CarCategoryHandler              *car_category.CarCategoryHandler
-	SignUpUsecase                   auth_usecases.SignUpUsecase
-	SignInUsecase                   auth_usecases.SignInUsecase
-	SendEmailVerificationUsecase    auth_usecases.SendEmailVerificationUsecase
-	ConfirmEmailVerificationUsecase auth_usecases.ConfirmEmailVerificationUsecase
+	SignUpUsecase                   authUsecase.SignUpUsecase
+	SignInUsecase                   authUsecase.SignInUsecase
+	SendEmailVerificationUsecase    authUsecase.SendEmailVerificationUsecase
+	ConfirmEmailVerificationUsecase authUsecase.ConfirmEmailVerificationUsecase
 	TokenService                    ports.TokenService
 
 	// Car usecases
-	CreateCarUsecase   car_usecases.CreateCarUsecase
-	GetCarByIdUsecase  car_usecases.GetCarByIdUsecase
-	GetListCarsUsecase car_usecases.GetListCarsUsecase
-	UpdateCarUsecase   car_usecases.UpdateCarUsecase
-	DeleteCarUsecase   car_usecases.DeleteCarUsecase
+	CreateCarUsecase   carUsecase.CreateCarUsecase
+	GetCarByIdUsecase  carUsecase.GetCarByIdUsecase
+	GetListCarsUsecase carUsecase.GetListCarsUsecase
+	UpdateCarUsecase   carUsecase.UpdateCarUsecase
+	DeleteCarUsecase   carUsecase.DeleteCarUsecase
 
 	// CarTag usecases
-	CreateCarTagUsecase   car_usecases.CreateCarTagUsecase
-	GetCarTagUsecase      car_usecases.GetCarTagUsecase
-	GetCarTagsListUsecase car_usecases.GetCarTagsListUsecase
-	UpdateCarTagUsecase   car_usecases.UpdateCarTagUsecase
-	DeleteCarTagUsecase   car_usecases.DeleteCarTagUsecase
+	CreateCarTagUsecase   carUsecase.CreateCarTagUsecase
+	GetCarTagUsecase      carUsecase.GetCarTagUsecase
+	GetCarTagsListUsecase carUsecase.GetCarTagsListUsecase
+	UpdateCarTagUsecase   carUsecase.UpdateCarTagUsecase
+	DeleteCarTagUsecase   carUsecase.DeleteCarTagUsecase
 
 	// CarMark usecases
-	CreateCarMarkUsecase   car_usecases.CreateCarMarkUsecase
-	GetCarMarkUsecase      car_usecases.GetCarMarkUsecase
-	GetCarMarksListUsecase car_usecases.GetCarMarksListUsecase
-	UpdateCarMarkUsecase   car_usecases.UpdateCarMarkUsecase
-	DeleteCarMarkUsecase   car_usecases.DeleteCarMarkUsecase
+	CreateCarMarkUsecase   carUsecase.CreateCarMarkUsecase
+	GetCarMarkUsecase      carUsecase.GetCarMarkUsecase
+	GetCarMarksListUsecase carUsecase.GetCarMarksListUsecase
+	UpdateCarMarkUsecase   carUsecase.UpdateCarMarkUsecase
+	DeleteCarMarkUsecase   carUsecase.DeleteCarMarkUsecase
 
 	// CarCategory usecases
-	CreateCarCategoryUsecase    car_usecases.CreateCarCategoryUsecase
-	GetCarCategoryUsecase       car_usecases.GetCarCategoryUsecase
-	GetCarCategoriesListUsecase car_usecases.GetCarCategoriesListUsecase
-	UpdateCarCategoryUsecase    car_usecases.UpdateCarCategoryUsecase
-	DeleteCarCategoryUsecase    car_usecases.DeleteCarCategoryUsecase
+	CreateCarCategoryUsecase    carUsecase.CreateCarCategoryUsecase
+	GetCarCategoryUsecase       carUsecase.GetCarCategoryUsecase
+	GetCarCategoriesListUsecase carUsecase.GetCarCategoriesListUsecase
+	UpdateCarCategoryUsecase    carUsecase.UpdateCarCategoryUsecase
+	DeleteCarCategoryUsecase    carUsecase.DeleteCarCategoryUsecase
 }
 
 func NewApp(
 	db *pgxpool.Pool,
-	signUpUsecase auth_usecases.SignUpUsecase,
-	sendEmailVerificationUsecase auth_usecases.SendEmailVerificationUsecase,
-	confirmEmailVerificationUsecase auth_usecases.ConfirmEmailVerificationUsecase,
-	signInUsecase auth_usecases.SignInUsecase,
+	signUpUsecase authUsecase.SignUpUsecase,
+	sendEmailVerificationUsecase authUsecase.SendEmailVerificationUsecase,
+	confirmEmailVerificationUsecase authUsecase.ConfirmEmailVerificationUsecase,
+	signInUsecase authUsecase.SignInUsecase,
 	authHandler *auth.AuthHandler,
 	tokenSvc ports.TokenService,
 
-	createCarUsecase car_usecases.CreateCarUsecase,
-	getCarByIdUsecase car_usecases.GetCarByIdUsecase,
-	getListCarsUsecase car_usecases.GetListCarsUsecase,
-	updateCarUsecase car_usecases.UpdateCarUsecase,
-	deleteCarUsecase car_usecases.DeleteCarUsecase,
+	createCarUsecase carUsecase.CreateCarUsecase,
+	getCarByIdUsecase carUsecase.GetCarByIdUsecase,
+	getListCarsUsecase carUsecase.GetListCarsUsecase,
+	updateCarUsecase carUsecase.UpdateCarUsecase,
+	deleteCarUsecase carUsecase.DeleteCarUsecase,
 	carHandler *car.CarHandler,
 	carImageHandler *car_image.CarImageHandler,
 	carTagHandler *car_tag.CarTagHandler,
 	carMarkHandler *car_mark.CarMarkHandler,
 	carCategoryHandler *car_category.CarCategoryHandler,
 
-	createCarTagUsecase car_usecases.CreateCarTagUsecase,
-	getCarTagUsecase car_usecases.GetCarTagUsecase,
-	getCarTagsListUsecase car_usecases.GetCarTagsListUsecase,
-	updateCarTagUsecase car_usecases.UpdateCarTagUsecase,
-	deleteCarTagUsecase car_usecases.DeleteCarTagUsecase,
+	createCarTagUsecase carUsecase.CreateCarTagUsecase,
+	getCarTagUsecase carUsecase.GetCarTagUsecase,
+	getCarTagsListUsecase carUsecase.GetCarTagsListUsecase,
+	updateCarTagUsecase carUsecase.UpdateCarTagUsecase,
+	deleteCarTagUsecase carUsecase.DeleteCarTagUsecase,
 
-	createCarMarkUsecase car_usecases.CreateCarMarkUsecase,
-	getCarMarkUsecase car_usecases.GetCarMarkUsecase,
-	getCarMarksListUsecase car_usecases.GetCarMarksListUsecase,
-	updateCarMarkUsecase car_usecases.UpdateCarMarkUsecase,
-	deleteCarMarkUsecase car_usecases.DeleteCarMarkUsecase,
+	createCarMarkUsecase carUsecase.CreateCarMarkUsecase,
+	getCarMarkUsecase carUsecase.GetCarMarkUsecase,
+	getCarMarksListUsecase carUsecase.GetCarMarksListUsecase,
+	updateCarMarkUsecase carUsecase.UpdateCarMarkUsecase,
+	deleteCarMarkUsecase carUsecase.DeleteCarMarkUsecase,
 
-	createCarCategoryUsecase car_usecases.CreateCarCategoryUsecase,
-	getCarCategoryUsecase car_usecases.GetCarCategoryUsecase,
-	getCarCategoriesListUsecase car_usecases.GetCarCategoriesListUsecase,
-	updateCarCategoryUsecase car_usecases.UpdateCarCategoryUsecase,
-	deleteCarCategoryUsecase car_usecases.DeleteCarCategoryUsecase,
+	createCarCategoryUsecase carUsecase.CreateCarCategoryUsecase,
+	getCarCategoryUsecase carUsecase.GetCarCategoryUsecase,
+	getCarCategoriesListUsecase carUsecase.GetCarCategoriesListUsecase,
+	updateCarCategoryUsecase carUsecase.UpdateCarCategoryUsecase,
+	deleteCarCategoryUsecase carUsecase.DeleteCarCategoryUsecase,
 
 ) *App {
 	return &App{

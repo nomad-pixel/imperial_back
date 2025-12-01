@@ -18,7 +18,6 @@ import (
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_mark"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_tag"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/middleware"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/protected"
 )
 
 // @title           Imperial API
@@ -73,8 +72,6 @@ func main() {
 	car_mark.RegisterRoutes(apiGroup, app.CarMarkHandler, app.TokenService)
 	car_category.RegisterRoutes(apiGroup, app.CarCategoryHandler, app.TokenService)
 	car_image.RegisterRoutes(apiGroup, app.CarImageHandler, app.TokenService)
-	protectedHandler := protected.NewProtectedHandler()
-	protected.RegisterRoutes(apiGroup, protectedHandler, app.TokenService)
 	if err := server.Run(":8080"); err != nil {
 		log.Fatalf("failed to run server: %v", err)
 	}

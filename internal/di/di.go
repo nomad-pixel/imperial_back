@@ -8,8 +8,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nomad-pixel/imperial/internal/config"
 	"github.com/nomad-pixel/imperial/internal/domain/ports"
-	"github.com/nomad-pixel/imperial/internal/domain/usecases/auth_usecases"
-	"github.com/nomad-pixel/imperial/internal/domain/usecases/car_usecases"
+	authUsecase "github.com/nomad-pixel/imperial/internal/domain/usecases/auth"
+	carUsecase "github.com/nomad-pixel/imperial/internal/domain/usecases/car"
 	token "github.com/nomad-pixel/imperial/internal/infrastructure/auth"
 	"github.com/nomad-pixel/imperial/internal/infrastructure/email"
 	imageSvc "github.com/nomad-pixel/imperial/internal/infrastructure/image"
@@ -69,15 +69,15 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		return nil, fmt.Errorf("failed to initialize image service: %w", err)
 	}
 
-	signUpUsecase := auth_usecases.NewSignUpUsecase(userRepo)
-	sendEmailVerificationUsecase := auth_usecases.NewSendEmailVerificationUsecase(
+	signUpUsecase := authUsecase.NewSignUpUsecase(userRepo)
+	sendEmailVerificationUsecase := authUsecase.NewSendEmailVerificationUsecase(
 		userRepo,
 		verifyCodeRepo,
 		emailService,
 	)
-	confirmEmailVerificationUsecase := auth_usecases.NewConfirmEmailVerificationUsecase(verifyCodeRepo, userRepo)
-	signInUsecase := auth_usecases.NewSignInUsecase(userRepo, tokenSvc)
-	refreshTokenUsecase := auth_usecases.NewRefreshTokenUsecase(tokenSvc)
+	confirmEmailVerificationUsecase := authUsecase.NewConfirmEmailVerificationUsecase(verifyCodeRepo, userRepo)
+	signInUsecase := authUsecase.NewSignInUsecase(userRepo, tokenSvc)
+	refreshTokenUsecase := authUsecase.NewRefreshTokenUsecase(tokenSvc)
 
 	authHandler := auth.NewAuthHandler(
 		signUpUsecase,
@@ -87,54 +87,54 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		refreshTokenUsecase,
 	)
 
-	createCarUsecase := car_usecases.NewCreateCarUsecase(
+	createCarUsecase := carUsecase.NewCreateCarUsecase(
 		carRepo,
 	)
-	deleteCarUsecase := car_usecases.NewDeleteCarUsecase(
+	deleteCarUsecase := carUsecase.NewDeleteCarUsecase(
 		carRepo,
 	)
-	updateCarUsecase := car_usecases.NewUpdateCarUsecase(
+	updateCarUsecase := carUsecase.NewUpdateCarUsecase(
 		carRepo,
 	)
-	getCarByIdUsecase := car_usecases.NewGetCarByIdUsecase(
+	getCarByIdUsecase := carUsecase.NewGetCarByIdUsecase(
 		carRepo,
 	)
-	getListCarsUsecase := car_usecases.NewGetListCarsUsecase(
+	getListCarsUsecase := carUsecase.NewGetListCarsUsecase(
 		carRepo,
 	)
 
 	// CarTag usecases
-	createCarTagUsecase := car_usecases.NewCreateCarTagUsecase(carTagRepo)
-	getCarTagUsecase := car_usecases.NewGetCarTagUsecase(carTagRepo)
-	getCarTagsListUsecase := car_usecases.NewGetCarTagsListUsecase(carTagRepo)
-	updateCarTagUsecase := car_usecases.NewUpdateCarTagUsecase(carTagRepo)
-	deleteCarTagUsecase := car_usecases.NewDeleteCarTagUsecase(carTagRepo)
+	createCarTagUsecase := carUsecase.NewCreateCarTagUsecase(carTagRepo)
+	getCarTagUsecase := carUsecase.NewGetCarTagUsecase(carTagRepo)
+	getCarTagsListUsecase := carUsecase.NewGetCarTagsListUsecase(carTagRepo)
+	updateCarTagUsecase := carUsecase.NewUpdateCarTagUsecase(carTagRepo)
+	deleteCarTagUsecase := carUsecase.NewDeleteCarTagUsecase(carTagRepo)
 
 	// CarMark usecases
-	createCarMarkUsecase := car_usecases.NewCreateCarMarkUsecase(carMarkRepo)
-	getCarMarkUsecase := car_usecases.NewGetCarMarkUsecase(carMarkRepo)
-	getCarMarksListUsecase := car_usecases.NewGetCarMarksListUsecase(carMarkRepo)
-	updateCarMarkUsecase := car_usecases.NewUpdateCarMarkUsecase(carMarkRepo)
-	deleteCarMarkUsecase := car_usecases.NewDeleteCarMarkUsecase(carMarkRepo)
+	createCarMarkUsecase := carUsecase.NewCreateCarMarkUsecase(carMarkRepo)
+	getCarMarkUsecase := carUsecase.NewGetCarMarkUsecase(carMarkRepo)
+	getCarMarksListUsecase := carUsecase.NewGetCarMarksListUsecase(carMarkRepo)
+	updateCarMarkUsecase := carUsecase.NewUpdateCarMarkUsecase(carMarkRepo)
+	deleteCarMarkUsecase := carUsecase.NewDeleteCarMarkUsecase(carMarkRepo)
 
 	// CarCategory usecases
-	createCarCategoryUsecase := car_usecases.NewCreateCarCategoryUsecase(carCategoryRepo)
-	getCarCategoryUsecase := car_usecases.NewGetCarCategoryUsecase(carCategoryRepo)
-	getCarCategoriesListUsecase := car_usecases.NewGetCarCategoriesListUsecase(carCategoryRepo)
-	updateCarCategoryUsecase := car_usecases.NewUpdateCarCategoryUsecase(carCategoryRepo)
-	deleteCarCategoryUsecase := car_usecases.NewDeleteCarCategoryUsecase(carCategoryRepo)
+	createCarCategoryUsecase := carUsecase.NewCreateCarCategoryUsecase(carCategoryRepo)
+	getCarCategoryUsecase := carUsecase.NewGetCarCategoryUsecase(carCategoryRepo)
+	getCarCategoriesListUsecase := carUsecase.NewGetCarCategoriesListUsecase(carCategoryRepo)
+	updateCarCategoryUsecase := carUsecase.NewUpdateCarCategoryUsecase(carCategoryRepo)
+	deleteCarCategoryUsecase := carUsecase.NewDeleteCarCategoryUsecase(carCategoryRepo)
 
 	// Car Image usecases
-	createCarImageUsecase := car_usecases.NewCreateCarImageUsecase(
+	createCarImageUsecase := carUsecase.NewCreateCarImageUsecase(
 		carImageRepo,
 		imageService,
 	)
-	deleteCarImageUsecase := car_usecases.NewDeleteCarImageUsecase(
+	deleteCarImageUsecase := carUsecase.NewDeleteCarImageUsecase(
 		carImageRepo,
 		imageService,
 	)
 
-	getCarImagesListUsecase := car_usecases.NewGetCarImagesListUsecase(
+	getCarImagesListUsecase := carUsecase.NewGetCarImagesListUsecase(
 		carImageRepo,
 		imageService,
 	)

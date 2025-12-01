@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nomad-pixel/imperial/internal/domain/entities"
-	usecasePorts "github.com/nomad-pixel/imperial/internal/domain/usecases/car_usecases"
+	usecasePorts "github.com/nomad-pixel/imperial/internal/domain/usecases/car"
 	"github.com/nomad-pixel/imperial/pkg/errors"
 )
 

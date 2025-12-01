@@ -1,0 +1,1 @@
+ALTER TABLE celebrities ALTER COLUMN image SET NOT NULL;

@@ -1,4 +1,4 @@
-package car_category
+package car
 
 import (
 	"net/http"

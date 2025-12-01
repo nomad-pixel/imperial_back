@@ -99,6 +99,37 @@ definitions:
         example: Email успешно отправлен
         type: string
     type: object
+  car.CarCategoryResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  car.CarImageResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      image_path:
+        type: string
+    type: object
+  car.CarMarkResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
   car.CarResponse:
     properties:
       category:
@@ -123,6 +154,32 @@ definitions:
         type: array
       updated_at:
         type: string
+    type: object
+  car.CarTagResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  car.CreateCarCategoryRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  car.CreateCarMarkRequest:
+    properties:
+      name:
+        example: Toyota
+        type: string
+    required:
+    - name
     type: object
   car.CreateCarRequest:
     properties:
@@ -161,6 +218,50 @@ definitions:
     - price_per_day
     - tags_ids
     type: object
+  car.CreateCarTagRequest:
+    properties:
+      name:
+        example: Sedan
+        type: string
+    required:
+    - name
+    type: object
+  car.ListCarCategoriesResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entities.CarCategory'
+        type: array
+      total:
+        type: integer
+    type: object
+  car.ListCarImagesResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entities.CarImage'
+        type: array
+      total:
+        type: integer
+    type: object
+  car.ListCarMarksResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entities.CarMark'
+        type: array
+      total:
+        type: integer
+    type: object
+  car.ListCarTagsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entities.CarTag'
+        type: array
+      total:
+        type: integer
+    type: object
   car.ListCarsResponse:
     properties:
       data:
@@ -170,10 +271,20 @@ definitions:
       total:
         type: integer
     type: object
-  car.MessageResponse:
+  car.UpdateCarCategoryRequest:
     properties:
-      message:
+      name:
         type: string
+    required:
+    - name
+    type: object
+  car.UpdateCarMarkRequest:
+    properties:
+      name:
+        example: Toyota
+        type: string
+    required:
+    - name
     type: object
   car.UpdateCarRequest:
     properties:
@@ -212,121 +323,7 @@ definitions:
     - price_per_day
     - tags_ids
     type: object
-  car_category.CarCategoryResponse:
-    properties:
-      created_at:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  car_category.CreateCarCategoryRequest:
-    properties:
-      name:
-        type: string
-    required:
-    - name
-    type: object
-  car_category.ListCarCategoriesResponse:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/entities.CarCategory'
-        type: array
-      total:
-        type: integer
-    type: object
-  car_category.MessageResponse:
-    properties:
-      message:
-        type: string
-    type: object
-  car_category.UpdateCarCategoryRequest:
-    properties:
-      name:
-        type: string
-    required:
-    - name
-    type: object
-  car_image.CarImageResponse:
-    properties:
-      created_at:
-        type: string
-      id:
-        type: integer
-      image_path:
-        type: string
-    type: object
-  car_image.ListCarImagesResponse:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/entities.CarImage'
-        type: array
-      total:
-        type: integer
-    type: object
-  car_image.MessageResponse:
-    properties:
-      message:
-        type: string
-    type: object
-  car_mark.CarMarkResponse:
-    properties:
-      created_at:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  car_mark.CreateCarMarkRequest:
-    properties:
-      name:
-        example: Toyota
-        type: string
-    required:
-    - name
-    type: object
-  car_mark.ListCarMarksResponse:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/entities.CarMark'
-        type: array
-      total:
-        type: integer
-    type: object
-  car_mark.MessageResponse:
-    properties:
-      message:
-        type: string
-    type: object
-  car_mark.UpdateCarMarkRequest:
-    properties:
-      name:
-        example: Toyota
-        type: string
-    required:
-    - name
-    type: object
-  car_tag.CarTagResponse:
-    properties:
-      created_at:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  car_tag.CreateCarTagRequest:
+  car.UpdateCarTagRequest:
     properties:
       name:
         example: Sedan
@@ -334,26 +331,18 @@ definitions:
     required:
     - name
     type: object
-  car_tag.ListCarTagsResponse:
+  celebrity.CreateCelebrityRequest:
     properties:
-      data:
-        items:
-          $ref: '#/definitions/entities.CarTag'
-        type: array
-      total:
-        type: integer
-    type: object
-  car_tag.MessageResponse:
-    properties:
-      message:
+      image:
+        example: https://example.com/celebrity.jpg
         type: string
-    type: object
-  car_tag.UpdateCarTagRequest:
-    properties:
       name:
-        example: Sedan
+        example: John Doe
+        maxLength: 255
+        minLength: 1
         type: string
     required:
+    - image
     - name
     type: object
   entities.Car:
@@ -423,11 +412,49 @@ definitions:
       updated_at:
         type: string
     type: object
+  entities.Celebrity:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
   entities.Tokens:
     properties:
       access_token:
         type: string
       refresh_token:
+        type: string
+    type: object
+  internal_interfaces_http_car.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  internal_interfaces_http_car_category.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  internal_interfaces_http_car_image.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  internal_interfaces_http_car_mark.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  internal_interfaces_http_car_tag.MessageResponse:
+    properties:
+      message:
         type: string
     type: object
 host: localhost:8080
@@ -633,7 +660,7 @@ paths:
         "200":
           description: Автомобиль успешно удален
           schema:
-            $ref: '#/definitions/car.MessageResponse'
+            $ref: '#/definitions/internal_interfaces_http_car.MessageResponse'
       security:
       - BearerAuth: []
       summary: Удаление автомобиля
@@ -711,7 +738,7 @@ paths:
         "200":
           description: Список категорий
           schema:
-            $ref: '#/definitions/car_category.ListCarCategoriesResponse'
+            $ref: '#/definitions/car.ListCarCategoriesResponse'
       security:
       - BearerAuth: []
       summary: Получение списка категорий
@@ -727,14 +754,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/car_category.CreateCarCategoryRequest'
+          $ref: '#/definitions/car.CreateCarCategoryRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Категория успешно создана
           schema:
-            $ref: '#/definitions/car_category.CarCategoryResponse'
+            $ref: '#/definitions/car.CarCategoryResponse'
       security:
       - BearerAuth: []
       summary: Создание новой категории машины
@@ -757,7 +784,7 @@ paths:
         "200":
           description: Категория успешно удалена
           schema:
-            $ref: '#/definitions/car_category.MessageResponse'
+            $ref: '#/definitions/internal_interfaces_http_car_category.MessageResponse'
       security:
       - BearerAuth: []
       summary: Удаление категории
@@ -779,7 +806,7 @@ paths:
         "200":
           description: Информация о категории
           schema:
-            $ref: '#/definitions/car_category.CarCategoryResponse'
+            $ref: '#/definitions/car.CarCategoryResponse'
       security:
       - BearerAuth: []
       summary: Получение категории по ID
@@ -800,14 +827,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/car_category.UpdateCarCategoryRequest'
+          $ref: '#/definitions/car.UpdateCarCategoryRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Категория успешно обновлена
           schema:
-            $ref: '#/definitions/car_category.CarCategoryResponse'
+            $ref: '#/definitions/car.CarCategoryResponse'
       security:
       - BearerAuth: []
       summary: Обновление категории
@@ -835,7 +862,7 @@ paths:
         "200":
           description: Список марок
           schema:
-            $ref: '#/definitions/car_mark.ListCarMarksResponse'
+            $ref: '#/definitions/car.ListCarMarksResponse'
       security:
       - BearerAuth: []
       summary: Получение списка марок
@@ -851,14 +878,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/car_mark.CreateCarMarkRequest'
+          $ref: '#/definitions/car.CreateCarMarkRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Марка успешно создана
           schema:
-            $ref: '#/definitions/car_mark.CarMarkResponse'
+            $ref: '#/definitions/car.CarMarkResponse'
       security:
       - BearerAuth: []
       summary: Создание новой марки машины
@@ -881,7 +908,7 @@ paths:
         "200":
           description: Марка успешно удалена
           schema:
-            $ref: '#/definitions/car_mark.MessageResponse'
+            $ref: '#/definitions/internal_interfaces_http_car_mark.MessageResponse'
       security:
       - BearerAuth: []
       summary: Удаление марки
@@ -903,7 +930,7 @@ paths:
         "200":
           description: Информация о марке
           schema:
-            $ref: '#/definitions/car_mark.CarMarkResponse'
+            $ref: '#/definitions/car.CarMarkResponse'
       security:
       - BearerAuth: []
       summary: Получение марки по ID
@@ -924,14 +951,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/car_mark.UpdateCarMarkRequest'
+          $ref: '#/definitions/car.UpdateCarMarkRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Марка успешно обновлена
           schema:
-            $ref: '#/definitions/car_mark.CarMarkResponse'
+            $ref: '#/definitions/car.CarMarkResponse'
       security:
       - BearerAuth: []
       summary: Обновление марки
@@ -959,7 +986,7 @@ paths:
         "200":
           description: Список тегов
           schema:
-            $ref: '#/definitions/car_tag.ListCarTagsResponse'
+            $ref: '#/definitions/car.ListCarTagsResponse'
       summary: Получение списка тегов
       tags:
       - Car Tags
@@ -973,14 +1000,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/car_tag.CreateCarTagRequest'
+          $ref: '#/definitions/car.CreateCarTagRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Тег успешно создан
           schema:
-            $ref: '#/definitions/car_tag.CarTagResponse'
+            $ref: '#/definitions/car.CarTagResponse'
       security:
       - BearerAuth: []
       summary: Создание нового тега для машины
@@ -1003,7 +1030,7 @@ paths:
         "200":
           description: Тег успешно удален
           schema:
-            $ref: '#/definitions/car_tag.MessageResponse'
+            $ref: '#/definitions/internal_interfaces_http_car_tag.MessageResponse'
       security:
       - BearerAuth: []
       summary: Удаление тега
@@ -1025,7 +1052,7 @@ paths:
         "200":
           description: Информация о теге
           schema:
-            $ref: '#/definitions/car_tag.CarTagResponse'
+            $ref: '#/definitions/car.CarTagResponse'
       summary: Получение тега по ID
       tags:
       - Car Tags
@@ -1044,14 +1071,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/car_tag.UpdateCarTagRequest'
+          $ref: '#/definitions/car.UpdateCarTagRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Тег успешно обновлен
           schema:
-            $ref: '#/definitions/car_tag.CarTagResponse'
+            $ref: '#/definitions/car.CarTagResponse'
       security:
       - BearerAuth: []
       summary: Обновление тега
@@ -1079,7 +1106,7 @@ paths:
         "200":
           description: Список изображений успешно получен
           schema:
-            $ref: '#/definitions/car_image.ListCarImagesResponse'
+            $ref: '#/definitions/car.ListCarImagesResponse'
       security:
       - BearerAuth: []
       summary: Получение списка изображений автомобиля
@@ -1101,7 +1128,7 @@ paths:
         "201":
           description: Марка успешно создана
           schema:
-            $ref: '#/definitions/car_image.CarImageResponse'
+            $ref: '#/definitions/car.CarImageResponse'
       security:
       - BearerAuth: []
       summary: Загрузка изображения автомобиля
@@ -1124,12 +1151,36 @@ paths:
         "200":
           description: Изображение успешно удалено
           schema:
-            $ref: '#/definitions/car_image.MessageResponse'
+            $ref: '#/definitions/internal_interfaces_http_car_image.MessageResponse'
       security:
       - BearerAuth: []
       summary: Удаление изображения автомобиля
       tags:
       - Car images
+  /v1/celebrities:
+    post:
+      consumes:
+      - application/json
+      description: Create a new celebrity with the provided details
+      parameters:
+      - description: Celebrity data
+        in: body
+        name: celebrity
+        required: true
+        schema:
+          $ref: '#/definitions/celebrity.CreateCelebrityRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.Celebrity'
+      security:
+      - BearerAuth: []
+      summary: Create a new celebrity
+      tags:
+      - Celebrities
 securityDefinitions:
   BearerAuth:
     description: 'JWT token must be passed with `Bearer ` prefix. Example: "Bearer

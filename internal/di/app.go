@@ -5,22 +5,27 @@ import (
 	"github.com/nomad-pixel/imperial/internal/domain/ports"
 	authUsecase "github.com/nomad-pixel/imperial/internal/domain/usecases/auth"
 	carUsecase "github.com/nomad-pixel/imperial/internal/domain/usecases/car"
+	celebrityUsecase "github.com/nomad-pixel/imperial/internal/domain/usecases/celebrity"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_category"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_image"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_mark"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_tag"
+	carCategory "github.com/nomad-pixel/imperial/internal/interfaces/http/car/category"
+	carImage "github.com/nomad-pixel/imperial/internal/interfaces/http/car/image"
+	carMark "github.com/nomad-pixel/imperial/internal/interfaces/http/car/mark"
+	carTag "github.com/nomad-pixel/imperial/internal/interfaces/http/car/tag"
+	celebrity "github.com/nomad-pixel/imperial/internal/interfaces/http/celebrity"
 )
 
 type App struct {
-	DB                              *pgxpool.Pool
-	AuthHandler                     *auth.AuthHandler
-	CarHandler                      *car.CarHandler
-	CarImageHandler                 *car_image.CarImageHandler
-	CarTagHandler                   *car_tag.CarTagHandler
-	CarMarkHandler                  *car_mark.CarMarkHandler
-	CarCategoryHandler              *car_category.CarCategoryHandler
+	DB                 *pgxpool.Pool
+	AuthHandler        *auth.AuthHandler
+	CarHandler         *car.CarHandler
+	CarImageHandler    *carImage.CarImageHandler
+	CarTagHandler      *carTag.CarTagHandler
+	CarMarkHandler     *carMark.CarMarkHandler
+	CarCategoryHandler *carCategory.CarCategoryHandler
+	CelebrityHandler   *celebrity.CelebrityHandler
+
+	// Auth usecases
 	SignUpUsecase                   authUsecase.SignUpUsecase
 	SignInUsecase                   authUsecase.SignInUsecase
 	SendEmailVerificationUsecase    authUsecase.SendEmailVerificationUsecase
@@ -54,6 +59,9 @@ type App struct {
 	GetCarCategoriesListUsecase carUsecase.GetCarCategoriesListUsecase
 	UpdateCarCategoryUsecase    carUsecase.UpdateCarCategoryUsecase
 	DeleteCarCategoryUsecase    carUsecase.DeleteCarCategoryUsecase
+
+	//Celebrity usecases
+	CreateCelebrityUsecase celebrityUsecase.CreateCelebrityUsecase
 }
 
 func NewApp(
@@ -64,17 +72,19 @@ func NewApp(
 	signInUsecase authUsecase.SignInUsecase,
 	authHandler *auth.AuthHandler,
 	tokenSvc ports.TokenService,
+	celebrityHandler *celebrity.CelebrityHandler,
 
+	// Car usecases
 	createCarUsecase carUsecase.CreateCarUsecase,
 	getCarByIdUsecase carUsecase.GetCarByIdUsecase,
 	getListCarsUsecase carUsecase.GetListCarsUsecase,
 	updateCarUsecase carUsecase.UpdateCarUsecase,
 	deleteCarUsecase carUsecase.DeleteCarUsecase,
 	carHandler *car.CarHandler,
-	carImageHandler *car_image.CarImageHandler,
-	carTagHandler *car_tag.CarTagHandler,
-	carMarkHandler *car_mark.CarMarkHandler,
-	carCategoryHandler *car_category.CarCategoryHandler,
+	carImageHandler *carImage.CarImageHandler,
+	carTagHandler *carTag.CarTagHandler,
+	carMarkHandler *carMark.CarMarkHandler,
+	carCategoryHandler *carCategory.CarCategoryHandler,
 
 	createCarTagUsecase carUsecase.CreateCarTagUsecase,
 	getCarTagUsecase carUsecase.GetCarTagUsecase,
@@ -94,6 +104,8 @@ func NewApp(
 	updateCarCategoryUsecase carUsecase.UpdateCarCategoryUsecase,
 	deleteCarCategoryUsecase carUsecase.DeleteCarCategoryUsecase,
 
+	celebrityUsecase celebrityUsecase.CreateCelebrityUsecase,
+
 ) *App {
 	return &App{
 		DB:                              db,
@@ -108,6 +120,7 @@ func NewApp(
 		SendEmailVerificationUsecase:    sendEmailVerificationUsecase,
 		SignInUsecase:                   signInUsecase,
 		TokenService:                    tokenSvc,
+		CelebrityHandler:                celebrityHandler,
 
 		CreateCarUsecase:   createCarUsecase,
 		GetCarByIdUsecase:  getCarByIdUsecase,
@@ -132,6 +145,8 @@ func NewApp(
 		GetCarCategoriesListUsecase: getCarCategoriesListUsecase,
 		UpdateCarCategoryUsecase:    updateCarCategoryUsecase,
 		DeleteCarCategoryUsecase:    deleteCarCategoryUsecase,
+
+		CreateCelebrityUsecase: celebrityUsecase,
 	}
 }
 

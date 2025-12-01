@@ -1,4 +1,4 @@
-package car_image
+package car
 
 import "github.com/nomad-pixel/imperial/internal/domain/entities"
 

@@ -13,10 +13,11 @@ import (
 	"github.com/nomad-pixel/imperial/internal/di"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_category"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_image"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_mark"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_tag"
+	carCategory "github.com/nomad-pixel/imperial/internal/interfaces/http/car/category"
+	carImage "github.com/nomad-pixel/imperial/internal/interfaces/http/car/image"
+	carMark "github.com/nomad-pixel/imperial/internal/interfaces/http/car/mark"
+	carTag "github.com/nomad-pixel/imperial/internal/interfaces/http/car/tag"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/celebrity"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/middleware"
 )
 
@@ -68,10 +69,11 @@ func main() {
 
 	auth.RegisterRoutes(apiGroup, app.AuthHandler)
 	car.RegisterRoutes(apiGroup, app.CarHandler, app.TokenService)
-	car_tag.RegisterRoutes(apiGroup, app.CarTagHandler, app.TokenService)
-	car_mark.RegisterRoutes(apiGroup, app.CarMarkHandler, app.TokenService)
-	car_category.RegisterRoutes(apiGroup, app.CarCategoryHandler, app.TokenService)
-	car_image.RegisterRoutes(apiGroup, app.CarImageHandler, app.TokenService)
+	carTag.RegisterRoutes(apiGroup, app.CarTagHandler, app.TokenService)
+	carMark.RegisterRoutes(apiGroup, app.CarMarkHandler, app.TokenService)
+	carCategory.RegisterRoutes(apiGroup, app.CarCategoryHandler, app.TokenService)
+	carImage.RegisterRoutes(apiGroup, app.CarImageHandler, app.TokenService)
+	celebrity.RegisterRoutes(apiGroup, app.CelebrityHandler, app.TokenService)
 	if err := server.Run(":8080"); err != nil {
 		log.Fatalf("failed to run server: %v", err)
 	}

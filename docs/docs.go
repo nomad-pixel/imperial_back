@@ -330,7 +330,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Список категорий",
                         "schema": {
-                            "$ref": "#/definitions/car_category.ListCarCategoriesResponse"
+                            "$ref": "#/definitions/car.ListCarCategoriesResponse"
                         }
                     }
                 }
@@ -359,7 +359,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/car_category.CreateCarCategoryRequest"
+                            "$ref": "#/definitions/car.CreateCarCategoryRequest"
                         }
                     }
                 ],
@@ -367,7 +367,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Категория успешно создана",
                         "schema": {
-                            "$ref": "#/definitions/car_category.CarCategoryResponse"
+                            "$ref": "#/definitions/car.CarCategoryResponse"
                         }
                     }
                 }
@@ -404,7 +404,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Информация о категории",
                         "schema": {
-                            "$ref": "#/definitions/car_category.CarCategoryResponse"
+                            "$ref": "#/definitions/car.CarCategoryResponse"
                         }
                     }
                 }
@@ -440,7 +440,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/car_category.UpdateCarCategoryRequest"
+                            "$ref": "#/definitions/car.UpdateCarCategoryRequest"
                         }
                     }
                 ],
@@ -448,7 +448,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Категория успешно обновлена",
                         "schema": {
-                            "$ref": "#/definitions/car_category.CarCategoryResponse"
+                            "$ref": "#/definitions/car.CarCategoryResponse"
                         }
                     }
                 }
@@ -483,7 +483,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Категория успешно удалена",
                         "schema": {
-                            "$ref": "#/definitions/car_category.MessageResponse"
+                            "$ref": "#/definitions/internal_interfaces_http_car_category.MessageResponse"
                         }
                     }
                 }
@@ -527,7 +527,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Список марок",
                         "schema": {
-                            "$ref": "#/definitions/car_mark.ListCarMarksResponse"
+                            "$ref": "#/definitions/car.ListCarMarksResponse"
                         }
                     }
                 }
@@ -556,7 +556,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/car_mark.CreateCarMarkRequest"
+                            "$ref": "#/definitions/car.CreateCarMarkRequest"
                         }
                     }
                 ],
@@ -564,7 +564,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Марка успешно создана",
                         "schema": {
-                            "$ref": "#/definitions/car_mark.CarMarkResponse"
+                            "$ref": "#/definitions/car.CarMarkResponse"
                         }
                     }
                 }
@@ -601,7 +601,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Информация о марке",
                         "schema": {
-                            "$ref": "#/definitions/car_mark.CarMarkResponse"
+                            "$ref": "#/definitions/car.CarMarkResponse"
                         }
                     }
                 }
@@ -637,7 +637,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/car_mark.UpdateCarMarkRequest"
+                            "$ref": "#/definitions/car.UpdateCarMarkRequest"
                         }
                     }
                 ],
@@ -645,7 +645,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Марка успешно обновлена",
                         "schema": {
-                            "$ref": "#/definitions/car_mark.CarMarkResponse"
+                            "$ref": "#/definitions/car.CarMarkResponse"
                         }
                     }
                 }
@@ -680,7 +680,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Марка успешно удалена",
                         "schema": {
-                            "$ref": "#/definitions/car_mark.MessageResponse"
+                            "$ref": "#/definitions/internal_interfaces_http_car_mark.MessageResponse"
                         }
                     }
                 }
@@ -719,7 +719,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Список тегов",
                         "schema": {
-                            "$ref": "#/definitions/car_tag.ListCarTagsResponse"
+                            "$ref": "#/definitions/car.ListCarTagsResponse"
                         }
                     }
                 }
@@ -748,7 +748,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/car_tag.CreateCarTagRequest"
+                            "$ref": "#/definitions/car.CreateCarTagRequest"
                         }
                     }
                 ],
@@ -756,7 +756,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Тег успешно создан",
                         "schema": {
-                            "$ref": "#/definitions/car_tag.CarTagResponse"
+                            "$ref": "#/definitions/car.CarTagResponse"
                         }
                     }
                 }
@@ -788,7 +788,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Информация о теге",
                         "schema": {
-                            "$ref": "#/definitions/car_tag.CarTagResponse"
+                            "$ref": "#/definitions/car.CarTagResponse"
                         }
                     }
                 }
@@ -824,7 +824,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/car_tag.UpdateCarTagRequest"
+                            "$ref": "#/definitions/car.UpdateCarTagRequest"
                         }
                     }
                 ],
@@ -832,7 +832,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Тег успешно обновлен",
                         "schema": {
-                            "$ref": "#/definitions/car_tag.CarTagResponse"
+                            "$ref": "#/definitions/car.CarTagResponse"
                         }
                     }
                 }
@@ -867,7 +867,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Тег успешно удален",
                         "schema": {
-                            "$ref": "#/definitions/car_tag.MessageResponse"
+                            "$ref": "#/definitions/internal_interfaces_http_car_tag.MessageResponse"
                         }
                     }
                 }
@@ -911,7 +911,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Список изображений успешно получен",
                         "schema": {
-                            "$ref": "#/definitions/car_image.ListCarImagesResponse"
+                            "$ref": "#/definitions/car.ListCarImagesResponse"
                         }
                     }
                 }
@@ -946,7 +946,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Марка успешно создана",
                         "schema": {
-                            "$ref": "#/definitions/car_image.CarImageResponse"
+                            "$ref": "#/definitions/car.CarImageResponse"
                         }
                     }
                 }
@@ -983,7 +983,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Изображение успешно удалено",
                         "schema": {
-                            "$ref": "#/definitions/car_image.MessageResponse"
+                            "$ref": "#/definitions/internal_interfaces_http_car_image.MessageResponse"
                         }
                     }
                 }
@@ -1099,7 +1099,46 @@ const docTemplate = `{
                     "200": {
                         "description": "Автомобиль успешно удален",
                         "schema": {
-                            "$ref": "#/definitions/car.MessageResponse"
+                            "$ref": "#/definitions/internal_interfaces_http_car.MessageResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/celebrities": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new celebrity with the provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Celebrities"
+                ],
+                "summary": "Create a new celebrity",
+                "parameters": [
+                    {
+                        "description": "Celebrity data",
+                        "name": "celebrity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/celebrity.CreateCelebrityRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Celebrity"
                         }
                     }
                 }
@@ -1250,6 +1289,54 @@ const docTemplate = `{
                 }
             }
         },
+        "car.CarCategoryResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "car.CarImageResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_path": {
+                    "type": "string"
+                }
+            }
+        },
+        "car.CarMarkResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "car.CarResponse": {
             "type": "object",
             "properties": {
@@ -1285,6 +1372,46 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "car.CarTagResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "car.CreateCarCategoryRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "car.CreateCarMarkRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Toyota"
                 }
             }
         },
@@ -1336,6 +1463,74 @@ const docTemplate = `{
                 }
             }
         },
+        "car.CreateCarTagRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Sedan"
+                }
+            }
+        },
+        "car.ListCarCategoriesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CarCategory"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "car.ListCarImagesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CarImage"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "car.ListCarMarksResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CarMark"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "car.ListCarTagsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CarTag"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "car.ListCarsResponse": {
             "type": "object",
             "properties": {
@@ -1350,11 +1545,26 @@ const docTemplate = `{
                 }
             }
         },
-        "car.MessageResponse": {
+        "car.UpdateCarCategoryRequest": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
-                "message": {
+                "name": {
                     "type": "string"
+                }
+            }
+        },
+        "car.UpdateCarMarkRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Toyota"
                 }
             }
         },
@@ -1406,184 +1616,7 @@ const docTemplate = `{
                 }
             }
         },
-        "car_category.CarCategoryResponse": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "car_category.CreateCarCategoryRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "car_category.ListCarCategoriesResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entities.CarCategory"
-                    }
-                },
-                "total": {
-                    "type": "integer"
-                }
-            }
-        },
-        "car_category.MessageResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "car_category.UpdateCarCategoryRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "car_image.CarImageResponse": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "image_path": {
-                    "type": "string"
-                }
-            }
-        },
-        "car_image.ListCarImagesResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entities.CarImage"
-                    }
-                },
-                "total": {
-                    "type": "integer"
-                }
-            }
-        },
-        "car_image.MessageResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "car_mark.CarMarkResponse": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "car_mark.CreateCarMarkRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "example": "Toyota"
-                }
-            }
-        },
-        "car_mark.ListCarMarksResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entities.CarMark"
-                    }
-                },
-                "total": {
-                    "type": "integer"
-                }
-            }
-        },
-        "car_mark.MessageResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "car_mark.UpdateCarMarkRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "example": "Toyota"
-                }
-            }
-        },
-        "car_tag.CarTagResponse": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "car_tag.CreateCarTagRequest": {
+        "car.UpdateCarTagRequest": {
             "type": "object",
             "required": [
                 "name"
@@ -1595,37 +1628,22 @@ const docTemplate = `{
                 }
             }
         },
-        "car_tag.ListCarTagsResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entities.CarTag"
-                    }
-                },
-                "total": {
-                    "type": "integer"
-                }
-            }
-        },
-        "car_tag.MessageResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "car_tag.UpdateCarTagRequest": {
+        "celebrity.CreateCelebrityRequest": {
             "type": "object",
             "required": [
+                "image",
                 "name"
             ],
             "properties": {
+                "image": {
+                    "type": "string",
+                    "example": "https://example.com/celebrity.jpg"
+                },
                 "name": {
                     "type": "string",
-                    "example": "Sedan"
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "example": "John Doe"
                 }
             }
         },
@@ -1732,6 +1750,26 @@ const docTemplate = `{
                 }
             }
         },
+        "entities.Celebrity": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "entities.Tokens": {
             "type": "object",
             "properties": {
@@ -1739,6 +1777,46 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_interfaces_http_car.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_interfaces_http_car_category.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_interfaces_http_car_image.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_interfaces_http_car_mark.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_interfaces_http_car_tag.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
                     "type": "string"
                 }
             }

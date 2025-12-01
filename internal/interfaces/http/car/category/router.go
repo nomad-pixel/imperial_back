@@ -1,4 +1,4 @@
-package car_category
+package car
 
 import (
 	"github.com/gin-gonic/gin"

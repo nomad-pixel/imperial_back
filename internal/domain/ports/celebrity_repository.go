@@ -1,12 +1,16 @@
 package ports
 
-import "github.com/nomad-pixel/imperial/internal/domain/entities"
+import (
+	"context"
+
+	"github.com/nomad-pixel/imperial/internal/domain/entities"
+)
 
 type CelebrityRepository interface {
-	CreateCelebrity(name string, imagePath string) (*entities.Celebrity, error)
-	UploadImage(imageData []byte, fileName string) (string, error)
-	UpdateCelebrity(id int64, name string, imagePath string) (*entities.Celebrity, error)
-	GetCelebrityByID(id int64) (*entities.Celebrity, error)
-	DeleteCelebrity(id int64) error
-	ListCelebrities(offset int64, limit int64) (int64, []*entities.Celebrity, error)
+	CreateCelebrity(ctx context.Context, celebrity *entities.Celebrity) error
+	UploadImage(ctx context.Context, id int64, imageData []byte, fileName string) (*entities.Celebrity, error)
+	UpdateCelebrity(ctx context.Context, celebrity *entities.Celebrity) error
+	GetCelebrityByID(ctx context.Context, id int64) (*entities.Celebrity, error)
+	DeleteCelebrity(ctx context.Context, id int64) error
+	ListCelebrities(ctx context.Context, offset int64, limit int64) (int64, []*entities.Celebrity, error)
 }

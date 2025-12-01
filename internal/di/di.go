@@ -10,16 +10,18 @@ import (
 	"github.com/nomad-pixel/imperial/internal/domain/ports"
 	authUsecase "github.com/nomad-pixel/imperial/internal/domain/usecases/auth"
 	carUsecase "github.com/nomad-pixel/imperial/internal/domain/usecases/car"
+	celebrityUsecase "github.com/nomad-pixel/imperial/internal/domain/usecases/celebrity"
 	token "github.com/nomad-pixel/imperial/internal/infrastructure/auth"
 	"github.com/nomad-pixel/imperial/internal/infrastructure/email"
 	imageSvc "github.com/nomad-pixel/imperial/internal/infrastructure/image"
 	"github.com/nomad-pixel/imperial/internal/infrastructure/repositories"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_category"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_image"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_mark"
-	"github.com/nomad-pixel/imperial/internal/interfaces/http/car_tag"
+	carCategory "github.com/nomad-pixel/imperial/internal/interfaces/http/car/category"
+	carImage "github.com/nomad-pixel/imperial/internal/interfaces/http/car/image"
+	carMark "github.com/nomad-pixel/imperial/internal/interfaces/http/car/mark"
+	carTag "github.com/nomad-pixel/imperial/internal/interfaces/http/car/tag"
+	celebrity "github.com/nomad-pixel/imperial/internal/interfaces/http/celebrity"
 )
 
 func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
@@ -35,6 +37,7 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 	carMarkRepo := repositories.NewCarMarkRepositoryImpl(db)
 	carRepo := repositories.NewCarRepositoryImpl(db)
 	carImageRepo := repositories.NewCarImageRepositoryImpl(db)
+	celebrityRepo := repositories.NewCelebrityRepositoryImpl(db)
 
 	emailConfig := config.LoadEmailConfig()
 	fmt.Println("emailConfig", emailConfig)
@@ -139,9 +142,10 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		imageService,
 	)
 
+	// Celebrity usecases
 	carHandler := car.NewCarHandler(createCarUsecase, deleteCarUsecase, updateCarUsecase, getCarByIdUsecase, getListCarsUsecase)
 
-	carTagHandler := car_tag.NewCarTagHandler(
+	carTagHandler := carTag.NewCarTagHandler(
 		createCarTagUsecase,
 		getCarTagUsecase,
 		getCarTagsListUsecase,
@@ -149,7 +153,7 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		deleteCarTagUsecase,
 	)
 
-	carMarkHandler := car_mark.NewCarMarkHandler(
+	carMarkHandler := carMark.NewCarMarkHandler(
 		createCarMarkUsecase,
 		getCarMarkUsecase,
 		getCarMarksListUsecase,
@@ -157,7 +161,7 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		deleteCarMarkUsecase,
 	)
 
-	carCategoryHandler := car_category.NewCarCategoryHandler(
+	carCategoryHandler := carCategory.NewCarCategoryHandler(
 		createCarCategoryUsecase,
 		getCarCategoryUsecase,
 		getCarCategoriesListUsecase,
@@ -165,11 +169,15 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		deleteCarCategoryUsecase,
 	)
 
-	carImageHandler := car_image.NewCarImageHandler(
+	carImageHandler := carImage.NewCarImageHandler(
 		createCarImageUsecase,
 		deleteCarImageUsecase,
 		getCarImagesListUsecase,
 	)
+
+	celebrityUsecase := celebrityUsecase.NewCreateCelebrityUsecase(celebrityRepo)
+
+	celebrityHandler := celebrity.NewCelebrityHandler(celebrityUsecase)
 
 	app := NewApp(
 		db,
@@ -179,7 +187,9 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		signInUsecase,
 		authHandler,
 		tokenSvc,
+		celebrityHandler,
 
+		// Car usecases
 		createCarUsecase,
 		getCarByIdUsecase,
 		getListCarsUsecase,
@@ -210,6 +220,9 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		getCarCategoriesListUsecase,
 		updateCarCategoryUsecase,
 		deleteCarCategoryUsecase,
+
+		// Celebrity usecases
+		celebrityUsecase,
 	)
 
 	return app, nil

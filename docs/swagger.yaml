@@ -344,6 +344,33 @@ definitions:
     required:
     - name
     type: object
+  celebrity.ListCelebritiesResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entities.Celebrity'
+        type: array
+      total:
+        type: integer
+    type: object
+  celebrity.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  celebrity.UpdateCelebrityRequest:
+    properties:
+      image:
+        example: https://example.com/celebrity.jpg
+        type: string
+      name:
+        example: John Doe
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - name
+    type: object
   entities.Car:
     properties:
       category:
@@ -1157,6 +1184,33 @@ paths:
       tags:
       - Car images
   /v1/celebrities:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of celebrities
+      parameters:
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      - default: 20
+        description: Limit for pagination
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/celebrity.ListCelebritiesResponse'
+      security:
+      - BearerAuth: []
+      summary: List celebrities
+      tags:
+      - Celebrities
     post:
       consumes:
       - application/json
@@ -1178,6 +1232,79 @@ paths:
       security:
       - BearerAuth: []
       summary: Create a new celebrity
+      tags:
+      - Celebrities
+  /v1/celebrities/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a celebrity by ID
+      parameters:
+      - description: Celebrity ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/celebrity.MessageResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete celebrity
+      tags:
+      - Celebrities
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a celebrity by ID
+      parameters:
+      - description: Celebrity ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Celebrity'
+      security:
+      - BearerAuth: []
+      summary: Get celebrity by ID
+      tags:
+      - Celebrities
+    put:
+      consumes:
+      - application/json
+      description: Update celebrity information by ID
+      parameters:
+      - description: Celebrity ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Celebrity data
+        in: body
+        name: celebrity
+        required: true
+        schema:
+          $ref: '#/definitions/celebrity.UpdateCelebrityRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Celebrity'
+      security:
+      - BearerAuth: []
+      summary: Update celebrity
       tags:
       - Celebrities
   /v1/celebrities/{id}/image:

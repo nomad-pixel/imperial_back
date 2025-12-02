@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -44,16 +43,19 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	pgUrl := os.Getenv("DATABASE_URL")
-	if pgUrl == "" {
-		log.Fatalf("DATABASE_URL is not set")
-	}
-
-	app, err := di.InitializeApp(ctx, pgUrl)
+	// Initialize application with all dependencies
+	app, err := di.InitializeApp(ctx)
 	if err != nil {
 		log.Fatalf("failed to initialize app: %v", err)
 	}
 	defer app.Close()
+
+	cfg := app.Config
+
+	log.Printf("🚀 Starting %s server in %s mode", cfg.App.Name, cfg.App.Environment)
+	if cfg.IsDevelopment() {
+		log.Println("⚠️  Debug mode enabled")
+	}
 
 	server := gin.New()
 
@@ -63,7 +65,8 @@ func main() {
 
 	server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	server.Static("/images", "./uploads")
+	// Serve static files from storage path
+	server.Static("/uploads", cfg.Storage.LocalPath)
 
 	apiGroup := server.Group("/api")
 
@@ -74,7 +77,11 @@ func main() {
 	carCategory.RegisterRoutes(apiGroup, app.CarCategoryHandler, app.TokenService)
 	carImage.RegisterRoutes(apiGroup, app.CarImageHandler, app.TokenService)
 	celebrity.RegisterRoutes(apiGroup, app.CelebrityHandler, app.TokenService)
-	if err := server.Run(":8080"); err != nil {
+
+	log.Printf("✅ Server listening on http://localhost:%d", cfg.Server.Port)
+	log.Printf("📚 Swagger documentation: http://localhost:%d/swagger/index.html", cfg.Server.Port)
+
+	if err := server.Run(cfg.GetServerAddress()); err != nil {
 		log.Fatalf("failed to run server: %v", err)
 	}
 }

@@ -13,6 +13,10 @@ func RegisterRoutes(router gin.IRouter, handler *CelebrityHandler, tokenSvc port
 
 	{
 		api.POST("", handler.CreateCelebrity)
+		api.GET("", handler.ListCelebrities)
+		api.GET("/:id", handler.GetCelebrityByID)
+		api.PUT("/:id", handler.UpdateCelebrity)
 		api.PUT("/:id/image", handler.UploadCelebrityImage)
+		api.DELETE("/:id", handler.DeleteCelebrity)
 	}
 }

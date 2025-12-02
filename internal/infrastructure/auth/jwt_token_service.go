@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"os"
 	"strconv"
 	"time"
 
@@ -12,53 +11,48 @@ import (
 )
 
 type jwtTokenService struct {
+	accessSecret         string
+	refreshSecret        string
+	accessTokenDuration  time.Duration
+	refreshTokenDuration time.Duration
 }
 
-func NewJWTTokenService() ports.TokenService {
-	return &jwtTokenService{}
+// NewJWTTokenService creates a new JWT token service with configuration
+func NewJWTTokenService(accessSecret, refreshSecret string, accessDuration, refreshDuration time.Duration) ports.TokenService {
+	return &jwtTokenService{
+		accessSecret:         accessSecret,
+		refreshSecret:        refreshSecret,
+		accessTokenDuration:  accessDuration,
+		refreshTokenDuration: refreshDuration,
+	}
 }
 
 func (s *jwtTokenService) GenerateTokens(user *entities.User) (*entities.Tokens, error) {
-	accessSecret := os.Getenv("ACCESS_TOKEN_SECRET")
-	refreshSecret := os.Getenv("REFRESH_TOKEN_SECRET")
-	if accessSecret == "" || refreshSecret == "" {
-		return nil, apperrors.New(apperrors.ErrCodeInternal, "Token secrets not configured in environment")
-	}
+	now := time.Now()
 
-	accessExpMinutes := 15
-	if v := os.Getenv("ACCESS_TOKEN_EXPIRES_MINUTES"); v != "" {
-		if iv, e := strconv.Atoi(v); e == nil && iv > 0 {
-			accessExpMinutes = iv
-		}
-	}
-	refreshExpDays := 7
-	if v := os.Getenv("REFRESH_TOKEN_EXPIRES_DAYS"); v != "" {
-		if iv, e := strconv.Atoi(v); e == nil && iv > 0 {
-			refreshExpDays = iv
-		}
-	}
-
+	// Generate access token with accessSecret
 	accessClaims := jwt.MapClaims{
 		"sub":   strconv.FormatInt(user.ID, 10),
 		"email": user.Email,
 		"typ":   "access",
-		"exp":   time.Now().Add(time.Duration(accessExpMinutes) * time.Minute).Unix(),
-		"iat":   time.Now().Unix(),
+		"exp":   now.Add(s.accessTokenDuration).Unix(),
+		"iat":   now.Unix(),
 	}
 	accessTokenObj := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
-	accessToken, err := accessTokenObj.SignedString([]byte(accessSecret))
+	accessToken, err := accessTokenObj.SignedString([]byte(s.accessSecret))
 	if err != nil {
 		return nil, apperrors.New(apperrors.ErrCodeInternal, "Ошибка генерации access токена")
 	}
 
+	// Generate refresh token with refreshSecret
 	refreshClaims := jwt.MapClaims{
 		"sub": strconv.FormatInt(user.ID, 10),
 		"typ": "refresh",
-		"exp": time.Now().Add(time.Duration(refreshExpDays) * 24 * time.Hour).Unix(),
-		"iat": time.Now().Unix(),
+		"exp": now.Add(s.refreshTokenDuration).Unix(),
+		"iat": now.Unix(),
 	}
 	refreshTokenObj := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
-	refreshToken, err := refreshTokenObj.SignedString([]byte(refreshSecret))
+	refreshToken, err := refreshTokenObj.SignedString([]byte(s.refreshSecret))
 	if err != nil {
 		return nil, apperrors.New(apperrors.ErrCodeInternal, "Ошибка генерации refresh токена")
 	}
@@ -71,16 +65,12 @@ func (s *jwtTokenService) GenerateTokens(user *entities.User) (*entities.Tokens,
 }
 
 func (s *jwtTokenService) ValidateAccessToken(tokenStr string) (int64, error) {
-	accessSecret := os.Getenv("ACCESS_TOKEN_SECRET")
-	if accessSecret == "" {
-		return 0, apperrors.New(apperrors.ErrCodeInternal, "ACCESS_TOKEN_SECRET not configured")
-	}
-
+	// Validate with accessSecret
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, apperrors.New(apperrors.ErrCodeUnauthorized, "Invalid signing method")
 		}
-		return []byte(accessSecret), nil
+		return []byte(s.accessSecret), nil
 	})
 	if err != nil || !token.Valid {
 		return 0, apperrors.ErrUnauthorized
@@ -107,17 +97,12 @@ func (s *jwtTokenService) ValidateAccessToken(tokenStr string) (int64, error) {
 }
 
 func (s *jwtTokenService) RefreshAccessToken(refreshTokenStr string) (string, error) {
-	refreshSecret := os.Getenv("REFRESH_TOKEN_SECRET")
-	accessSecret := os.Getenv("ACCESS_TOKEN_SECRET")
-	if refreshSecret == "" || accessSecret == "" {
-		return "", apperrors.New(apperrors.ErrCodeInternal, "Token secrets not configured in environment")
-	}
-
+	// Validate refresh token with refreshSecret
 	token, err := jwt.Parse(refreshTokenStr, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, apperrors.New(apperrors.ErrCodeUnauthorized, "Invalid signing method")
 		}
-		return []byte(refreshSecret), nil
+		return []byte(s.refreshSecret), nil
 	})
 	if err != nil || !token.Valid {
 		return "", apperrors.ErrUnauthorized
@@ -135,21 +120,16 @@ func (s *jwtTokenService) RefreshAccessToken(refreshTokenStr string) (string, er
 		return "", apperrors.ErrUnauthorized
 	}
 
-	accessExpMinutes := 15
-	if v := os.Getenv("ACCESS_TOKEN_EXPIRES_MINUTES"); v != "" {
-		if iv, e := strconv.Atoi(v); e == nil && iv > 0 {
-			accessExpMinutes = iv
-		}
-	}
-
+	// Generate new access token with accessSecret
+	now := time.Now()
 	accessClaims := jwt.MapClaims{
 		"sub": sub,
 		"typ": "access",
-		"exp": time.Now().Add(time.Duration(accessExpMinutes) * time.Minute).Unix(),
-		"iat": time.Now().Unix(),
+		"exp": now.Add(s.accessTokenDuration).Unix(),
+		"iat": now.Unix(),
 	}
 	accessTokenObj := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
-	accessToken, err := accessTokenObj.SignedString([]byte(accessSecret))
+	accessToken, err := accessTokenObj.SignedString([]byte(s.accessSecret))
 	if err != nil {
 		return "", apperrors.New(apperrors.ErrCodeInternal, "Ошибка генерации access токена")
 	}

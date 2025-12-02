@@ -29,3 +29,11 @@ swagger:
 .PHONY: build
 build:
 	go build -o bin/api ./cmd/api
+
+.PHONY: wire
+wire:
+	cd internal/di && wire
+
+.PHONY: wire-check
+wire-check:
+	cd internal/di && wire check

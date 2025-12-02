@@ -1106,6 +1106,48 @@ const docTemplate = `{
             }
         },
         "/v1/celebrities": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a paginated list of celebrities",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Celebrities"
+                ],
+                "summary": "List celebrities",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Limit for pagination",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/celebrity.ListCelebritiesResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -1139,6 +1181,122 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/entities.Celebrity"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/celebrities/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get detailed information about a celebrity by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Celebrities"
+                ],
+                "summary": "Get celebrity by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Celebrity ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Celebrity"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update celebrity information by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Celebrities"
+                ],
+                "summary": "Update celebrity",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Celebrity ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Celebrity data",
+                        "name": "celebrity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/celebrity.UpdateCelebrityRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Celebrity"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a celebrity by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Celebrities"
+                ],
+                "summary": "Delete celebrity",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Celebrity ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/celebrity.MessageResponse"
                         }
                     }
                 }
@@ -1673,6 +1831,46 @@ const docTemplate = `{
             }
         },
         "celebrity.CreateCelebrityRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "image": {
+                    "type": "string",
+                    "example": "https://example.com/celebrity.jpg"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "example": "John Doe"
+                }
+            }
+        },
+        "celebrity.ListCelebritiesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.Celebrity"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "celebrity.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "celebrity.UpdateCelebrityRequest": {
             "type": "object",
             "required": [
                 "name"

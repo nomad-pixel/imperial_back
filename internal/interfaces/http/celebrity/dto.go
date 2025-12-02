@@ -15,3 +15,8 @@ type CreateCelebrityRequest struct {
 	Name  string `json:"name" binding:"required,min=1,max=255" example:"John Doe"`
 	Image string `json:"image" example:"https://example.com/celebrity.jpg"`
 }
+
+type UpdateCelebrityRequest struct {
+	Name  string `json:"name" binding:"required,min=1,max=255" example:"John Doe"`
+	Image string `json:"image" example:"https://example.com/celebrity.jpg"`
+}

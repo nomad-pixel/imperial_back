@@ -88,7 +88,7 @@ func InitializeApp(ctx context.Context) (*App, error) {
 	getCelebrityByIdUsecase := usecases3.NewGetCelebrityByIdUsecase(celebrityRepository)
 	listCelebritiesUsecase := usecases3.NewListCelebritiesUsecase(celebrityRepository)
 	updateCelebrityUsecase := usecases3.NewUpdateCelebrityUsecase(celebrityRepository)
-	deleteCelebrityUsecase := usecases3.NewDeleteCelebrityUsecase(celebrityRepository)
+	deleteCelebrityUsecase := usecases3.NewDeleteCelebrityUsecase(celebrityRepository, imageService)
 	celebrityHandler := celebrity.NewCelebrityHandler(createCelebrityUsecase, uploadCelebrityImageUsecase, getCelebrityByIdUsecase, listCelebritiesUsecase, updateCelebrityUsecase, deleteCelebrityUsecase)
 	app := NewApp(config, pool, tokenService, authHandler, carHandler, carImageHandler, carTagHandler, carMarkHandler, carCategoryHandler, celebrityHandler)
 	return app, nil

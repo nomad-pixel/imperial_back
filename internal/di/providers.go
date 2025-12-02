@@ -15,7 +15,6 @@ import (
 	"github.com/nomad-pixel/imperial/internal/infrastructure/repositories"
 )
 
-// ProviderSet is a Wire provider set that includes all dependencies
 var ProviderSet = wire.NewSet(
 	// Config provider
 	ProvideConfig,
@@ -62,14 +61,11 @@ func ProvideConfig() (*config.Config, error) {
 	return cfg, nil
 }
 
-// ProvideDatabase creates and returns a database connection pool
 func ProvideDatabase(ctx context.Context, cfg *config.Config) (*pgxpool.Pool, error) {
 	poolConfig, err := pgxpool.ParseConfig(cfg.Database.URL)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse database URL: %w", err)
 	}
-
-	// Apply connection pool settings
 	poolConfig.MaxConns = cfg.Database.MaxConns
 	poolConfig.MinConns = cfg.Database.MinConns
 	poolConfig.MaxConnLifetime = cfg.Database.MaxConnLifetime
@@ -88,7 +84,6 @@ func ProvideDatabase(ctx context.Context, cfg *config.Config) (*pgxpool.Pool, er
 	return db, nil
 }
 
-// ProvideEmailService creates and returns an email service based on configuration
 func ProvideEmailService(cfg *config.Config) (ports.EmailService, error) {
 	if cfg.Email.Provider == "smtp" {
 		log.Printf("Initializing SMTP email service (host: %s, port: %d)", cfg.Email.SMTP.Host, cfg.Email.SMTP.Port)
@@ -110,7 +105,6 @@ func ProvideEmailService(cfg *config.Config) (ports.EmailService, error) {
 	return email.NewConsoleEmailService(), nil
 }
 
-// ProvideTokenService creates and returns a JWT token service
 func ProvideTokenService(cfg *config.Config) ports.TokenService {
 	log.Printf("Initializing JWT token service (access: %v, refresh: %v)",
 		cfg.JWT.AccessTokenDuration, cfg.JWT.RefreshTokenDuration)
@@ -122,7 +116,6 @@ func ProvideTokenService(cfg *config.Config) ports.TokenService {
 	)
 }
 
-// ProvideImageService creates and returns an image service
 func ProvideImageService(cfg *config.Config) (ports.ImageService, error) {
 	log.Printf("Initializing file storage (path: %s, base URL: %s)", cfg.Storage.LocalPath, cfg.Storage.BaseURL)
 
@@ -132,8 +125,6 @@ func ProvideImageService(cfg *config.Config) (ports.ImageService, error) {
 	}
 	return imageService, nil
 }
-
-// Repository providers
 
 func ProvideUserRepository(db *pgxpool.Pool) ports.UserRepository {
 	return repositories.NewUserRepositoryImpl(db)

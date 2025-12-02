@@ -17,6 +17,8 @@ import (
 	carMark "github.com/nomad-pixel/imperial/internal/interfaces/http/car/mark"
 	carTag "github.com/nomad-pixel/imperial/internal/interfaces/http/car/tag"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/celebrity"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/driver"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/lead"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/middleware"
 )
 
@@ -77,6 +79,8 @@ func main() {
 	carCategory.RegisterRoutes(apiGroup, app.CarCategoryHandler, app.TokenService)
 	carImage.RegisterRoutes(apiGroup, app.CarImageHandler, app.TokenService)
 	celebrity.RegisterRoutes(apiGroup, app.CelebrityHandler, app.TokenService)
+	lead.RegisterRoutes(apiGroup, app.LeadHandler, app.TokenService)
+	driver.RegisterRoutes(apiGroup, app.DriverHandler, app.TokenService)
 
 	log.Printf("✅ Server listening on http://localhost:%d", cfg.Server.Port)
 	log.Printf("📚 Swagger documentation: http://localhost:%d/swagger/index.html", cfg.Server.Port)

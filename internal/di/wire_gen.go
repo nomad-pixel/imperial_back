@@ -11,6 +11,8 @@ import (
 	"github.com/nomad-pixel/imperial/internal/domain/usecases/auth"
 	usecases2 "github.com/nomad-pixel/imperial/internal/domain/usecases/car"
 	usecases3 "github.com/nomad-pixel/imperial/internal/domain/usecases/celebrity"
+	usecases5 "github.com/nomad-pixel/imperial/internal/domain/usecases/driver"
+	usecases4 "github.com/nomad-pixel/imperial/internal/domain/usecases/lead"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/auth"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/car"
 	car5 "github.com/nomad-pixel/imperial/internal/interfaces/http/car/category"
@@ -18,6 +20,8 @@ import (
 	car4 "github.com/nomad-pixel/imperial/internal/interfaces/http/car/mark"
 	car3 "github.com/nomad-pixel/imperial/internal/interfaces/http/car/tag"
 	"github.com/nomad-pixel/imperial/internal/interfaces/http/celebrity"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/driver"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/lead"
 )
 
 // Injectors from wire.go:
@@ -90,6 +94,20 @@ func InitializeApp(ctx context.Context) (*App, error) {
 	updateCelebrityUsecase := usecases3.NewUpdateCelebrityUsecase(celebrityRepository)
 	deleteCelebrityUsecase := usecases3.NewDeleteCelebrityUsecase(celebrityRepository, imageService)
 	celebrityHandler := celebrity.NewCelebrityHandler(createCelebrityUsecase, uploadCelebrityImageUsecase, getCelebrityByIdUsecase, listCelebritiesUsecase, updateCelebrityUsecase, deleteCelebrityUsecase)
-	app := NewApp(config, pool, tokenService, authHandler, carHandler, carImageHandler, carTagHandler, carMarkHandler, carCategoryHandler, celebrityHandler)
+	leadRepository := ProvideLeadRepository(pool)
+	createLeadUsecase := usecases4.NewCreateLeadUsecase(leadRepository)
+	getLeadByIdUsecase := usecases4.NewGetLeadByIdUsecase(leadRepository)
+	listLeadsUsecase := usecases4.NewListLeadsUsecase(leadRepository)
+	deleteLeadUsecase := usecases4.NewDeleteLeadUsecase(leadRepository)
+	leadHandler := lead.NewLeadHandler(createLeadUsecase, getLeadByIdUsecase, listLeadsUsecase, deleteLeadUsecase)
+	driverRepository := ProvideDriverRepository(pool)
+	createDriverUsecase := usecases5.NewCreateDriverUsecase(driverRepository)
+	getDriverByIdUsecase := usecases5.NewGetDriverByIdUsecase(driverRepository)
+	listDriversUsecase := usecases5.NewListDriversUsecase(driverRepository)
+	updateDriverUsecase := usecases5.NewUpdateDriverUsecase(driverRepository)
+	deleteDriverUsecase := usecases5.NewDeleteDriverUsecase(driverRepository)
+	uploadDriverPhotoUsecase := usecases5.NewUploadDriverPhotoUsecase(driverRepository, imageService)
+	driverHandler := driver.NewDriverHandler(createDriverUsecase, getDriverByIdUsecase, listDriversUsecase, updateDriverUsecase, deleteDriverUsecase, uploadDriverPhotoUsecase)
+	app := NewApp(config, pool, tokenService, authHandler, carHandler, carImageHandler, carTagHandler, carMarkHandler, carCategoryHandler, celebrityHandler, leadHandler, driverHandler)
 	return app, nil
 }

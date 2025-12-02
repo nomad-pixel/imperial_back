@@ -12,7 +12,7 @@ import (
 	token "github.com/nomad-pixel/imperial/internal/infrastructure/auth"
 	"github.com/nomad-pixel/imperial/internal/infrastructure/email"
 	imageSvc "github.com/nomad-pixel/imperial/internal/infrastructure/image"
-	"github.com/nomad-pixel/imperial/internal/infrastructure/repositories"
+	postgres "github.com/nomad-pixel/imperial/internal/infrastructure/postgres"
 )
 
 var ProviderSet = wire.NewSet(
@@ -34,11 +34,15 @@ var ProviderSet = wire.NewSet(
 	ProvideCarMarkRepository,
 	ProvideCarImageRepository,
 	ProvideCelebrityRepository,
+	ProvideLeadRepository,
+	ProvideDriverRepository,
 
 	// Use case providers (imported from other files)
 	AuthUsecaseSet,
 	CarUsecaseSet,
 	CelebrityUsecaseSet,
+	LeadUsecaseSet,
+	DriverUsecaseSet,
 
 	// Handler providers
 	HandlerSet,
@@ -127,33 +131,41 @@ func ProvideImageService(cfg *config.Config) (ports.ImageService, error) {
 }
 
 func ProvideUserRepository(db *pgxpool.Pool) ports.UserRepository {
-	return repositories.NewUserRepositoryImpl(db)
+	return postgres.NewUserRepositoryImpl(db)
 }
 
 func ProvideVerifyCodeRepository(db *pgxpool.Pool) ports.VerifyCodeRepository {
-	return repositories.NewVerifyCodeRepositoryImpl(db)
+	return postgres.NewVerifyCodeRepositoryImpl(db)
 }
 
 func ProvideCarRepository(db *pgxpool.Pool) ports.CarRepository {
-	return repositories.NewCarRepositoryImpl(db)
+	return postgres.NewCarRepositoryImpl(db)
 }
 
 func ProvideCarCategoryRepository(db *pgxpool.Pool) ports.CarCategoryRepository {
-	return repositories.NewCarCategoryRepositoryImpl(db)
+	return postgres.NewCarCategoryRepositoryImpl(db)
 }
 
 func ProvideCarTagRepository(db *pgxpool.Pool) ports.CarTagRepository {
-	return repositories.NewCarTagRepositoryImpl(db)
+	return postgres.NewCarTagRepositoryImpl(db)
 }
 
 func ProvideCarMarkRepository(db *pgxpool.Pool) ports.CarMarkRepository {
-	return repositories.NewCarMarkRepositoryImpl(db)
+	return postgres.NewCarMarkRepositoryImpl(db)
 }
 
 func ProvideCarImageRepository(db *pgxpool.Pool) ports.CarImageRepository {
-	return repositories.NewCarImageRepositoryImpl(db)
+	return postgres.NewCarImageRepositoryImpl(db)
 }
 
 func ProvideCelebrityRepository(db *pgxpool.Pool) ports.CelebrityRepository {
-	return repositories.NewCelebrityRepositoryImpl(db)
+	return postgres.NewCelebrityRepositoryImpl(db)
+}
+
+func ProvideLeadRepository(db *pgxpool.Pool) ports.LeadRepository {
+	return postgres.NewLeadRepository(db)
+}
+
+func ProvideDriverRepository(db *pgxpool.Pool) ports.DriverRepository {
+	return postgres.NewDriverRepository(db)
 }

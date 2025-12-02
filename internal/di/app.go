@@ -11,6 +11,8 @@ import (
 	carMark "github.com/nomad-pixel/imperial/internal/interfaces/http/car/mark"
 	carTag "github.com/nomad-pixel/imperial/internal/interfaces/http/car/tag"
 	celebrity "github.com/nomad-pixel/imperial/internal/interfaces/http/celebrity"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/driver"
+	"github.com/nomad-pixel/imperial/internal/interfaces/http/lead"
 )
 
 // App contains all application dependencies
@@ -25,6 +27,8 @@ type App struct {
 	CarMarkHandler     *carMark.CarMarkHandler
 	CarCategoryHandler *carCategory.CarCategoryHandler
 	CelebrityHandler   *celebrity.CelebrityHandler
+	LeadHandler        *lead.LeadHandler
+	DriverHandler      *driver.DriverHandler
 }
 
 // NewApp creates a new App instance with all dependencies injected
@@ -39,6 +43,8 @@ func NewApp(
 	carMarkHandler *carMark.CarMarkHandler,
 	carCategoryHandler *carCategory.CarCategoryHandler,
 	celebrityHandler *celebrity.CelebrityHandler,
+	leadHandler *lead.LeadHandler,
+	driverHandler *driver.DriverHandler,
 ) *App {
 	return &App{
 		Config:             cfg,
@@ -51,6 +57,8 @@ func NewApp(
 		CarMarkHandler:     carMarkHandler,
 		CarCategoryHandler: carCategoryHandler,
 		CelebrityHandler:   celebrityHandler,
+		LeadHandler:        leadHandler,
+		DriverHandler:      driverHandler,
 	}
 }
 

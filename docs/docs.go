@@ -1143,6 +1143,50 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/celebrities/{id}/image": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Upload an image file for the specified celebrity",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Celebrities"
+                ],
+                "summary": "Upload an image for a celebrity",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Celebrity ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image file",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Celebrity"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1631,7 +1675,6 @@ const docTemplate = `{
         "celebrity.CreateCelebrityRequest": {
             "type": "object",
             "required": [
-                "image",
                 "name"
             ],
             "properties": {

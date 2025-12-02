@@ -1,7 +1,7 @@
 package ports
 
 type ImageService interface {
-	SaveCarImage(fileData []byte, fileName string) (string, error)
-	DeleteCarImage(imagePath string) error
+	SaveImage(fileData []byte, folderName, fileName string) (string, error)
+	DeleteImage(imagePath string) error
 	GetFullImagePath(imagePath string) string
 }

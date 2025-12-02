@@ -2,8 +2,6 @@ package celebrity
 
 import "github.com/nomad-pixel/imperial/internal/domain/entities"
 
-type CelebrityResponse = entities.Celebrity
-
 type MessageResponse struct {
 	Message string `json:"message"`
 }

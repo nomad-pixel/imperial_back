@@ -61,7 +61,8 @@ type App struct {
 	DeleteCarCategoryUsecase    carUsecase.DeleteCarCategoryUsecase
 
 	//Celebrity usecases
-	CreateCelebrityUsecase celebrityUsecase.CreateCelebrityUsecase
+	CreateCelebrityUsecase      celebrityUsecase.CreateCelebrityUsecase
+	CelebrityUploadImageUsecase celebrityUsecase.UploadCelebrityImageUsecase
 }
 
 func NewApp(
@@ -104,7 +105,8 @@ func NewApp(
 	updateCarCategoryUsecase carUsecase.UpdateCarCategoryUsecase,
 	deleteCarCategoryUsecase carUsecase.DeleteCarCategoryUsecase,
 
-	celebrityUsecase celebrityUsecase.CreateCelebrityUsecase,
+	celebrityCreateUsecase celebrityUsecase.CreateCelebrityUsecase,
+	celebrityUploadImageUsecase celebrityUsecase.UploadCelebrityImageUsecase,
 
 ) *App {
 	return &App{
@@ -146,7 +148,8 @@ func NewApp(
 		UpdateCarCategoryUsecase:    updateCarCategoryUsecase,
 		DeleteCarCategoryUsecase:    deleteCarCategoryUsecase,
 
-		CreateCelebrityUsecase: celebrityUsecase,
+		CreateCelebrityUsecase:      celebrityCreateUsecase,
+		CelebrityUploadImageUsecase: celebrityUploadImageUsecase,
 	}
 }
 

@@ -26,10 +26,10 @@ func NewFileImageService(storagePath, baseURL string) (ports.ImageService, error
 	}, nil
 }
 
-func (s *FileImageService) SaveCarImage(fileData []byte, fileName string) (string, error) {
-	carDir := filepath.Join(s.storagePath, "cars")
+func (s *FileImageService) SaveImage(fileData []byte, folderName, fileName string) (string, error) {
+	carDir := filepath.Join(s.storagePath, folderName)
 	if err := os.MkdirAll(carDir, 0755); err != nil {
-		return "", errors.Wrap(err, errors.ErrCodeInternal, "failed to create car directory")
+		return "", errors.Wrap(err, errors.ErrCodeInternal, "failed to create"+folderName+" directory")
 	}
 	ext := filepath.Ext(fileName)
 	timestamp := time.Now().Unix()
@@ -38,11 +38,11 @@ func (s *FileImageService) SaveCarImage(fileData []byte, fileName string) (strin
 	if err := os.WriteFile(filePath, fileData, 0644); err != nil {
 		return "", errors.Wrap(err, errors.ErrCodeInternal, "failed to save image file")
 	}
-	relativePath := filepath.Join("cars", newFileName)
+	relativePath := filepath.Join(folderName, newFileName)
 	return relativePath, nil
 }
 
-func (s *FileImageService) DeleteCarImage(imagePath string) error {
+func (s *FileImageService) DeleteImage(imagePath string) error {
 	fullPath := filepath.Join(s.storagePath, imagePath)
 	if err := os.Remove(fullPath); err != nil {
 		if os.IsNotExist(err) {

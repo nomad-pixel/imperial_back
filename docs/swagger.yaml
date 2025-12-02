@@ -342,7 +342,6 @@ definitions:
         minLength: 1
         type: string
     required:
-    - image
     - name
     type: object
   entities.Car:
@@ -1179,6 +1178,34 @@ paths:
       security:
       - BearerAuth: []
       summary: Create a new celebrity
+      tags:
+      - Celebrities
+  /v1/celebrities/{id}/image:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Upload an image file for the specified celebrity
+      parameters:
+      - description: Celebrity ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Image file
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Celebrity'
+      security:
+      - BearerAuth: []
+      summary: Upload an image for a celebrity
       tags:
       - Celebrities
 securityDefinitions:

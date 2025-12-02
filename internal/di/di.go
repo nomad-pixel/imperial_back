@@ -175,9 +175,13 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		getCarImagesListUsecase,
 	)
 
-	celebrityUsecase := celebrityUsecase.NewCreateCelebrityUsecase(celebrityRepo)
+	celebrityCreateUsecase := celebrityUsecase.NewCreateCelebrityUsecase(celebrityRepo)
+	celebrityUploadImageUsecase := celebrityUsecase.NewUploadCelebrityImageUsecase(
+		celebrityRepo,
+		imageService,
+	)
 
-	celebrityHandler := celebrity.NewCelebrityHandler(celebrityUsecase)
+	celebrityHandler := celebrity.NewCelebrityHandler(celebrityCreateUsecase, celebrityUploadImageUsecase)
 
 	app := NewApp(
 		db,
@@ -222,7 +226,8 @@ func InitializeApp(ctx context.Context, dbURL string) (*App, error) {
 		deleteCarCategoryUsecase,
 
 		// Celebrity usecases
-		celebrityUsecase,
+		celebrityCreateUsecase,
+		celebrityUploadImageUsecase,
 	)
 
 	return app, nil

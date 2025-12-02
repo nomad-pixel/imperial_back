@@ -29,7 +29,7 @@ func (u *deleteCarImageUsecase) Execute(ctx context.Context, imageID int64) erro
 		return apperrors.New(apperrors.ErrCodeInternal, "failed to get car image from repository")
 	}
 
-	err = u.imageService.DeleteCarImage(image.ImagePath)
+	err = u.imageService.DeleteImage(image.ImagePath)
 
 	if err != nil {
 		return apperrors.New(apperrors.ErrCodeInternal, "failed to delete car image file")

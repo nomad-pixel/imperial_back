@@ -30,7 +30,7 @@ func (u *createCarImageUsecase) Execute(ctx context.Context, fileData []byte, fi
 		return nil, apperrors.New(apperrors.ErrCodeValidation, "image file is empty")
 	}
 
-	imagePath, err := u.imageService.SaveCarImage(fileData, fileName)
+	imagePath, err := u.imageService.SaveImage(fileData, "cars", fileName)
 	if err != nil {
 		return nil, apperrors.New(apperrors.ErrCodeInternal, "failed to save image: %v")
 	}
@@ -38,7 +38,7 @@ func (u *createCarImageUsecase) Execute(ctx context.Context, fileData []byte, fi
 	carImage, err = u.carImageRepo.Save(ctx, imagePath)
 
 	if err != nil {
-		err = u.imageService.DeleteCarImage(imagePath)
+		err = u.imageService.DeleteImage(imagePath)
 		if err != nil {
 			return nil, apperrors.Wrap(err, apperrors.ErrCodeInternal, "failed to cleanup image after DB failure")
 		}

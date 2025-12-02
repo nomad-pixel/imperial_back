@@ -8,9 +8,11 @@ import (
 
 func RegisterRoutes(router gin.IRouter, handler *CelebrityHandler, tokenSvc ports.TokenService) {
 	api := router.Group("/v1/celebrities")
+
 	api.Use(middleware.AuthMiddleware(tokenSvc))
 
 	{
 		api.POST("", handler.CreateCelebrity)
+		api.PUT("/:id/image", handler.UploadCelebrityImage)
 	}
 }

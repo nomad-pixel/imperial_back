@@ -29,6 +29,16 @@ func NewLeadHandler(
 	}
 }
 
+// CreateLead godoc
+// @Summary Create a new lead
+// @Description Create a new lead with the provided details
+// @Tags Leads
+// @Accept json
+// @Produce json
+// @Param lead body CreateLeadRequest true "Lead data"
+// @Success 201 {object} entities.Lead
+// @Router /v1/leads [post]
+// @Security     BearerAuth
 func (h *LeadHandler) CreateLead(c *gin.Context) {
 	var req CreateLeadRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -45,6 +55,16 @@ func (h *LeadHandler) CreateLead(c *gin.Context) {
 	c.JSON(201, lead)
 }
 
+// GetLeadByID godoc
+// @Summary Get lead by ID
+// @Description Get detailed information about a lead by ID
+// @Tags Leads
+// @Accept json
+// @Produce json
+// @Param id path int true "Lead ID"
+// @Success 200 {object} entities.Lead
+// @Router /v1/leads/{id} [get]
+// @Security     BearerAuth
 func (h *LeadHandler) GetLeadByID(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -61,6 +81,17 @@ func (h *LeadHandler) GetLeadByID(c *gin.Context) {
 	c.JSON(200, lead)
 }
 
+// ListLeads godoc
+// @Summary List leads
+// @Description Get a paginated list of leads
+// @Tags Leads
+// @Accept json
+// @Produce json
+// @Param offset query int false "Offset for pagination" default(0)
+// @Param limit query int false "Limit for pagination" default(20)
+// @Success 200 {object} ListLeadsResponse
+// @Router /v1/leads [get]
+// @Security     BearerAuth
 func (h *LeadHandler) ListLeads(c *gin.Context) {
 	offset := int64(0)
 	limit := int64(20)
@@ -84,6 +115,16 @@ func (h *LeadHandler) ListLeads(c *gin.Context) {
 	})
 }
 
+// DeleteLead godoc
+// @Summary Delete lead
+// @Description Delete a lead by ID
+// @Tags Leads
+// @Accept json
+// @Produce json
+// @Param id path int true "Lead ID"
+// @Success 200 {object} map[string]string
+// @Router /v1/leads/{id} [delete]
+// @Security     BearerAuth
 func (h *LeadHandler) DeleteLead(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {

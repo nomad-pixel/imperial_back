@@ -371,6 +371,38 @@ definitions:
     required:
     - name
     type: object
+  driver.CreateDriverRequest:
+    properties:
+      about:
+        type: string
+      experience_years:
+        type: string
+      full_name:
+        type: string
+    required:
+    - about
+    - experience_years
+    - full_name
+    type: object
+  driver.ListDriversResponse:
+    properties:
+      data: {}
+      total:
+        type: integer
+    type: object
+  driver.UpdateDriverRequest:
+    properties:
+      about:
+        type: string
+      experience_years:
+        type: string
+      full_name:
+        type: string
+    required:
+    - about
+    - experience_years
+    - full_name
+    type: object
   entities.Car:
     properties:
       category:
@@ -451,6 +483,38 @@ definitions:
       updated_at:
         type: string
     type: object
+  entities.Driver:
+    properties:
+      about:
+        type: string
+      created_at:
+        type: string
+      experience_years:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      photo_url:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entities.Lead:
+    properties:
+      created_at:
+        type: string
+      end_date:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      phone:
+        type: string
+      start_date:
+        type: string
+    type: object
   entities.Tokens:
     properties:
       access_token:
@@ -482,6 +546,28 @@ definitions:
     properties:
       message:
         type: string
+    type: object
+  lead.CreateLeadRequest:
+    properties:
+      end_date:
+        type: string
+      full_name:
+        type: string
+      phone:
+        type: string
+      start_date:
+        type: string
+    required:
+    - end_date
+    - full_name
+    - phone
+    - start_date
+    type: object
+  lead.ListLeadsResponse:
+    properties:
+      data: {}
+      total:
+        type: integer
     type: object
 host: localhost:8080
 info:
@@ -1335,6 +1421,258 @@ paths:
       summary: Upload an image for a celebrity
       tags:
       - Celebrities
+  /v1/drivers:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of drivers
+      parameters:
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      - default: 20
+        description: Limit for pagination
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/driver.ListDriversResponse'
+      security:
+      - BearerAuth: []
+      summary: List drivers
+      tags:
+      - Drivers
+    post:
+      consumes:
+      - application/json
+      description: Create a new driver with the provided details
+      parameters:
+      - description: Driver data
+        in: body
+        name: driver
+        required: true
+        schema:
+          $ref: '#/definitions/driver.CreateDriverRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.Driver'
+      security:
+      - BearerAuth: []
+      summary: Create a new driver
+      tags:
+      - Drivers
+  /v1/drivers/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a driver by ID
+      parameters:
+      - description: Driver ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete driver
+      tags:
+      - Drivers
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a driver by ID
+      parameters:
+      - description: Driver ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Driver'
+      security:
+      - BearerAuth: []
+      summary: Get driver by ID
+      tags:
+      - Drivers
+    put:
+      consumes:
+      - application/json
+      description: Update driver information by ID
+      parameters:
+      - description: Driver ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Driver data
+        in: body
+        name: driver
+        required: true
+        schema:
+          $ref: '#/definitions/driver.UpdateDriverRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Driver'
+      security:
+      - BearerAuth: []
+      summary: Update driver
+      tags:
+      - Drivers
+  /v1/drivers/{id}/photo:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Upload a photo file for the specified driver
+      parameters:
+      - description: Driver ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Photo file
+        in: formData
+        name: photo
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Driver'
+      security:
+      - BearerAuth: []
+      summary: Upload a photo for a driver
+      tags:
+      - Drivers
+  /v1/leads:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of leads
+      parameters:
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      - default: 20
+        description: Limit for pagination
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lead.ListLeadsResponse'
+      security:
+      - BearerAuth: []
+      summary: List leads
+      tags:
+      - Leads
+    post:
+      consumes:
+      - application/json
+      description: Create a new lead with the provided details
+      parameters:
+      - description: Lead data
+        in: body
+        name: lead
+        required: true
+        schema:
+          $ref: '#/definitions/lead.CreateLeadRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.Lead'
+      security:
+      - BearerAuth: []
+      summary: Create a new lead
+      tags:
+      - Leads
+  /v1/leads/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a lead by ID
+      parameters:
+      - description: Lead ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete lead
+      tags:
+      - Leads
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a lead by ID
+      parameters:
+      - description: Lead ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Lead'
+      security:
+      - BearerAuth: []
+      summary: Get lead by ID
+      tags:
+      - Leads
 securityDefinitions:
   BearerAuth:
     description: 'JWT token must be passed with `Bearer ` prefix. Example: "Bearer

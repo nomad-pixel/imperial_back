@@ -36,6 +36,16 @@ func NewDriverHandler(
 	}
 }
 
+// CreateDriver godoc
+// @Summary Create a new driver
+// @Description Create a new driver with the provided details
+// @Tags Drivers
+// @Accept json
+// @Produce json
+// @Param driver body CreateDriverRequest true "Driver data"
+// @Success 201 {object} entities.Driver
+// @Router /v1/drivers [post]
+// @Security     BearerAuth
 func (h *DriverHandler) CreateDriver(c *gin.Context) {
 	var req CreateDriverRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -52,6 +62,16 @@ func (h *DriverHandler) CreateDriver(c *gin.Context) {
 	c.JSON(201, driver)
 }
 
+// GetDriverByID godoc
+// @Summary Get driver by ID
+// @Description Get detailed information about a driver by ID
+// @Tags Drivers
+// @Accept json
+// @Produce json
+// @Param id path int true "Driver ID"
+// @Success 200 {object} entities.Driver
+// @Router /v1/drivers/{id} [get]
+// @Security     BearerAuth
 func (h *DriverHandler) GetDriverByID(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -68,6 +88,17 @@ func (h *DriverHandler) GetDriverByID(c *gin.Context) {
 	c.JSON(200, driver)
 }
 
+// ListDrivers godoc
+// @Summary List drivers
+// @Description Get a paginated list of drivers
+// @Tags Drivers
+// @Accept json
+// @Produce json
+// @Param offset query int false "Offset for pagination" default(0)
+// @Param limit query int false "Limit for pagination" default(20)
+// @Success 200 {object} ListDriversResponse
+// @Router /v1/drivers [get]
+// @Security     BearerAuth
 func (h *DriverHandler) ListDrivers(c *gin.Context) {
 	offset := int64(0)
 	limit := int64(20)
@@ -91,6 +122,17 @@ func (h *DriverHandler) ListDrivers(c *gin.Context) {
 	})
 }
 
+// UpdateDriver godoc
+// @Summary Update driver
+// @Description Update driver information by ID
+// @Tags Drivers
+// @Accept json
+// @Produce json
+// @Param id path int true "Driver ID"
+// @Param driver body UpdateDriverRequest true "Driver data"
+// @Success 200 {object} entities.Driver
+// @Router /v1/drivers/{id} [put]
+// @Security     BearerAuth
 func (h *DriverHandler) UpdateDriver(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -113,6 +155,16 @@ func (h *DriverHandler) UpdateDriver(c *gin.Context) {
 	c.JSON(200, updatedDriver)
 }
 
+// DeleteDriver godoc
+// @Summary Delete driver
+// @Description Delete a driver by ID
+// @Tags Drivers
+// @Accept json
+// @Produce json
+// @Param id path int true "Driver ID"
+// @Success 200 {object} map[string]string
+// @Router /v1/drivers/{id} [delete]
+// @Security     BearerAuth
 func (h *DriverHandler) DeleteDriver(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -129,6 +181,17 @@ func (h *DriverHandler) DeleteDriver(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "Driver deleted successfully"})
 }
 
+// UploadDriverPhoto godoc
+// @Summary Upload a photo for a driver
+// @Description Upload a photo file for the specified driver
+// @Tags Drivers
+// @Accept multipart/form-data
+// @Produce json
+// @Param id path int true "Driver ID"
+// @Param photo formData file true "Photo file"
+// @Success 200 {object} entities.Driver
+// @Router /v1/drivers/{id}/photo [put]
+// @Security     BearerAuth
 func (h *DriverHandler) UploadDriverPhoto(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {

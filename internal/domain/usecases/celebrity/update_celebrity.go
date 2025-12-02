@@ -13,23 +13,29 @@ type updateCelebrityUsecase struct {
 }
 
 type UpdateCelebrityUsecase interface {
-	Execute(ctx context.Context, celebrity *entities.Celebrity) (*entities.Celebrity, error)
+	Execute(ctx context.Context, id int64, name string) (*entities.Celebrity, error)
 }
 
 func NewUpdateCelebrityUsecase(celebrityRepo ports.CelebrityRepository) UpdateCelebrityUsecase {
 	return &updateCelebrityUsecase{celebrityRepo: celebrityRepo}
 }
 
-func (u *updateCelebrityUsecase) Execute(ctx context.Context, celebrity *entities.Celebrity) (*entities.Celebrity, error) {
-	err := u.celebrityRepo.UpdateCelebrity(ctx, celebrity)
+func (u *updateCelebrityUsecase) Execute(ctx context.Context, id int64, name string) (*entities.Celebrity, error) {
+	celebrity, err := u.celebrityRepo.GetCelebrityByID(ctx, id)
+	if err != nil {
+		return nil, apperrors.New(apperrors.ErrCodeNotFound, "celebrity not found")
+	}
+	if err := celebrity.SetName(name); err != nil {
+		return nil, apperrors.New(apperrors.ErrCodeBadRequest, err.Error())
+	}
+	if err := celebrity.Validate(); err != nil {
+		return nil, apperrors.New(apperrors.ErrCodeBadRequest, err.Error())
+	}
+
+	err = u.celebrityRepo.UpdateCelebrity(ctx, celebrity)
 	if err != nil {
 		return nil, apperrors.New(apperrors.ErrCodeBadRequest, "failed to update celebrity")
 	}
 
-	updatedCelebrity, err := u.celebrityRepo.GetCelebrityByID(ctx, celebrity.ID)
-	if err != nil {
-		return nil, apperrors.New(apperrors.ErrCodeNotFound, "failed to get updated celebrity")
-	}
-
-	return updatedCelebrity, nil
+	return celebrity, nil
 }

@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nomad-pixel/imperial/internal/domain/entities"
 	usecasePorts "github.com/nomad-pixel/imperial/internal/domain/usecases/celebrity"
 	"github.com/nomad-pixel/imperial/pkg/errors"
 )
@@ -54,12 +53,7 @@ func (h *CelebrityHandler) CreateCelebrity(c *gin.Context) {
 		return
 	}
 
-	celebrity := &entities.Celebrity{
-		Name:  req.Name,
-		Image: req.Image,
-	}
-
-	err := h.createCelebrityUsecase.Execute(c.Request.Context(), celebrity)
+	celebrity, err := h.createCelebrityUsecase.Execute(c.Request.Context(), req.Name)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -198,13 +192,7 @@ func (h *CelebrityHandler) UpdateCelebrity(c *gin.Context) {
 		return
 	}
 
-	celebrity := &entities.Celebrity{
-		ID:    id,
-		Name:  req.Name,
-		Image: req.Image,
-	}
-
-	updatedCelebrity, err := h.updateCelebrityUsecase.Execute(c.Request.Context(), celebrity)
+	updatedCelebrity, err := h.updateCelebrityUsecase.Execute(c.Request.Context(), id, req.Name)
 	if err != nil {
 		_ = c.Error(err)
 		return

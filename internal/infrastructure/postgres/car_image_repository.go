@@ -105,3 +105,33 @@ func (r *carImageRepositoryImpl) GetList(ctx context.Context, carID int64, offse
 
 	return totalCount, images, nil
 }
+
+func (r *carImageRepositoryImpl) GetListByCar(ctx context.Context, carID int64) ([]*entities.CarImage, error) {
+	query := `
+		SELECT id, car_id, image_path, created_at
+		FROM car_images
+		WHERE car_id = $1
+		ORDER BY created_at ASC
+	`
+
+	rows, err := r.db.Query(ctx, query, carID)
+	if err != nil {
+		return nil, apperrors.Wrap(err, apperrors.ErrCodeInternal, "failed to list car images")
+	}
+	defer rows.Close()
+
+	var images []*entities.CarImage
+	for rows.Next() {
+		var image entities.CarImage
+		if err := rows.Scan(&image.ID, &image.CarID, &image.ImagePath, &image.CreatedAt); err != nil {
+			return nil, apperrors.Wrap(err, apperrors.ErrCodeInternal, "failed to scan car image")
+		}
+		images = append(images, &image)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, apperrors.Wrap(err, apperrors.ErrCodeInternal, "error occurred during rows iteration")
+	}
+
+	return images, nil
+}

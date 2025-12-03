@@ -10,17 +10,15 @@ import (
 
 type getCarImagesListUsecase struct {
 	carImageRepo ports.CarImageRepository
-	imageService ports.ImageService
 }
 
 type GetCarImagesListUsecase interface {
 	Execute(ctx context.Context, carID int64, offset, limit int64) (total int64, images []*entities.CarImage, err error)
 }
 
-func NewGetCarImagesListUsecase(carImageRepository ports.CarImageRepository, imageService ports.ImageService) GetCarImagesListUsecase {
+func NewGetCarImagesListUsecase(carImageRepository ports.CarImageRepository) GetCarImagesListUsecase {
 	return &getCarImagesListUsecase{
 		carImageRepo: carImageRepository,
-		imageService: imageService,
 	}
 }
 
@@ -28,10 +26,6 @@ func (u *getCarImagesListUsecase) Execute(ctx context.Context, carID int64, offs
 	total, carImages, err := u.carImageRepo.GetList(ctx, carID, offset, limit)
 	if err != nil {
 		return 0, nil, apperrors.New(apperrors.ErrCodeInternal, "failed to get car images list from repository")
-	}
-
-	for _, image := range carImages {
-		image.ImagePath = u.imageService.GetFullImagePath(image.ImagePath)
 	}
 
 	return total, carImages, nil

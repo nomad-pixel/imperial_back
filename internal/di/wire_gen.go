@@ -63,7 +63,7 @@ func InitializeApp(ctx context.Context) (*App, error) {
 	}
 	createCarImageUsecase := usecases2.NewCreateCarImageUsecase(carImageRepository, imageService)
 	deleteCarImageUsecase := usecases2.NewDeleteCarImageUsecase(carImageRepository, imageService)
-	getCarImagesListUsecase := usecases2.NewGetCarImagesListUsecase(carImageRepository, imageService)
+	getCarImagesListUsecase := usecases2.NewGetCarImagesListUsecase(carImageRepository)
 	carImageHandler := car2.NewCarImageHandler(createCarImageUsecase, deleteCarImageUsecase, getCarImagesListUsecase)
 	carTagRepository := ProvideCarTagRepository(pool)
 	createCarTagUsecase := usecases2.NewCreateCarTagUsecase(carTagRepository)

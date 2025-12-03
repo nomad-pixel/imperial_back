@@ -45,7 +45,5 @@ func (u *createCarImageUsecase) Execute(ctx context.Context, carID int64, fileDa
 		return nil, apperrors.New(apperrors.ErrCodeInternal, "failed to create car image record: %v")
 	}
 
-	carImage.ImagePath = u.imageService.GetFullImagePath(carImage.ImagePath)
-
 	return carImage, nil
 }

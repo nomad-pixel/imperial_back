@@ -11,4 +11,5 @@ type CarImageRepository interface {
 	Delete(ctx context.Context, imageID int64) error
 	GetByID(ctx context.Context, imageID int64) (*entities.CarImage, error)
 	GetList(ctx context.Context, carID int64, offset, limit int64) (int64, []*entities.CarImage, error)
+	GetListByCar(ctx context.Context, carID int64) ([]*entities.CarImage, error)
 }

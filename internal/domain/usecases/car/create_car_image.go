@@ -14,7 +14,7 @@ type createCarImageUsecase struct {
 }
 
 type CreateCarImageUsecase interface {
-	Execute(ctx context.Context, fileData []byte, fileName string) (*entities.CarImage, error)
+	Execute(ctx context.Context, carID int64, fileData []byte, fileName string) (*entities.CarImage, error)
 }
 
 func NewCreateCarImageUsecase(carImageRepo ports.CarImageRepository, imageService ports.ImageService) CreateCarImageUsecase {
@@ -24,7 +24,7 @@ func NewCreateCarImageUsecase(carImageRepo ports.CarImageRepository, imageServic
 	}
 }
 
-func (u *createCarImageUsecase) Execute(ctx context.Context, fileData []byte, fileName string) (*entities.CarImage, error) {
+func (u *createCarImageUsecase) Execute(ctx context.Context, carID int64, fileData []byte, fileName string) (*entities.CarImage, error) {
 
 	if len(fileData) == 0 {
 		return nil, apperrors.New(apperrors.ErrCodeValidation, "image file is empty")
@@ -35,7 +35,7 @@ func (u *createCarImageUsecase) Execute(ctx context.Context, fileData []byte, fi
 		return nil, apperrors.New(apperrors.ErrCodeInternal, "failed to save image: %v")
 	}
 	var carImage *entities.CarImage
-	carImage, err = u.carImageRepo.Save(ctx, imagePath)
+	carImage, err = u.carImageRepo.Save(ctx, carID, imagePath)
 
 	if err != nil {
 		err = u.imageService.DeleteImage(imagePath)

@@ -4,7 +4,6 @@ import "github.com/nomad-pixel/imperial/internal/domain/entities"
 
 type CreateCarRequest struct {
 	Name           string  `json:"name" binding:"required,min=1,max=255" example:"Toyota"`
-	ImageUrl       string  `json:"image_url" binding:"required,url" example:"https://example.com/car.jpg"`
 	PricePerDay    int64   `json:"price_per_day" binding:"required,min=0" example:"100"`
 	OnlyWithDriver bool    `json:"only_with_driver" example:"false"`
 	MarkId         int64   `json:"mark_id" binding:"required,min=1" example:"1"`
@@ -14,7 +13,6 @@ type CreateCarRequest struct {
 
 type UpdateCarRequest struct {
 	Name           string  `json:"name" binding:"required,min=1,max=255" example:"Toyota"`
-	ImageUrl       string  `json:"image_url" binding:"required,url" example:"https://example.com/car.jpg"`
 	PricePerDay    int64   `json:"price_per_day" binding:"required,min=0" example:"100"`
 	OnlyWithDriver bool    `json:"only_with_driver" example:"false"`
 	MarkId         int64   `json:"mark_id" binding:"required,min=1" example:"1"`

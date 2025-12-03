@@ -34,11 +34,18 @@ func NewCarImageHandler(
 // @Tags         Car images
 // @Accept       multipart/form-data
 // @Produce      json
+// @Param        car_id path int true "ID автомобиля"
 // @Param        image formData file true "Изображение автомобиля"
 // @Security     BearerAuth
-// @Router       /v1/cars/images [post]
+// @Router       /v1/cars/{car_id}/images [post]
 // @Success      201 {object}  CarImageResponse  "Марка успешно создана"
 func (h *CarImageHandler) CreateCarImage(c *gin.Context) {
+	carID, err := strconv.ParseInt(c.Param("car_id"), 10, 64)
+	if err != nil {
+		_ = c.Error(errors.New(errors.ErrCodeValidation, "Укажите корректный ID автомобиля"))
+		return
+	}
+
 	fileHeader, err := c.FormFile("image")
 	if err != nil {
 		_ = c.Error(errors.Wrap(err, errors.ErrCodeValidation, "Неверный формат данных"))
@@ -58,7 +65,7 @@ func (h *CarImageHandler) CreateCarImage(c *gin.Context) {
 		return
 	}
 
-	image, err := h.createCarImage.Execute(c.Request.Context(), fileData, fileHeader.Filename)
+	image, err := h.createCarImage.Execute(c.Request.Context(), carID, fileData, fileHeader.Filename)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -99,12 +106,19 @@ func (h *CarImageHandler) DeleteCarImage(c *gin.Context) {
 // @Tags         Car images
 // @Accept       json
 // @Produce      json
+// @Param        car_id path int true "ID автомобиля"
 // @Param        offset query int false "Смещение для пагинации" default(0)
 // @Param        limit query int false "Лимит для пагинации" default(20)
 // @Security     BearerAuth
-// @Router       /v1/cars/images [get]
+// @Router       /v1/cars/{car_id}/images [get]
 // @Success      200 {object}  ListCarImagesResponse  "Список изображений успешно получен"
 func (h *CarImageHandler) GetCarImagesList(c *gin.Context) {
+	carID, err := strconv.ParseInt(c.Param("car_id"), 10, 64)
+	if err != nil {
+		_ = c.Error(errors.New(errors.ErrCodeValidation, "Укажите корректный ID автомобиля"))
+		return
+	}
+
 	offsetStr := c.DefaultQuery("offset", "0")
 	limitStr := c.DefaultQuery("limit", "20")
 
@@ -120,7 +134,7 @@ func (h *CarImageHandler) GetCarImagesList(c *gin.Context) {
 		return
 	}
 
-	total, images, err := h.getCarImagesList.Execute(c.Request.Context(), offset, limit)
+	total, images, err := h.getCarImagesList.Execute(c.Request.Context(), carID, offset, limit)
 	if err != nil {
 		_ = c.Error(err)
 		return

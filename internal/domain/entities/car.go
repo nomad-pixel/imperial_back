@@ -9,12 +9,12 @@ import (
 type Car struct {
 	ID             int64        `json:"id"`
 	Name           string       `json:"name"`
-	ImageUrl       string       `json:"image_url"`
 	OnlyWithDriver bool         `json:"only_with_driver"`
 	PricePerDay    int64        `json:"price_per_day"`
 	Tags           []*CarTag    `json:"tags"`
 	Mark           *CarMark     `json:"mark"`
 	Category       *CarCategory `json:"category"`
+	Images         []*CarImage  `json:"images"`
 	CreatedAt      time.Time    `json:"created_at"`
 	UpdatedAt      time.Time    `json:"updated_at"`
 }
@@ -54,6 +54,7 @@ func NewCar(name string, pricePerDay int64, markID, categoryID int64, onlyWithDr
 		Mark:           &CarMark{ID: markID},
 		Category:       &CarCategory{ID: categoryID},
 		Tags:           make([]*CarTag, 0),
+		Images:         make([]*CarImage, 0),
 		CreatedAt:      now,
 		UpdatedAt:      now,
 	}, nil
@@ -112,11 +113,6 @@ func (c *Car) SetPricePerDay(price int64) error {
 	c.PricePerDay = price
 	c.UpdatedAt = time.Now()
 	return nil
-}
-
-func (c *Car) SetImageUrl(imageURL string) {
-	c.ImageUrl = imageURL
-	c.UpdatedAt = time.Now()
 }
 
 func (c *Car) SetOnlyWithDriver(onlyWithDriver bool) {

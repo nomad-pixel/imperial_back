@@ -112,6 +112,8 @@ definitions:
     type: object
   car.CarImageResponse:
     properties:
+      car_id:
+        type: integer
       created_at:
         type: string
       id:
@@ -138,8 +140,10 @@ definitions:
         type: string
       id:
         type: integer
-      image_url:
-        type: string
+      images:
+        items:
+          $ref: '#/definitions/entities.CarImage'
+        type: array
       mark:
         $ref: '#/definitions/entities.CarMark'
       name:
@@ -187,9 +191,6 @@ definitions:
         example: 2
         minimum: 1
         type: integer
-      image_url:
-        example: https://example.com/car.jpg
-        type: string
       mark_id:
         example: 1
         minimum: 1
@@ -212,7 +213,6 @@ definitions:
         type: array
     required:
     - category_id
-    - image_url
     - mark_id
     - name
     - price_per_day
@@ -292,9 +292,6 @@ definitions:
         example: 2
         minimum: 1
         type: integer
-      image_url:
-        example: https://example.com/car.jpg
-        type: string
       mark_id:
         example: 1
         minimum: 1
@@ -317,7 +314,6 @@ definitions:
         type: array
     required:
     - category_id
-    - image_url
     - mark_id
     - name
     - price_per_day
@@ -411,8 +407,10 @@ definitions:
         type: string
       id:
         type: integer
-      image_url:
-        type: string
+      images:
+        items:
+          $ref: '#/definitions/entities.CarImage'
+        type: array
       mark:
         $ref: '#/definitions/entities.CarMark'
       name:
@@ -441,6 +439,8 @@ definitions:
     type: object
   entities.CarImage:
     properties:
+      car_id:
+        type: integer
       created_at:
         type: string
       id:
@@ -755,6 +755,66 @@ paths:
       summary: Создание нового автомобиля
       tags:
       - Cars
+  /v1/cars/{car_id}/images:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список изображений для указанного автомобиля
+      parameters:
+      - description: ID автомобиля
+        in: path
+        name: car_id
+        required: true
+        type: integer
+      - default: 0
+        description: Смещение для пагинации
+        in: query
+        name: offset
+        type: integer
+      - default: 20
+        description: Лимит для пагинации
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список изображений успешно получен
+          schema:
+            $ref: '#/definitions/car.ListCarImagesResponse'
+      security:
+      - BearerAuth: []
+      summary: Получение списка изображений автомобиля
+      tags:
+      - Car images
+    post:
+      consumes:
+      - multipart/form-data
+      description: Загружает изображение для указанного автомобиля
+      parameters:
+      - description: ID автомобиля
+        in: path
+        name: car_id
+        required: true
+        type: integer
+      - description: Изображение автомобиля
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Марка успешно создана
+          schema:
+            $ref: '#/definitions/car.CarImageResponse'
+      security:
+      - BearerAuth: []
+      summary: Загрузка изображения автомобиля
+      tags:
+      - Car images
   /v1/cars/{id}:
     delete:
       consumes:
@@ -1196,56 +1256,6 @@ paths:
       summary: Обновление тега
       tags:
       - Car Tags
-  /v1/cars/images:
-    get:
-      consumes:
-      - application/json
-      description: Возвращает список изображений для указанного автомобиля
-      parameters:
-      - default: 0
-        description: Смещение для пагинации
-        in: query
-        name: offset
-        type: integer
-      - default: 20
-        description: Лимит для пагинации
-        in: query
-        name: limit
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Список изображений успешно получен
-          schema:
-            $ref: '#/definitions/car.ListCarImagesResponse'
-      security:
-      - BearerAuth: []
-      summary: Получение списка изображений автомобиля
-      tags:
-      - Car images
-    post:
-      consumes:
-      - multipart/form-data
-      description: Загружает изображение для указанного автомобиля
-      parameters:
-      - description: Изображение автомобиля
-        in: formData
-        name: image
-        required: true
-        type: file
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Марка успешно создана
-          schema:
-            $ref: '#/definitions/car.CarImageResponse'
-      security:
-      - BearerAuth: []
-      summary: Загрузка изображения автомобиля
-      tags:
-      - Car images
   /v1/cars/images/{id}:
     delete:
       consumes:

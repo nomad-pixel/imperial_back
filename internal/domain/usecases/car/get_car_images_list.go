@@ -14,7 +14,7 @@ type getCarImagesListUsecase struct {
 }
 
 type GetCarImagesListUsecase interface {
-	Execute(ctx context.Context, offset, limit int64) (total int64, images []*entities.CarImage, err error)
+	Execute(ctx context.Context, carID int64, offset, limit int64) (total int64, images []*entities.CarImage, err error)
 }
 
 func NewGetCarImagesListUsecase(carImageRepository ports.CarImageRepository, imageService ports.ImageService) GetCarImagesListUsecase {
@@ -24,8 +24,8 @@ func NewGetCarImagesListUsecase(carImageRepository ports.CarImageRepository, ima
 	}
 }
 
-func (u *getCarImagesListUsecase) Execute(ctx context.Context, offset, limit int64) (int64, []*entities.CarImage, error) {
-	total, carImages, err := u.carImageRepo.GetList(ctx, offset, limit)
+func (u *getCarImagesListUsecase) Execute(ctx context.Context, carID int64, offset, limit int64) (int64, []*entities.CarImage, error) {
+	total, carImages, err := u.carImageRepo.GetList(ctx, carID, offset, limit)
 	if err != nil {
 		return 0, nil, apperrors.New(apperrors.ErrCodeInternal, "failed to get car images list from repository")
 	}

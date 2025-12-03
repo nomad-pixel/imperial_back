@@ -53,7 +53,6 @@ func (h *CarHandler) CreateCar(c *gin.Context) {
 
 	car := &entities.Car{
 		Name:           req.Name,
-		ImageUrl:       req.ImageUrl,
 		OnlyWithDriver: req.OnlyWithDriver,
 		PricePerDay:    req.PricePerDay,
 		Mark: &entities.CarMark{
@@ -136,7 +135,6 @@ func (h *CarHandler) UpdateCar(c *gin.Context) {
 	car := &entities.Car{
 		ID:             int64(carId),
 		Name:           req.Name,
-		ImageUrl:       req.ImageUrl,
 		OnlyWithDriver: req.OnlyWithDriver,
 		PricePerDay:    req.PricePerDay,
 		Mark: &entities.CarMark{

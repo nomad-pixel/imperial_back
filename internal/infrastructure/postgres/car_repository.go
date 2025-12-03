@@ -35,13 +35,12 @@ func (r *CarRepositoryImpl) CreateCar(ctx context.Context, car *entities.Car) er
 	const insertCarQuery = `
 		INSERT INTO cars (
 			name,
-			image_url,
 			only_with_driver,
 			car_mark_id,
 			car_category_id,
 			price_per_day
 		)
-		VALUES ($1, $2, $3, $4, $5, $6)
+		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, created_at, updated_at
 	`
 
@@ -57,7 +56,6 @@ func (r *CarRepositoryImpl) CreateCar(ctx context.Context, car *entities.Car) er
 
 	err = tx.QueryRow(ctx, insertCarQuery,
 		car.Name,
-		car.ImageUrl,
 		car.OnlyWithDriver,
 		markID,
 		categoryID,
@@ -119,7 +117,6 @@ func (r *CarRepositoryImpl) GetCarByID(ctx context.Context, id int64) (*entities
 		SELECT
 			c.id,
 			c.name,
-			COALESCE(c.image_url, ''),
 			c.only_with_driver,
 			c.price_per_day,
 			c.created_at,
@@ -151,7 +148,6 @@ func (r *CarRepositoryImpl) GetCarByID(ctx context.Context, id int64) (*entities
 	err := r.db.QueryRow(ctx, querySelect, id).Scan(
 		&car.ID,
 		&car.Name,
-		&car.ImageUrl,
 		&car.OnlyWithDriver,
 		&car.PricePerDay,
 		&car.CreatedAt,
@@ -221,6 +217,12 @@ func (r *CarRepositoryImpl) GetCarByID(ctx context.Context, id int64) (*entities
 		return nil, err
 	}
 
+	images, err := r.getImagesByCarID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	car.Images = images
+
 	return &car, nil
 }
 
@@ -235,13 +237,12 @@ func (r CarRepositoryImpl) UpdateCar(ctx context.Context, car *entities.Car) err
 		UPDATE cars
 		SET
 			name = $1,
-			image_url = $2,
-			only_with_driver = $3,
-			car_mark_id = $4,
-			car_category_id = $5,
-			price_per_day = $6,
+			only_with_driver = $2,
+			car_mark_id = $3,
+			car_category_id = $4,
+			price_per_day = $5,
 			updated_at = NOW()
-		WHERE id = $7
+		WHERE id = $6
 	`
 
 	var markID any
@@ -258,7 +259,6 @@ func (r CarRepositoryImpl) UpdateCar(ctx context.Context, car *entities.Car) err
 
 	cmdTag, err := tx.Exec(ctx, updateCarQuery,
 		car.Name,
-		car.ImageUrl,
 		car.OnlyWithDriver,
 		markID,
 		categoryID,
@@ -388,7 +388,6 @@ func (r CarRepositoryImpl) ListCars(ctx context.Context, offset, limit int64, na
 		SELECT
 			c.id,
 			c.name,
-			COALESCE(c.image_url, ''),
 			c.only_with_driver,
 			c.price_per_day,
 			c.created_at,
@@ -434,7 +433,6 @@ func (r CarRepositoryImpl) ListCars(ctx context.Context, offset, limit int64, na
 		if err := rows.Scan(
 			&car.ID,
 			&car.Name,
-			&car.ImageUrl,
 			&car.OnlyWithDriver,
 			&car.PricePerDay,
 			&car.CreatedAt,
@@ -473,6 +471,12 @@ func (r CarRepositoryImpl) ListCars(ctx context.Context, offset, limit int64, na
 			return 0, nil, err
 		}
 		car.Tags = tags
+
+		images, err := r.getImagesByCarID(ctx, car.ID)
+		if err != nil {
+			return 0, nil, err
+		}
+		car.Images = images
 
 		c := car
 		cars = append(cars, &c)
@@ -523,6 +527,44 @@ func (r CarRepositoryImpl) getTagsByCarID(ctx context.Context, carID int64) ([]*
 	}
 
 	return tags, nil
+}
+
+func (r CarRepositoryImpl) getImagesByCarID(ctx context.Context, carID int64) ([]*entities.CarImage, error) {
+	const query = `
+		SELECT
+			id,
+			image_path,
+			created_at
+		FROM car_images
+		WHERE car_id = $1
+		ORDER BY created_at ASC
+	`
+
+	rows, err := r.db.Query(ctx, query, carID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	images := make([]*entities.CarImage, 0)
+
+	for rows.Next() {
+		img := &entities.CarImage{}
+		if err := rows.Scan(
+			&img.ID,
+			&img.ImagePath,
+			&img.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		images = append(images, img)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return images, nil
 }
 
 func derefString(s *string) string {

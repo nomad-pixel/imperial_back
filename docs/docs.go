@@ -873,7 +873,44 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/cars/images": {
+        "/v1/cars/images/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаляет изображение автомобиля по указанному пути",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car images"
+                ],
+                "summary": "Удаление изображения автомобиля",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID изображения",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Изображение успешно удалено",
+                        "schema": {
+                            "$ref": "#/definitions/internal_interfaces_http_car_image.MessageResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/cars/{car_id}/images": {
             "get": {
                 "security": [
                     {
@@ -892,6 +929,13 @@ const docTemplate = `{
                 ],
                 "summary": "Получение списка изображений автомобиля",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID автомобиля",
+                        "name": "car_id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "default": 0,
@@ -935,6 +979,13 @@ const docTemplate = `{
                 "summary": "Загрузка изображения автомобиля",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "ID автомобиля",
+                        "name": "car_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "type": "file",
                         "description": "Изображение автомобиля",
                         "name": "image",
@@ -947,43 +998,6 @@ const docTemplate = `{
                         "description": "Марка успешно создана",
                         "schema": {
                             "$ref": "#/definitions/car.CarImageResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/cars/images/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Удаляет изображение автомобиля по указанному пути",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Car images"
-                ],
-                "summary": "Удаление изображения автомобиля",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID изображения",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Изображение успешно удалено",
-                        "schema": {
-                            "$ref": "#/definitions/internal_interfaces_http_car_image.MessageResponse"
                         }
                     }
                 }
@@ -1911,6 +1925,9 @@ const docTemplate = `{
         "car.CarImageResponse": {
             "type": "object",
             "properties": {
+                "car_id": {
+                    "type": "integer"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -1951,8 +1968,11 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "image_url": {
-                    "type": "string"
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CarImage"
+                    }
                 },
                 "mark": {
                     "$ref": "#/definitions/entities.CarMark"
@@ -2021,7 +2041,6 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "category_id",
-                "image_url",
                 "mark_id",
                 "name",
                 "price_per_day",
@@ -2032,10 +2051,6 @@ const docTemplate = `{
                     "type": "integer",
                     "minimum": 1,
                     "example": 2
-                },
-                "image_url": {
-                    "type": "string",
-                    "example": "https://example.com/car.jpg"
                 },
                 "mark_id": {
                     "type": "integer",
@@ -2174,7 +2189,6 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "category_id",
-                "image_url",
                 "mark_id",
                 "name",
                 "price_per_day",
@@ -2185,10 +2199,6 @@ const docTemplate = `{
                     "type": "integer",
                     "minimum": 1,
                     "example": 2
-                },
-                "image_url": {
-                    "type": "string",
-                    "example": "https://example.com/car.jpg"
                 },
                 "mark_id": {
                     "type": "integer",
@@ -2347,8 +2357,11 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "image_url": {
-                    "type": "string"
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CarImage"
+                    }
                 },
                 "mark": {
                     "$ref": "#/definitions/entities.CarMark"
@@ -2393,6 +2406,9 @@ const docTemplate = `{
         "entities.CarImage": {
             "type": "object",
             "properties": {
+                "car_id": {
+                    "type": "integer"
+                },
                 "created_at": {
                     "type": "string"
                 },

@@ -7,8 +7,8 @@ import (
 )
 
 type CarImageRepository interface {
-	Save(ctx context.Context, imageUrl string) (*entities.CarImage, error)
+	Save(ctx context.Context, carID int64, imageUrl string) (*entities.CarImage, error)
 	Delete(ctx context.Context, imageID int64) error
 	GetByID(ctx context.Context, imageID int64) (*entities.CarImage, error)
-	GetList(ctx context.Context, offset, limit int64) (int64, []*entities.CarImage, error)
+	GetList(ctx context.Context, carID int64, offset, limit int64) (int64, []*entities.CarImage, error)
 }

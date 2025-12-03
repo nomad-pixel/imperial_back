@@ -7,11 +7,16 @@ import (
 )
 
 func RegisterRoutes(router gin.IRouter, handler *CarImageHandler, tokenSvc ports.TokenService) {
-	api := router.Group("/v1/cars/images")
+	api := router.Group("/v1/cars/:car_id/images")
 	api.Use(middleware.AuthMiddleware(tokenSvc))
 	{
 		api.POST("", handler.CreateCarImage)
-		api.DELETE("/:id", handler.DeleteCarImage)
 		api.GET("", handler.GetCarImagesList)
+	}
+
+	apiDelete := router.Group("/v1/cars/images")
+	apiDelete.Use(middleware.AuthMiddleware(tokenSvc))
+	{
+		apiDelete.DELETE("/:id", handler.DeleteCarImage)
 	}
 }

@@ -51,16 +51,16 @@ func InitializeApp(ctx context.Context) (*App, error) {
 	authHandler := auth.NewAuthHandler(signUpUsecase, sendEmailVerificationUsecase, confirmEmailVerificationUsecase, signInUsecase, refreshTokenUsecase)
 	carRepository := ProvideCarRepository(pool)
 	createCarUsecase := usecases2.NewCreateCarUsecase(carRepository)
-	deleteCarUsecase := usecases2.NewDeleteCarUsecase(carRepository)
-	updateCarUsecase := usecases2.NewUpdateCarUsecase(carRepository)
-	getCarByIdUsecase := usecases2.NewGetCarByIdUsecase(carRepository)
-	getListCarsUsecase := usecases2.NewGetListCarsUsecase(carRepository)
-	carHandler := car.NewCarHandler(createCarUsecase, deleteCarUsecase, updateCarUsecase, getCarByIdUsecase, getListCarsUsecase)
 	carImageRepository := ProvideCarImageRepository(pool)
 	imageService, err := ProvideImageService(config)
 	if err != nil {
 		return nil, err
 	}
+	deleteCarUsecase := usecases2.NewDeleteCarUsecase(carRepository, carImageRepository, imageService)
+	updateCarUsecase := usecases2.NewUpdateCarUsecase(carRepository)
+	getCarByIdUsecase := usecases2.NewGetCarByIdUsecase(carRepository)
+	getListCarsUsecase := usecases2.NewGetListCarsUsecase(carRepository)
+	carHandler := car.NewCarHandler(createCarUsecase, deleteCarUsecase, updateCarUsecase, getCarByIdUsecase, getListCarsUsecase)
 	createCarImageUsecase := usecases2.NewCreateCarImageUsecase(carImageRepository, imageService)
 	deleteCarImageUsecase := usecases2.NewDeleteCarImageUsecase(carImageRepository, imageService)
 	getCarImagesListUsecase := usecases2.NewGetCarImagesListUsecase(carImageRepository)

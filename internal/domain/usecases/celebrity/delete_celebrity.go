@@ -29,10 +29,7 @@ func (u *deleteCelebrityUsecase) Execute(ctx context.Context, id int64) error {
 		return apperrors.New(apperrors.ErrCodeNotFound, "celebrity not found")
 	}
 	if celebrity.Image != "" {
-		err = u.imageService.DeleteImage(celebrity.Image)
-		if err != nil {
-			return apperrors.New(apperrors.ErrCodeInternal, "failed to delete celebrity image")
-		}
+		_ = u.imageService.DeleteImage(celebrity.Image)
 	}
 	err = u.celebrityRepo.DeleteCelebrity(ctx, id)
 	if err != nil {
